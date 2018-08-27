@@ -1,0 +1,126 @@
+<?php
+use Fuel\Core\Config;
+use Fuel\Core\DB;
+/**
+ * 受注履歴CSVダウンロードクラス
+ */
+class Download_Csv_History extends Download_Csv_Base {
+
+	private $tmp_id = null;
+
+	private $line_num = 0;
+
+	/**
+	 * @see Download_Csv_Base::get_format_div()
+	 */
+	protected function get_format_div() {
+		return Config::get('define.csv_format_div.order');
+	}
+
+	/**
+	 * @see Download_Csv_Base::get_data()
+	 */
+	protected function get_data($params) {
+		$query = DB::select(
+			array('orders.id', 'order_id'),
+			array('orders.member_code', 'member_code'),
+			array('orders.member_name', 'member_name'),
+			array('orders.order_datetime', 'order_datetime'),
+			array('orders.delivery_date', 'delivery_date'),
+			array('orders.comment', 'comment'),
+			array('order_details.id', 'order_detail_id'),
+			array('order_details.category_code', 'category_code'),
+			array('order_details.category_name', 'category_name'),
+			array('order_details.item_code', 'item_code'),
+			array('order_details.item_name', 'item_name'),
+			array('order_details.price_case_tax', 'price_case'),
+			array('order_details.amount_case', 'amount_case'),
+			array('order_details.price_tax', 'price'),
+			array('order_details.amount', 'amount')
+		)
+		->from('orders')
+		->join('order_details', 'INNER')
+			->on('order_details.order_id', '=', 'orders.id')
+			->and_on('order_details.del_flg', '=', DB::expr(UNDELETED));
+
+		$this->add_condition($query, $params);
+		$query->order_by('orders.id', 'asc');
+		$query->order_by('order_details.id', 'asc');
+
+		return $query->execute();
+	}
+
+	/**
+	 * @see Download_Csv_Base::modifier()
+	 */
+	protected function modifier($counter, $data, $key) {
+		if ($data['order_id'] != $this->tmp_id) {
+			$this->tmp_id = $data['order_id'];
+			$this->line_num = 0;
+		}
+
+		if ($key == 'line_num') {
+			$this->line_num++;
+			return $this->line_num;
+		}
+
+		return parent::modifier($counter, $data, $key);
+	}
+
+	/**
+	 * 検索条件を付与する
+	 * @param $query Query
+	 * @param $data 検索条件
+	 */
+	private function add_condition(&$query, $data) {
+		$query->where('orders.order_download_id', '!=', null);
+
+		// フリーワード
+		$search_field = Arr::get($data, 'search_field');
+		if (!is_null($search_field) && trim($search_field) != '') {
+			$search_field = \Common_Util::mb_convert($search_field);
+			$values = \Common_Util::split_space($search_field);
+			foreach ($values as $value) {
+				$query->where('orders.search_field', 'LIKE', '%' . trim($value) . '%');
+			}
+		}
+
+		// 発注日付指定(From)
+		$order_start_date = \Common_Util::get_date($data, 'order_start_year', 'order_start_month', 'order_start_day');
+		if (!empty($order_start_date)) {
+			$query->where('orders.order_datetime', '>=' , $order_start_date);
+		}
+
+		// 発注日付指定(To)
+		$order_end_date = \Common_Util::get_date($data, 'order_end_year', 'order_end_month', 'order_end_day');
+		if (!empty($order_end_date)) {
+			$query->where('orders.order_datetime', '<', date('Y-m-d', strtotime($order_end_date . ' +1 day')));
+		}
+
+		// 納品日付指定(From)
+		$delivery_start_date = \Common_Util::get_date($data, 'delivery_start_year', 'delivery_start_month', 'delivery_start_day');
+		if (!empty($delivery_start_date)) {
+			$query->where('orders.delivery_date', '>=' , $delivery_start_date);
+		}
+
+		// 納品日付指定(To)
+		$delivery_end_date = \Common_Util::get_date($data, 'delivery_end_year', 'delivery_end_month', 'delivery_end_day');
+		if (!empty($delivery_end_date)) {
+			$query->where('orders.delivery_date', '<', date('Y-m-d', strtotime($delivery_end_date . ' +1 day')));
+		}
+
+		// 備考
+		$comment = Arr::get($data, 'comment');
+		if (!is_null($comment) && trim($comment) == '1') {
+			$query->where('orders.comment', '!=', NULL);
+			$query->where('orders.comment', '!=', '');
+		}
+
+		// 削除データ
+		$del = Arr::get($data, 'del');
+		if (is_null($del) || trim($del) != '1') {
+			$query->where('orders.cancel_flg', '=', 0);
+		}
+	}
+
+}

@@ -1,0 +1,169 @@
+<!--#title start -->
+<div class="title">
+	<strong>
+	PR商品管理
+	</strong>
+</div>
+<!--#title end -->
+
+<!--#mainMenuWrap start -->
+<div class="mainMenuWrap">
+	<!--#mainMenu start -->
+	<div class="mainMenu">
+		<ul>
+			<li>
+				<a href="/manage/item/pr/add" title="商品コードを入力して追加" class="dialog w240">
+					<span class="icon-chevron-right mr"></span>商品コードを入力して追加<span class="icon-plus abss"></span>
+				</a>
+			</li>
+			<li>
+				<a href="/manage/item/pr/upload_csv" title="CSVアップロード" class="dialog">
+					<span class="icon-chevron-right mr"></span>CSVアップロード<span class="icon-upload abss"></span>
+				</a>
+			</li>
+		</ul>
+	</div>
+	<!--#mainMenu end -->
+</div>
+<!--#mainMenuWrap end -->
+
+<?php echo Form::open(array('action' => '/manage/item/pr', 'method' => 'get')); ?>
+	<!--#search start -->
+	<div class="search">
+		<p>
+		検索条件を指定して検索してください
+		</p>
+	
+		<table class="searchBox">
+			<tbody>
+				<tr>
+					<td class="searchTitle">
+						<label for="freeword">
+						フリーワード
+						</label>
+					</td>
+					<td>
+						<?php echo Form::input('search_field', Input::get('search_field'), array('id' => 'freeword')); ?>
+						<?php echo $validate_error_message('search_field'); ?>
+					</td>
+					<td class="searchTitle">
+						<label for="itemCategory">
+						カテゴリ
+						</label>
+					</td>
+					<td>
+						<?php echo Form::select('item_category_id', Input::get('item_category_id'), $categories, array('id' => 'itemCategory')); ?>
+						<?php echo $validate_error_message('item_category_id'); ?>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	
+		<div class="searchSubmit">
+			<a href="#" class="submit" title="この条件で検索する">
+				<span class="icon-search mr"></span>この条件で検索する
+			</a>
+		</div>
+	</div>
+	<!--#search end -->
+<?php echo Form::close(); ?>
+
+<!--#resultTop start -->
+<div class="resultTop clearfix">
+	<div class="resultText">
+		<?php if ($data_count > 0) : ?>
+			<strong>
+			検索結果一覧
+			</strong>
+			<p>
+				<?php echo $data_count; ?>件のデータが見つかりました。
+			</p>
+		<?php else : ?>
+			データが見つかりませんでした。
+		<?php endif ?>
+	</div>
+
+	<div class="paging">
+		<?php echo $pager; ?>
+	</div>
+</div>
+<!--#resultTop end -->
+
+<?php if ($data_count > 0) : ?>
+
+	<!--#list start -->
+	<div class="list">
+		<?php echo $message(); ?>
+		<table class="resultList stripe">
+			<thead>
+				<tr>
+					<th class="w10">カテゴリ</th>
+					<th class="w15">商品コード</th>
+					<th>商品名</th>
+					<th class="w12">入数</th>
+					<?php if (Common_Setting::is_price()) : ?>
+						<?php if (Common_Setting::is_case()) : ?>
+							<th class="w8">バラ単価</th>
+							<th class="w8">ケース単価</th>
+						<?php else : ?>
+							<th class="w8">単価</th>
+						<?php endif; ?>
+					<?php endif; ?>
+					<th class="w8">編集</th>
+				</tr>
+			</thead>
+		
+			<tbody>
+				<?php foreach($rows as $row) : ?>
+					<tr>
+						<td class="left">
+							<?php echo Arr::get($row, 'item_categories.name'); ?>
+						</td>
+						<td class="center">
+							<a href="/manage/item/pr/edit/<?php echo Arr::get($row, 'id'); ?>" class="dialog">
+								<?php echo Arr::get($row, 'code'); ?>
+							</a>
+						</td>
+						<td class="left">
+							<?php echo Arr::get($row, 'name'); ?>
+						</td>
+						<td class="center">
+							<?php echo Arr::get($row, 'size'); ?>
+						</td>
+						<?php if (Common_Setting::is_price()) : ?>
+							<td class="right">
+								<?php echo $format_price($row, 'price'); ?>
+							</td>
+							<?php if (Common_Setting::is_case()) : ?>
+								<td class="right">
+									<?php echo $format_price($row, 'price_case'); ?>
+								</td>
+							<?php endif; ?>
+						<?php endif; ?>
+						<td class="center">
+							<a href="/manage/item/pr/edit/<?php echo Arr::get($row, 'id'); ?>" title="PR商品を編集" class="dialog">
+								<span class="icon-edit decEdit"></span>
+							</a>
+						</td>
+					</tr>
+				<?php endforeach; ?>
+			</tbody>
+		</table>
+	</div>
+	<!--#list end -->
+	
+	<!--#resultBottom start -->
+	<div class="resultBottom clearfix">
+		<div class="resultText">
+			<p>
+			<?php echo $data_count; ?>件のデータが見つかりました。
+			</p>
+		</div>
+	
+		<div class="paging">
+			<?php echo $pager; ?>
+		</div>
+	</div>
+	<!--#resultBottom end -->
+
+<?php endif ?>

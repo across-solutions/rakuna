@@ -1,0 +1,2152 @@
+@charset "UTF-8";
+
+/*==============================================================================
+■目次--------------------------------------------------------------------------
+
+1.デフォルト
+2.ヘッダー
+3.メインナビ
+4.コンテンツラッパー
+5.共通コンテンツ
+6.テーブル用
+7.フッター
+8.ウェブフォント用
+9.ダイアログ共通(iframe)
+00.ログイン
+00.設定
+00.CSV設定
+00.ヘルパークラス
+00.カレンダー
+00.受注編集
+00.いつもの商品
+==============================================================================*/
+
+
+
+/* ==========================================================================
+1.デフォルト
+========================================================================== */
+html,
+button,
+input,
+select,
+textarea {
+    color: #333;
+}
+
+body {
+	font:normal 12px Verdana, "ヒラギノ角ゴ ProN W3", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, sans-serif;
+	line-height:normal;
+}
+
+img {
+    vertical-align: middle;
+}
+
+p,
+strong,
+em{
+	word-break:break-all;
+}
+
+/* placeholder */
+:placeholder-shown {
+	color:#ccc;
+}
+
+::-webkit-input-placeholder {
+	color:#ccc;
+}
+
+:-moz-placeholder {
+	color:#ccc;
+	opacity: 1;
+}
+
+::-moz-placeholder {
+	color:#ccc;
+	opacity: 1;
+}
+
+:-ms-input-placeholder {
+	color:#ccc;
+}
+
+
+
+/* ==========================================================================
+2.ヘッダー
+========================================================================== */
+header{
+	width:auto;
+	margin:1em 0 0 0;
+}
+
+.headerWrapper{
+	width:960px;
+	margin:0 auto;
+}
+
+.logo{
+	float:left;
+}
+
+.logo img{
+	border:0;
+	margin:0;
+	padding:0;
+}
+
+.logo em{
+	display:block;
+	font-size:90%;
+	font-style:normal;
+	line-height:200%;
+}
+
+.manageUser{
+	font-size:120%;
+	font-weight:normal;
+	line-height:120%;
+	margin:2em 0 0 1em;
+}
+
+.manageUser span.manageUserName{
+	font-weight:bold;
+	margin:2em 0 0 1em;
+}
+
+.logout{
+	float:right;
+}
+
+.logout a{
+	display:block;
+	color:#fff;
+	text-decoration:none;
+	font-size:120%;
+	letter-spacing:0.1em;
+	padding:0.5em 0.75em;
+	position:relative;
+
+	border-radius:5px;
+	-ms-border-radius:5px;
+	-o-border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+
+	background: #ea4d8f;
+	background: -moz-linear-gradient(top,  #ea4d8f 0%, #e64278 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ea4d8f), color-stop(100%,#e64278));
+	background: -webkit-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -o-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -ms-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: linear-gradient(to bottom,  #ea4d8f 0%,#e64278 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ea4d8f', endColorstr='#e64278',GradientType=0 );
+}
+
+.logout a:hover{
+	color:#333;
+	background:#eee;
+}
+
+
+
+/* ==========================================================================
+3.メインナビ
+========================================================================== */
+nav{
+	clear:both;
+}
+
+nav ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	font-size:1px;
+	letter-spacing:-0.4em;
+}
+
+nav ul li{
+	display:inline-block;
+	vertical-align:top;
+	font-size:12px;
+	letter-spacing:normal;
+	width:20%;
+	float:left;
+
+	position:relative;
+	top:1px;
+}
+
+nav ul li a.noCursor{
+	cursor:default;
+
+	display:block;
+	color:#fff;
+	text-decoration:none;
+	font-size:130%;
+	letter-spacing:0.1em;
+	padding:0.75em;
+	position:relative;
+
+	border-radius:5px 5px 0 0;
+	-ms-border-radius:5px 5px 0 0;
+	-o-border-radius:5px 5px 0 0;
+	-moz-border-radius:5px 5px 0 0;
+	-webkit-border-radius:5px 5px 0 0;
+
+	background: #ea4d8f;
+	background: -moz-linear-gradient(top,  #ea4d8f 0%, #e64278 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ea4d8f), color-stop(100%,#e64278));
+	background: -webkit-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -o-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -ms-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: linear-gradient(to bottom,  #ea4d8f 0%,#e64278 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ea4d8f', endColorstr='#e64278',GradientType=0 );
+
+	outline:none;
+
+	border-top:1px solid #ccc;
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+}
+
+nav ul li > ul{
+	display:none;
+	width:100%;
+	list-style-type:none;
+	text-align:left;
+	position:absolute;
+	top:auto;
+	left:0;
+	z-index:2;
+}
+
+nav ul li:hover ul{
+	display:block;
+}
+
+nav ul li > ul li{
+	display:block;
+	width:auto;
+	float:none;
+}
+
+nav ul li > ul li a{
+	display:block;
+	color:#333;
+	text-decoration:none;
+	font-size:130%;
+	letter-spacing:0.1em;
+	padding:0.75em;
+	position:relative;
+	background: #fafafa;
+
+	border-left:1px solid #ccc;
+	border-right:1px solid #ccc;
+	border-bottom:1px solid #ccc;
+}
+
+nav ul li > ul li a:hover{
+	color:#e62074;
+}
+
+
+
+/* ==========================================================================
+4.コンテンツラッパー
+========================================================================== */
+.content{
+	width:auto;
+	margin:0;
+}
+
+.contentWrapper{
+	width:958px;
+	margin:0 auto;
+	border:1px solid #ccc;
+}
+
+.boxPadding{
+	padding:1.1em;
+}
+
+
+
+/* ==========================================================================
+5.共通コンテンツ
+========================================================================== */
+.title{
+	width:auto;
+}
+
+.title strong{
+	color:#333;
+	font-size:160%;
+	font-weight:normal;
+	letter-spacing:0.1em;
+}
+
+.mainMenuWrap{
+	width:auto;
+	border-top:1px dotted #ccc;
+	border-bottom:1px dotted #ccc;
+	margin:1em 0 0 0;
+}
+
+.mainMenu{
+	width:auto;
+	padding:0.8em 0;
+}
+
+.mainMenu ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+.mainMenu ul li{
+	display:inline-block;
+}
+
+.mainMenu ul li a{
+	display:block;
+	color:#fff;
+	text-decoration:none;
+	font-size:120%;
+	letter-spacing:0.1em;
+	padding:0.5em 0.75em;
+	position:relative;
+
+	border-radius:5px;
+	-ms-border-radius:5px;
+	-o-border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+
+	background: #ea4d8f;
+	background: -moz-linear-gradient(top,  #ea4d8f 0%, #e64278 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ea4d8f), color-stop(100%,#e64278));
+	background: -webkit-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -o-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -ms-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: linear-gradient(to bottom,  #ea4d8f 0%,#e64278 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ea4d8f', endColorstr='#e64278',GradientType=0 );
+
+	min-width:170px;
+}
+
+.mainMenu ul li a:hover{
+	color:#333;
+	background:#eee;
+}
+
+.mainMenu ul li a.w240{
+	min-width:240px;
+}
+
+.search{
+	width:auto;
+}
+
+.search p{
+	color:#333;
+	font-size:120%;
+	font-weight:bold;
+}
+
+.searchBox{
+	width:100%;
+}
+
+.searchBox td{
+	background:#eee;
+	border:1px solid #ccc;
+	padding:0.65em;
+}
+
+.searchBox td span{
+	vertical-align:middle;
+}
+
+.searchBox td span a:hover{
+	background:#333;
+}
+
+.searchBox td span.openDatePicker:hover{
+	color:#333;
+}
+
+.searchBox td.searchTitle{
+	width:119px;
+	background:#999;
+	text-align:center;
+	vertical-align:middle;
+	color:#fff;
+	font-size:100%;
+	font-weight:normal;
+	padding:0.65em 0;
+	letter-spacing:0.1em;
+}
+
+.searchBox td.searchTitle.w180{
+	width: 180px;
+}
+
+.searchBox td input[type="text"]{
+	width:94%;
+	border:1px solid #999;
+	padding:0.4em;
+}
+
+.searchBox td input[type="checkbox"]{
+	vertical-align:middle;
+	margin:0 0.5em 0 0;
+}
+
+.searchBox td select{
+	border:1px solid #999;
+	padding:0.4em;
+}
+
+.searchSubmit{
+	width:auto;
+	text-align:center;
+	margin:1.5em 0;
+}
+
+.searchSubmit a{
+	display:inline-block;
+	color:#fff;
+	text-decoration:none;
+	font-size:120%;
+	letter-spacing:0.1em;
+	padding:0.5em 0.75em;
+	position:relative;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+
+	background: #ea4d8f;
+	background: -moz-linear-gradient(top,  #ea4d8f 0%, #e64278 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ea4d8f), color-stop(100%,#e64278));
+	background: -webkit-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -o-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -ms-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: linear-gradient(to bottom,  #ea4d8f 0%,#e64278 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ea4d8f', endColorstr='#e64278',GradientType=0 );
+
+	min-width:170px;
+}
+
+.searchSubmit a:hover{
+	color:#333;
+	background:#eee;
+}
+
+.resultTop{
+	width:auto;
+}
+
+.resultText{
+	float:left;
+}
+
+.resultText strong{
+	color:#333;
+	font-size:120%;
+}
+
+.resultText p{
+	color:#333;
+	font-size:100%;
+	margin:0;
+}
+
+.paging{
+	float:right;
+}
+
+.paging ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+.paging ul li{
+	display:inline-block;
+}
+
+.paging ul li a{
+	display:block;
+	color: #333;
+	padding:0.5em 0.8em;
+	text-decoration: none;
+	font-size:100%;
+	font-weight:normal;
+	background: #fafafa;
+	border:1px solid #eee;
+}
+
+.paging ul li a.selected{
+	background:#e62074;
+	color:#fff;
+	text-decoration:none;
+	border:1px solid #ccc;
+}
+
+.paging ul li a:hover{
+	background:#e62074;
+	color:#fff;
+	text-decoration:none;
+	border:1px solid #ccc;
+}
+
+.subMenuWrap{
+	width:auto;
+	margin:1.5em 0 0 0;
+}
+
+.subMenu{
+	background:#fefefe;
+	border:1px solid #eee;
+	padding:0.7em;
+}
+
+.subMenu ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+.subMenu ul li{
+	display:inline-block;
+}
+
+.subMenu ul li a{
+	display:block;
+	color:#333;
+	text-decoration:none;
+	font-size:120%;
+	letter-spacing:0.1em;
+	padding:0.5em 0.75em;
+	position:relative;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+
+	background: #f5f5f5;
+	background: -moz-linear-gradient(top,  #f5f5f5 0%, #e7e7e7 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f5f5f5), color-stop(100%,#e7e7e7));
+	background: -webkit-linear-gradient(top,  #f5f5f5 0%,#e7e7e7 100%);
+	background: -o-linear-gradient(top,  #f5f5f5 0%,#e7e7e7 100%);
+	background: -ms-linear-gradient(top,  #f5f5f5 0%,#e7e7e7 100%);
+	background: linear-gradient(to bottom,  #f5f5f5 0%,#e7e7e7 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f5f5f5', endColorstr='#e7e7e7',GradientType=0 );
+
+	border:1px solid #ccc;
+
+	min-width:130px;
+}
+
+.subMenu ul li a:hover{
+	color:#333;
+	background:#eee;
+}
+
+.subMenu ul li a.w160{
+	min-width:160px;
+}
+
+.subMenu ul li a.w180{
+	min-width:180px;
+}
+
+.subMenu ul li a.w240{
+	min-width:240px;
+}
+
+.list{
+	width:auto;
+	margin:1.5em 0;
+}
+
+.resultList{
+	width:100%;
+	border:1px solid #ccc;
+}
+
+.resultList thead tr{
+	background:#f6f6f6;
+	background: -moz-linear-gradient(top,  #fbfbfb 0%, #ececec 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fbfbfb), color-stop(100%,#ececec));
+	background: -webkit-linear-gradient(top,  #fbfbfb 0%,#ececec 100%);
+	background: -o-linear-gradient(top,  #fbfbfb 0%,#ececec 100%);
+	background: -ms-linear-gradient(top,  #fbfbfb 0%,#ececec 100%);
+	background: linear-gradient(to bottom,  #fbfbfb 0%,#ececec 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbfbfb', endColorstr='#ececec',GradientType=0 );
+
+}
+
+.resultList th{
+	color:#333;
+	font-size:100%;
+	font-weight:bold;
+	letter-spacing:-0.05em;
+	padding:0.8em 0;
+	text-align:center;
+}
+
+.resultList th input[type="checkbox"]{
+	vertical-align:middle;
+}
+
+.resultList td{
+	border:1px solid #ccc;
+	padding:0.5em;
+}
+
+.resultList td input[type="checkbox"]{
+	vertical-align:middle;
+}
+
+.resultBottom{
+	width:auto;
+}
+
+.clear_button {
+    display:inline-block;
+    background: #e62074;
+    color: #fff;
+    border-radius: 3px;
+    text-decoration: none;
+    width:18px;
+    height:18px;
+    text-align:center;
+    box-sizing:border-box;
+}
+
+.clear_button_outside {
+	display:inline-block;
+	margin: 0 0.5em 0 0.5em;
+}
+
+.resultSort a{
+	color:#666;
+	text-decoration:none;
+}
+
+.resultSort a.selected{
+	color:#e62074;
+}
+
+
+
+/* ==========================================================================
+6.テーブル用
+========================================================================== */
+.w5{
+	width:5%;
+}
+
+.w8{
+	width:8%;
+}
+
+.w10{
+	width:10%;
+}
+
+.w12{
+	width:12%;
+}
+
+.w15{
+	width:15%;
+}
+
+.w20{
+	width:20%;
+}
+
+.w24{
+	width:24%;
+}
+
+td.center{
+	text-align:center;
+}
+
+td.left{
+	text-align:left;
+}
+
+td.right{
+	text-align:right;
+}
+
+td a.dialog{
+	text-decoration:none;
+}
+td a.nodeco{
+	text-decoration:none;
+}
+
+span.orderTime{
+	display:block;
+}
+
+span.deliverTime{
+	display:block;
+	color:#ff0000;
+}
+
+tr.odd{
+	background:#fff;
+}
+
+tr.even{
+	background:#eee;
+}
+
+tr.delFlg{
+	background:#f09999;
+}
+
+tr.over{
+	background:#d7faff;
+}
+
+tr.selected{
+	background:#69cefe;
+}
+
+
+/* ==========================================================================
+7.フッター
+========================================================================== */
+footer{
+	width:auto;
+}
+
+.footerWrapper{
+	width:960px;
+	margin:0 auto;
+}
+
+footer p{
+	color:#999;
+	font-size:90%;
+	text-align:center;
+}
+
+
+
+/* ==========================================================================
+8.ウェブフォント用
+========================================================================== */
+span[class^="icon-"], [class*=" icon-"]{
+
+}
+
+span.mr{
+	margin:0 0.5em 0 0;
+}
+
+span.ml{
+	margin:0 0 0 0.5em;
+}
+
+span.remark{
+	color:#e62074;
+}
+
+a span.decEdit{
+	display:inline-block;
+	background:#e62074;
+	width:24px;
+	text-align:center;
+	padding:0.5em 0;
+	color:#fff;
+
+	box-sizing:border-box;
+	max-height:24px;
+
+	border-radius:1em;
+	-ms-border-radius:1em;
+	-moz-border-radius:1em;
+	-o-border-radius:1em;
+	-webkit-border-radius:1em;
+}
+
+a:hover span.decEdit{
+	background:#444;
+}
+
+span.abs{
+	position:absolute;
+	top:35%;
+	right:10%;
+}
+
+span.abss{
+	position:absolute;
+	top:30%;
+	right:5%;
+}
+
+.openDatePicker{
+	color:#E84886;
+	font-size:150%;
+	cursor:pointer;
+}
+
+/* ==========================================================================
+9.ダイアログ共通(iframe)
+========================================================================== */
+.digWrap{
+	width:auto;
+	padding:1em;
+}
+
+.digTitle{
+	width:auto;
+	border-bottom:1px dotted #ccc;
+}
+
+.digTitle strong{
+	color:#333;
+	font-size:160%;
+	font-weight:normal;
+	letter-spacing:0.05em;
+}
+
+.digText{
+	width:auto;
+}
+
+.digText p{
+	color:#333;
+	font-size:125%;
+	font-weight:bold;
+	letter-spacing:-0.025em;
+	text-align:left;
+}
+
+.digText p.stamp{
+	font-size:120%;
+	text-align:right;
+	margin:0;
+}
+
+.digDec{
+	width:auto;
+}
+
+.digDec p{
+	font-size:100%;
+	font-weight:normal;
+	letter-spacing:0.05em;
+	line-height:160%;
+}
+
+.digUserInfo{
+	width:auto;
+}
+
+.digUserInfo strong{
+	color:#333;
+	font-size:140%;
+	font-weight:bold;
+}
+
+.digUserInfo p{
+	color:#333;
+	font-size:100%;
+	font-weight:normal;
+	line-height:150%;
+	margin:0;
+}
+
+.digResult{
+	width:auto;
+	margin:0 0 2em 0;
+}
+
+.digAmount{
+	width:200px;
+	float:left;
+}
+
+.digAmount strong{
+	display:block;
+	font-size:150%;
+	font-weight:normal;
+	text-align:center;
+
+	padding:0.25em 0;
+	border:1px solid #333;
+}
+
+.digAmount strong span{
+	font-weight:bold;
+	margin:0 0 0 0.5em;
+}
+
+.digTotal{
+	float:right;
+	width:160px;
+	border:1px solid #333;
+	padding:0.25em;
+}
+
+.digTotal strong{
+	display:block;
+	font-size:150%;
+	font-weight:normal;
+	text-align:center;
+	border-bottom:1px dotted #ccc;
+}
+
+.digTotal p{
+	font-size:120%;
+	font-weight:normal;
+	text-align:right;
+	margin:0;
+	line-height:180%;
+}
+
+.digTotal p span{
+	font-weight:bold;
+	margin:0 0 0 1em;
+}
+
+.digList{
+	max-height:240px;
+	overflow-x:hidden;
+	overflow-y:auto;
+	width:auto;
+}
+
+.digResultList{
+	width:100%;
+	border:1px solid #ccc;
+}
+
+.digResultList thead tr{
+	background:#f6f6f6;
+	background: -moz-linear-gradient(top,  #fbfbfb 0%, #ececec 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fbfbfb), color-stop(100%,#ececec));
+	background: -webkit-linear-gradient(top,  #fbfbfb 0%,#ececec 100%);
+	background: -o-linear-gradient(top,  #fbfbfb 0%,#ececec 100%);
+	background: -ms-linear-gradient(top,  #fbfbfb 0%,#ececec 100%);
+	background: linear-gradient(to bottom,  #fbfbfb 0%,#ececec 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fbfbfb', endColorstr='#ececec',GradientType=0 );
+}
+
+.digResultList th{
+	color:#333;
+	font-size:100%;
+	font-weight:bold;
+	letter-spacing:-0.05em;
+	padding:0.8em 0;
+	text-align:center;
+}
+
+.digResultList td{
+	border:1px solid #ccc;
+	padding:0.5em;
+}
+
+.digResultList td input[type="text"]{
+	width: 40px;
+	border:1px solid #999;
+	padding:0.4em;
+	background:#ffeeee;
+	text-align:right;
+}
+
+.digComment{
+	width:auto;
+	margin:2em 0 0 0;
+}
+
+.digComment dl{
+	margin:0;
+}
+
+.digComment dt{
+	font-size:140%;
+	font-weight:normal;
+	letter-spacing:0.05em;
+	border-bottom:1px dotted #ccc;
+}
+
+.digComment dd{
+	margin:0.5em 0 0 0;
+	font-size:100%;
+	font-weight:normal;
+}
+
+.digNav{
+	width:auto;
+	margin:2em 0 0 0;
+}
+
+.digNav.configN{
+	margin:1em 0 0 0;
+}
+
+.digNav.csv{
+	width:100%;
+	margin:1em 0;
+	position:absolute;
+	bottom:0;
+	left:0;
+}
+
+.digNav ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	letter-spacing:-0.4em;
+	text-align:center;
+}
+
+.digNav ul.digNavAlignLeft{
+	margin: 1em 0;
+	text-align: left;
+}
+
+.digNav ul.digNavAlignLeft li{
+	margin: 0;
+}
+
+.digNav ul li{
+	display:inline-block;
+	letter-spacing:normal;
+	margin:0 0.5em;
+}
+
+.digNav ul li a{
+	display:block;
+	color:#fff;
+	text-decoration:none;
+	font-size:120%;
+	letter-spacing:0.1em;
+	padding:0.25em 0.75em;
+	position:relative;
+
+	border-radius:5px;
+	-ms-border-radius:5px;
+	-o-border-radius:5px;
+	-moz-border-radius:5px;
+	-webkit-border-radius:5px;
+
+	background: #ea4d8f;
+	background: -moz-linear-gradient(top,  #ea4d8f 0%, #e64278 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ea4d8f), color-stop(100%,#e64278));
+	background: -webkit-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -o-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: -ms-linear-gradient(top,  #ea4d8f 0%,#e64278 100%);
+	background: linear-gradient(to bottom,  #ea4d8f 0%,#e64278 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ea4d8f', endColorstr='#e64278',GradientType=0 );
+}
+
+.digNav ul li a:hover{
+	color:#333;
+	background:#eee;
+}
+
+.digEditForm{
+	width:100%;
+}
+
+.digForm{
+	width:100%;
+}
+
+.digForm dl{
+	margin:1em 0;
+}
+
+.digForm dt{
+	float:left;
+	width:26%;
+
+	color:#333;
+	font-size:120%;
+	font-weight:bold;
+	letter-spacing:0.05em;
+	line-height:185%;
+}
+
+.digForm dd{
+	float:left;
+	width:70%;
+	margin:0;
+}
+
+.digForm dd p.check{
+	color:#999;
+	line-height:100%;
+	padding:0.5em;
+	margin:0;
+
+	background:#eee;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-moz-border-radius:2px;
+	-o-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.digForm dd img{
+	max-width:100%;
+	max-height:200px;
+	border:1px solid #eee;
+}
+
+.digForm dd input[type="text"],
+.digForm dd input[type="file"]{
+	width:85%;
+	border:1px solid #999;
+	padding:0.4em;
+
+	box-sizing:border-box;
+}
+
+.digForm dd input[type="checkbox"],
+.digForm dd input[type="radio"]{
+	vertical-align:middle;
+	margin:0 0.5em 0 0;
+}
+
+.digForm dd select{
+	width:85%;
+	border:1px solid #999;
+	padding:0.4em;
+
+	box-sizing:border-box;
+}
+
+.digForm dd textarea{
+	width:85%;
+	border:1px solid #999;
+	padding:0.4em;
+	min-height:80px;
+
+	box-sizing:border-box;
+}
+
+.emailSubForm{
+	display:block;
+	width:auto;
+	margin:0.5em 0 0 0;
+}
+
+.emailSubForm input[type="text"]{
+	margin:0.5em 0 0 0;
+}
+
+.digAccDone{
+	width:auto;
+}
+
+.digAccDone strong{
+	display:block;
+	font-size:120%;
+	letter-spacing:-0.05em;
+	text-align:center;
+
+	padding:0.5em 0;
+	background:#eee;
+	border:1px solid #ccc;
+}
+
+.digAccDone p{
+	font-size:100%;
+	margin:0;
+}
+
+.digForm .errorResult{
+	border:2px dotted #ccc;
+	overflow-y:auto;
+	margin:2em 0 0 15em;
+	padding:0.5em;
+	background:#fafafa;
+	min-height:80px;
+	max-height:80px;
+	position:relative;
+	width:59%;
+}
+
+.digForm .errorResult span{
+	color:#e62074;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	margin:auto;
+	width:100%;
+	height:20%;
+	text-align:center;
+}
+
+
+
+/* ==========================================================================
+00.ログイン
+========================================================================== */
+html.log{
+	height:100%;
+	background:#333;
+}
+
+header.log{
+	margin:4em 0 3em 0;
+}
+
+header.log .headerWrapper{
+	width:290px;
+	padding:0;
+	margin:0 auto;
+	text-align:center;
+}
+
+header.log .headerWrapper img{
+	max-width:40%;
+}
+
+header.log .logo{
+	float:none;
+}
+
+header.log .logo em{
+	color:#e62074;
+}
+
+.loginBox{
+	width:290px;
+	margin:0 auto;
+}
+
+.loginBox p.error{
+	color:#ff0000;
+	font-size:90%;
+	font-weight:bold;
+	letter-spacing:-0.025em;
+	margin:0.5em 0 0 0;
+}
+
+.logFormBox{
+	position:relative;
+}
+
+.logFormBox span{
+	color:#ccc;
+	font-size:140%;
+	font-weight:normal;
+	text-align:center;
+	padding:0.25em;
+
+	position:absolute;
+	top:5px;
+	left:7px;
+}
+
+.logFormBox input[type="text"],
+.logFormBox input[type="password"]{
+	width:90%;
+	font-size:120%;
+	border-top:none;
+	border-left:none;
+	border-right:none;
+	border-bottom:1px solid #333;
+	padding:0.6em 0 0.6em 2em;
+
+	outline:none;
+	background:#fff;
+}
+
+.logFormCheck{
+	margin:1em 0 0 0;
+}
+
+.logFormCheck label{
+	display:block;
+	color:#fff;
+	padding:0.5em;
+
+	letter-spacing:0.05em;
+}
+
+.logFormCheck label input[type="checkbox"]{
+	margin:0 1em 0 0;
+	vertical-align:middle;
+}
+
+.login{
+	width:auto;
+	margin:1em 0 2em 0;
+}
+
+.login a{
+	display:block;
+	color:#fff;
+	font-size:120%;
+	text-align:center;
+	text-decoration:none;
+	padding:0.8em 0;
+
+	background: #666;
+
+	outline:none;
+}
+
+.login a:hover{
+	background:#e62074;
+	color:#fff;
+}
+
+footer.log p{
+	margin:0;
+}
+
+footer.log a{
+	color:#fff;
+}
+
+
+
+/* ==========================================================================
+00.設定
+========================================================================== */
+.config{
+	width:auto;
+	margin:1em 0 0 0;
+	background:#fafafa;
+	border:1px solid #ccc;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-moz-border-radius:2px;
+	-o-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.configWrap{
+	padding:1em;
+}
+
+.configWrap strong{
+	color:#333;
+	font-size:135%;
+	font-weight:bold;
+	letter-spacing:0.05em;
+}
+
+.configWrap p{
+	color:#333;
+	letter-spacing:-0.025em;
+	margin:0;
+}
+
+.config dl{
+	display:table;
+	width:100%;
+	margin:1em 0;
+	padding:0 0 1em 0;
+	border-bottom:1px solid #ccc;
+}
+
+.config dl:last-child{
+	border:none;
+	margin:0;
+	padding:0;
+}
+
+.config dt{
+	display:table-cell;
+	width:25%;
+
+	color:#333;
+	font-size:110%;
+	font-weight:bold;
+	letter-spacing:0.05em;
+	vertical-align:middle;
+}
+
+.config dd{
+	display:table-cell;
+	width:40%;
+	margin:0;
+}
+
+.config dd p{
+	margin:0.5em 0 0 0;
+}
+
+.config dd img{
+	display:block;
+	max-width:100%;
+	max-height:50px;
+	border:1px solid #ccc;
+	padding:0.5em;
+	margin:1em 0;
+}
+
+.config input[type="text"],
+.config input[type="file"],
+.config input[type="password"]{
+	width:70%;
+	background:#fff;
+	border:1px solid #999;
+	padding:0.4em
+}
+
+.config input[type="checkbox"]{
+	margin:0 0.5em 0 0;
+	vertical-align:middle;
+}
+
+.config textarea{
+	width:80%;
+	background:#fff;
+	border:1px solid #999;
+	padding:0.4em;
+}
+
+.config .short{
+	width:30%;
+}
+
+.config .long{
+	width:60%;
+}
+
+.config .hlong{
+	width:80%;
+}
+
+.config ul li a:hover{
+	color:#fff;
+	background:#999;
+}
+
+.configMenuWrap{
+	width:auto;
+	border-top:1px dotted #ccc;
+	border-bottom:1px dotted #ccc;
+	margin:1em 0 0 0;
+}
+
+.configMenu{
+	width:auto;
+	padding:0.8em 0;
+}
+
+.configMenu ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+.configMenu ul li{
+	display:inline-block;
+	margin:0 2em 0 0;
+}
+
+.configMenu ul li:last-child{
+	margin:0;
+}
+
+.configMenu ul li a{
+	display:block;
+	color:#999;
+	text-decoration:none;
+	font-size:120%;
+	letter-spacing:0.1em;
+}
+
+.configMenu ul li a.selected{
+	color:#333;
+	font-weight:bold;
+}
+
+.configMenu ul li a:hover{
+	color:#333;
+	font-weight:bold;
+}
+
+
+
+/* ==========================================================================
+00.CSV設定
+========================================================================== */
+.sort{
+	width:100%;
+	margin:1em 0 0 0;
+}
+
+.sort strong{
+	display:block;
+	color:333;
+	font-size:135%;
+	font-weight:bold;
+	letter-spacing:0.05em;
+	text-align:center;
+}
+
+.sortWrap{
+	display:table;
+	width:100%;
+}
+
+.sortWrap.csv{
+	position:relative;
+	padding:0 0 5em 0;
+}
+
+.sortItem{
+	display:table-cell;
+	width:40%;
+	border:1px solid #ccc;
+	vertical-align:top;
+	padding:1em;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-moz-border-radius:2px;
+	-o-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.sortItem ul.from{
+	margin:0;
+	padding:0.5em;
+	list-style-type:none;
+}
+
+.sortItem ul.from li{
+	border:1px solid #999;
+	padding:0.5em 3em 0.5em 0.5em;
+	margin:0.5em 0;
+	cursor:move;
+	font-size:120%;
+	color:#fff;
+	background:#e62074;
+}
+
+.sortItem ul.empty{
+	margin:1em 0 0 0;
+	padding:0.5em;
+	list-style-type:none;
+}
+
+.sortItem ul.empty li{
+	border:1px dotted #ccc;
+	padding:0.5em;
+	color:#fff;
+	font-size:120%;
+	cursor:move;
+	background:#000;
+	width:95%;
+}
+
+.sortComp ul.to li.space{
+	background:#333;
+}
+
+.sortCursor{
+	display:table-cell;
+	width:10%;
+	font-size:300%;
+	vertical-align:middle;
+	text-align:center;
+	color:#333;
+}
+
+.sortComp{
+	display:table-cell;
+	width:40%;
+	border:1px solid #e62074;
+	vertical-align:top;
+	padding:1em;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-moz-border-radius:2px;
+	-o-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.sortComp ul.to{
+	margin:0;
+	list-style-type:none;
+	padding:0.5em;
+}
+
+.sortComp ul.to li{
+	border:1px solid #999;
+	padding:0.5em 3em 0.5em 0.5em;
+	margin:0.5em 0;
+	cursor:move;
+	font-size:120%;
+	color:#fff;
+	background:#e62074;
+}
+
+.sortComp ul.to li.no{
+	background:#999;
+}
+
+.sortComp ul.to li.empty_field{
+	border:1px dotted #ccc;
+	padding:0.5em 3em 0.5em 0.5em;
+	color:#fff;
+	font-size:120%;
+	cursor:move;
+	background:#333;
+}
+
+.sortComp input{
+	border:none;
+	padding:0.25em;
+}
+
+.placeholder {
+	visibility:hidden;
+	height:23px;
+}
+.placeholder {
+	visibility:hidden;
+	height:0px;
+}
+
+.tooltip {
+	display:inline-block;
+	cursor: help;
+}
+
+.notallowed {
+	cursor:not-allowed;
+}
+
+span.red{
+	color: #ff0000;
+}
+
+/* ==========================================================================
+00.404,403,505,エラーページ
+========================================================================== */
+/* 404 page not found */
+html.err{
+	height:100%;
+	background:#ccc;
+}
+
+html.err header{
+	margin:0;
+}
+
+html.err .contentWrapper{
+	border:none;
+	width:auto;
+}
+
+.errArea{
+	width:auto;
+	text-align:center;
+	position:relative;
+}
+
+.errArea span.mark{
+	display:inline-block;
+	color:#999;
+	font-size:10vw;
+	margin:0.25em 0;
+}
+
+.errArea h2{
+	color:#666;
+	font-size:10vw;
+	font-weight:bold;
+	letter-spacing:-0.05em;
+	position:fixed;
+	left:0;
+	right:0;
+	bottom:-4%;
+	margin:auto;
+	white-space:nowrap;
+}
+
+.errArea h2 span{
+	color:#cc3333;
+}
+
+.errArea strong{
+	display:block;
+	color:#444;
+	font-size:3vw;
+	margin:0.5em 0 0 0;
+}
+
+.errArea p{
+	color:#444;
+	font-size:120%;
+	margin:0;
+}
+
+.errArea a{
+	display:inline-block;
+	color:#444;
+	font-size:120%;
+	text-align:center;
+	text-decoration:none;
+	padding:0.65em 0.8em;
+	margin:3em 0;
+
+	background: #eee;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.errArea a:hover{
+	background:#333;
+	color:#fff;
+}
+
+footer.err p,
+footer.err a{
+	color:#444;
+}
+
+footer.err .footerWrapper{
+	width:auto;
+}
+
+
+
+/*
+html.err{
+	height:100%;
+	background:#e62074;
+}
+
+.errArea{
+	width:auto;
+	text-align:center;
+	margin:10em 0;
+}
+
+.errArea span.mark{
+	display:inline-block;
+	color:#fff;
+	font-size:800%;
+	margin:0.25em 0;
+}
+
+.errArea h2{
+	color:#e62074;
+	font-size:500%;
+	font-weight:bold;
+	letter-spacing:-0.05em;
+	margin:0;
+	padding:0.25em 0;
+	background:#fff;
+}
+
+.errArea strong{
+	display:block;
+	color:#fff;
+	font-size:200%;
+	letter-spacing:0.1em;
+	margin:0.5em 0 1em 0;
+}
+
+.errArea p{
+	color:#fff;
+	font-size:120%;
+	margin:0;
+}
+
+.errArea a{
+	display:inline-block;
+	color:#e62074;
+	font-size:120%;
+	text-align:center;
+	text-decoration:none;
+	padding:0.65em 0.8em;
+	margin:3em 0;
+
+	background: #fff;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.errArea a:hover{
+	background:#333;
+	color:#fff;
+}
+
+footer.err p,
+footer.err a{
+	color:#fff;
+}
+*/
+
+
+
+/* ==========================================================================
+00.ヘルパークラス
+========================================================================== */
+.clearfix {zoom:1;}
+.clearfix:after{
+    content: "";
+    display: block;
+    clear: both;
+}
+
+body.dialog{
+	min-width:720px;
+}
+
+body.dialog dd{
+	word-break:break-all;
+}
+
+.info{
+	color:#fff;
+	font-size:120%;
+	font-weight:bold;
+	letter-spacing:-0.05em;
+	text-align:center;
+
+	padding:0.5em 1em;
+	background:#48a0f7;
+	border:1px solid #3e82c7;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-moz-border-radius:2px;
+	-o-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.info span{
+	color:#48a0f7;
+	background:#fff;
+	padding:0.25em 0.6em;
+
+	border-radius:20px;
+	-ms-border-radius:20px;
+	-moz-border-radius:20px;
+	-o-border-radius:20px;
+	-webkit-border-radius:20px;
+}
+
+p.error{
+	color:#ff0000;
+	margin:0.5em 0;
+}
+
+ul.flexnav li ul{
+    display:none;
+}
+
+.itemPdfDownload{
+	padding: 0.8em 0;
+}
+
+.itemPdfDownload a{
+	display: inline-block;
+    color: #fff;
+    font-weight: normal;
+    text-align: center;
+    text-decoration: none;
+    background: #ea4d8f;
+    padding: 0.55em 2.65em;
+    border-radius: 2px;
+    -ms-border-radius: 2px;
+    -o-border-radius: 2px;
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+.itemPdfDownload a:hover{
+	color:#333;
+	background:#eee;
+}
+
+/* ==========================================================================
+00.カレンダー
+========================================================================== */
+.calendar{
+	display:-ms-flex;
+	display:-moz-flex;
+	display:-o-flex;
+	display:-webkit-flex;
+	display:flex;
+	-ms-flex-direction:row;
+	-moz-flex-direction:row;
+	-o-flex-direction:row;
+	-webkit-flex-direction:row;
+	flex-direction:row;
+	-ms-flex-wrap:wrap;
+	-moz-flex-wrap:wrap;
+	-o-flex-wrap:wrap;
+	-webkit-flex-wrap:wrap;
+	flex-wrap:wrap;
+	-ms-justify-content:space-between;
+	-moz-justify-content:space-between;
+	-o-justify-content:space-between;
+	-webkit-justify-content:space-between;
+	justify-content:space-between;
+}
+
+.calendar .cld{
+	width:31%;
+	margin:0 0 2em 0;
+}
+
+.cld table{
+	width:100%;
+	border-collapse:collapse;
+}
+
+.cld table caption{
+	color:#666;
+	font-size:150%;
+	font-weight:bold;
+	padding:0.35em 0;
+}
+
+.cld table th{
+	font-size:135%;
+	font-weight:bold;
+	text-align:center;
+	border:1px solid #b1b1b1;
+	border-bottom:1px solid #b1b1b1;
+}
+
+.cld table th.sun{
+	color:#fff;
+	background:#cc3333;
+}
+
+.cld table th.sat{
+	color:#fff;
+	background:#3333cc;
+}
+
+.cld table td{
+	border:1px solid #b1b1b1;
+	padding:1em;
+	text-align:center;
+	vertical-align:middle;
+	position:relative;
+}
+
+.cld table td label{
+	cursor:pointer;
+	display:block;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+}
+
+.cld table td .dateNum{
+	display:inline-block;
+	color:#333;
+	font-size:150%;
+	position:absolute;
+	top:0;
+	left:0;
+	right:0;
+	bottom:0;
+	width:100%;
+	height:50%;
+	margin:auto;
+	z-index:1;
+}
+
+.cld table td input[type="checkbox"] + label::after{
+	display:block;
+	content:"";
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:0;
+	background:#fafafa;
+}
+
+.cld table td input[type=checkbox]:checked + label::after{
+	content:"\f10c";
+	color:#cc3333;
+	font-size:300%;
+	font-family:fontAwesome;
+	background:#ccc;
+}
+
+.cld table td input[type="checkbox"] + label.today::after{
+	display:block;
+	content:"";
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:0;
+	font-weight: bold;
+	background:#ffffee;
+}
+
+.cld table td input[type=checkbox]:checked + label.today::after{
+	content:"\f10c";
+	color:#cc3333;
+	font-size:300%;
+	font-family:fontAwesome;
+	font-weight: bold;
+	background:#ffa8cd;
+}
+
+.cld table tr .extraDateNum{
+	color: #dedede;
+}
+
+
+.cldPaging{
+	width:auto;
+	border-top:1px solid #e62074;
+	border-bottom:1px solid #e62074;
+	position:relative;
+	margin: 5px 0;
+}
+
+.cldPaging ul{
+	margin:0.5em 0;
+	padding:0;
+	list-style-type:none;
+	text-align:center;
+	letter-spacing:-0.4em;
+}
+
+.cldPaging ul li{
+	margin:0 1em 0 0;
+	display:inline-block;
+	vertical-align:middle;
+	letter-spacing:normal;
+	font-size: 250%;
+}
+
+.cldPaging ul li:last-child{
+	margin:0;
+}
+
+.cldPaging ul li a{
+	display:block;
+	color:#333;
+	font-size:125%;
+	padding:0.1em 0.6em;
+	text-decoration:none;
+}
+
+.cldPaging ul li span{
+	font-size:135%;
+}
+
+.cldPaging ul li a.selected{
+	color:#fff;
+	background:#e62074;
+}
+
+.selectAllDayOfWeekWrap {
+	width:100%;
+}
+
+.selectAllDayOfWeekWrap .cld {
+	float:right;
+}
+
+
+/* ==========================================================================
+00.受注編集
+========================================================================== */
+
+.editOrderAddItem input{
+	padding: 0.4em;
+	margin-right: 1em;
+}
+
+.editOrderAddItem ul li{
+	vertical-align: middle;
+}
+
+.editOrderAddItem p.errorMessage{
+	color: red;
+	height: 1em;
+}
+
+
+/* ==========================================================================
+00.いつもの商品
+========================================================================== */
+input.sortNum{
+	width: 40px;
+    border: 1px solid #999;
+    padding: 0.4em;
+}
+
+input.sortNum.error_field{
+	border: 1px solid red;
+}
+
+.sortDone{
+	width:auto;
+	border-bottom:1px solid #ccc;
+	text-align:right;
+	padding:1em 0;
+}
+
+.sortDone a{
+	display:inline-block;
+	color:#fff;
+	font-weight:normal;
+	text-align:center;
+	text-decoration:none;
+
+	background:#e62074;
+	padding:0.55em 2em;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.sortDone a:hover{
+	color:#333;
+	background:#eee;
+}

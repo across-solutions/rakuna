@@ -1,0 +1,48 @@
+<?php
+namespace Manage;
+
+use Fuel\Core\Input;
+use Fuel\Core\Arr;
+
+/**
+ * いつものグループ一覧プレゼンタクラス
+ */
+class Presenter_Recommended_Group_Index extends \Presenter_Pagination {
+
+	/**
+	 * @see Presenter_Pagination::get_count()
+	 */
+	protected function get_count($data) {
+		$query = \Model_Recommended_Group::query();
+		$this->add_condition($query, $data);
+
+		return $query->count();
+	}
+
+	/**
+	 * @see Presenter_Pagination::get_rows()
+	 */
+	protected function get_rows($data, $limit, $offset) {
+		$query = \Model_Recommended_Group::query();
+		$this->add_condition($query, $data);
+		$query->order_by('code', 'asc');
+
+		return $query->limit($limit)->offset($offset)->get();
+	}
+
+	/**
+	 * 検索条件を付与する
+	 * @param $query Query
+	 * @param $data 検索条件
+	 */
+	private function add_condition(&$query, $data) {
+		$search_field = Arr::get($data, 'search_field');
+		if (!is_null($search_field) && trim($search_field) != '') {
+			$search_field = \Common_Util::mb_convert($search_field);
+			$values = \Common_Util::split_space($search_field);
+			foreach ($values as $value) {
+				$query->where('search_field', 'LIKE', '%' . trim($value) . '%');
+			}
+		}
+	}
+}

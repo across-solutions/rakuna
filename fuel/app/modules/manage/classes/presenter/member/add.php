@@ -1,0 +1,19 @@
+<?php
+namespace Manage;
+
+use Fuel\Core\Input;
+use Fuel\Core\Arr;
+use Fuel\Core\DB;
+
+/**
+ * 発注者アカウント管理追加プレゼンタクラス
+ */
+class Presenter_Member_Add extends \Presenter_Base {
+
+	/**
+	 * @see Presenter_Base::view()
+	 */
+	public function view() {
+		$this->member_groups = \Model_Member_Group::list_select('id', 'name', array('code' => 'asc'));
+	}
+}

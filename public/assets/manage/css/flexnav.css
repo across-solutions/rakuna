@@ -1,0 +1,28 @@
+.flexnav {
+	overflow: visible;
+}
+
+.flexnav li {
+	position: relative;
+	overflow: visible;
+}
+
+.flexnav li > ul {
+	position: absolute;
+	top: auto;
+	left: 0;
+	width:100%;
+	z-index:100;
+}
+
+.flexnav li ul.open {
+	display: block;
+	opacity: 1;
+	visibility: visible;
+	z-index: 1;
+}
+
+.flexnav li ul.open li {
+	overflow: visible;
+	max-height: 100px;
+}
