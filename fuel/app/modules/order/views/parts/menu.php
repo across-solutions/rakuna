@@ -110,6 +110,18 @@
 					</a>
 				</li>
 
+				<?php if (Common_Member::is_agency()) : ?>
+				<li>
+					<a href="/sales/member"" title="発注者選択" data-tor-smoothScroll="noSmooth">
+						<span class="icon-user digMr"></span>
+							<p>
+								発注者選択
+							</p>
+						<span class="icon-chevron-right digNext"></span>
+					</a>
+				</li>
+				<?php endif; ?>
+
 				<?php if(false) : ?>
 				<li>
 					<a href="/order/barcode" title="バーコード読取" data-tor-smoothScroll="noSmooth">

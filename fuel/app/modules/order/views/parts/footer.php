@@ -32,6 +32,14 @@
 					</a>
 				</li>
 
+				<?php if (Common_Member::is_agency()) : ?>
+					<li>
+						<a href="/sales/member" title="発注者選択" data-tor-smoothScroll="noSmooth">
+							<span class="icon-angle-right mr"></span>発注者選択
+						</a>
+					</li>
+				<?php endif; ?>
+
 				<?php if(false) : ?>
 				<li>
 					<a href="/order/barcode" title="バーコードを読み取る" data-tor-smoothScroll="noSmooth">

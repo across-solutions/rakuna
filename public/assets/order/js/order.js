@@ -267,7 +267,7 @@ $(function() {
 		closeButton:false,
 		width:"90%",
 		height:"90%",
-		maxHeight:"340px",
+		maxHeight:"350px",
 		maxWidth:"768px",
 		inline:true
 	});
