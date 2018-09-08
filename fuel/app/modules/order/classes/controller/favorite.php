@@ -176,14 +176,14 @@ class Controller_Favorite extends Controller_Base {
 				->join('items', 'INNER')
 				->on('favorites.item_code', '=', 'items.code')
 				->and_on('items.del_flg', '=', DB::expr(UNDELETED));
-
+/*
 		if (Common_Assign::has_assign($member_id)) {
 			$query->join('item_assigns', 'INNER')
 				->on('item_assigns.item_code', '=', 'items.code')
 				->and_on('item_assigns.member_id', '=', DB::expr($member_id))
 				->and_on('item_assigns.del_flg', '=', DB::expr(UNDELETED));
 		}
-
+*/
 		$query->where('favorites.member_id', '=', $member_id)
 			->where('favorites.del_flg', '=', UNDELETED)
 			->order_by('sort_num', 'desc');

@@ -21,6 +21,44 @@ class Common_Cart {
 
 	private $delivery_date = null;
 
+	private $delivery_kind = null;
+
+	private $member_code = null;
+
+	private $member_name = null;
+
+	private $member_zip = null;
+
+	private $member_address1 = null;
+
+	private $member_address2 = null;
+
+	private $member_address3 = null;
+
+	private $member_tel = null;
+
+	private $member_fax = null;
+
+	private $delivery_code = null;
+
+	private $delivery_name = null;
+
+	private $delivery_receiver_name1 = null;
+
+	private $delivery_receiver_name2 = null;
+
+	private $delivery_zip = null;
+
+	private $delivery_address1 = null;
+
+	private $delivery_address2 = null;
+
+	private $delivery_address3 = null;
+
+	private $delivery_tel = null;
+
+	private $delivery_fax = null;
+
 	private $comment = null;
 
 	private $carts = array();
@@ -40,10 +78,10 @@ class Common_Cart {
 		$tax_rounding = $this->get_tax_rounding();
 
 		foreach ($this->carts as $cart) {
-			$tax_price = \Common_Util::add_tax($cart['price'], $tax_rate, $tax_rounding);
-			$tax_price_case = \Common_Util::add_tax($cart['price_case'], $tax_rate, $tax_rounding);
+			$tax_price = \Common_Util::add_tax($cart['price'] * $cart['size'], $tax_rate, $tax_rounding);
+			$tax_price_case = \Common_Util::add_tax($cart['price_case'] * $cart['size_case'], $tax_rate, $tax_rounding);
 
-			$this->payment += $cart['price'] * $cart['amount'] + $cart['price_case'] * $cart['amount_case'];
+			$this->payment += $cart['price'] * $cart['size'] * $cart['amount'] + $cart['price_case'] * $cart['size_case'] * $cart['amount_case'];
 			$this->payment_tax += $tax_price * $cart['amount'] + $tax_price_case * $cart['amount_case'];
 			$this->amount += $cart['amount'];
 			$this->amount_case += $cart['amount_case'];
@@ -161,6 +199,139 @@ class Common_Cart {
 	}
 
 	/**
+	 * 納品先種類を取得する
+	 */
+	public function get_delivery_kind() {
+		return $this->delivery_kind;
+	}
+
+	/**
+	 * 納品先コード(自分)を取得する
+	 */
+	public function get_member_code() {
+		return $this->member_code;
+	}
+
+	/**
+	 * 納品先名(自分)を取得する
+	 */
+	public function get_member_name() {
+		return $this->member_name;
+	}
+
+	/**
+	 * 納品先郵便番号(自分)を取得する
+	 */
+	public function get_member_zip() {
+		return $this->member_zip;
+	}
+
+	/**
+	 * 納品先住所1(自分)を取得する
+	 */
+	public function get_member_address1() {
+		return $this->member_address1;
+	}
+
+	/**
+	 * 納品先住所2(自分)を取得する
+	 */
+	public function get_member_address2() {
+		return $this->member_address2;
+	}
+
+	/**
+	 * 納品先住所3(自分)を取得する
+	 */
+	public function get_member_address3() {
+		return $this->member_address3;
+	}
+
+	/**
+	 * 納品先電話番号(自分)を取得する
+	 */
+	public function get_member_tel() {
+		return $this->member_tel;
+	}
+
+	/**
+	 * 納品先FAX(自分)を取得する
+	 */
+	public function get_member_fax() {
+		return $this->member_fax;
+	}
+
+	/**
+	 * 納品先コード(納品先)を取得する
+	 */
+	public function get_delivery_code() {
+		return $this->delivery_code;
+	}
+
+	/**
+	 * 納品先名(納品先)を取得する
+	 */
+	public function get_delivery_name() {
+		return $this->delivery_name;
+	}
+
+	/**
+	 * 荷受け人名1(納品先)を取得する
+	 */
+	public function get_delivery_receiver_name1() {
+		return $this->delivery_receiver_name1;
+	}
+
+	/**
+	 * 荷受け人名2(納品先)を取得する
+	 */
+	public function get_delivery_receiver_name2() {
+		return $this->delivery_receiver_name2;
+	}
+
+	/**
+	 * 納品先郵便番号(納品先)を取得する
+	 */
+	public function get_delivery_zip() {
+		return $this->delivery_zip;
+	}
+
+	/**
+	 * 納品先住所1(納品先)を取得する
+	 */
+	public function get_delivery_address1() {
+		return $this->delivery_address1;
+	}
+
+	/**
+	 * 納品先住所2(納品先)を取得する
+	 */
+	public function get_delivery_address2() {
+		return $this->delivery_address2;
+	}
+
+	/**
+	 * 納品先住所3(納品先)を取得する
+	 */
+	public function get_delivery_address3() {
+		return $this->delivery_address3;
+	}
+
+	/**
+	 * 納品先電話番号(納品先)を取得する
+	 */
+	public function get_delivery_tel() {
+		return $this->delivery_tel;
+	}
+
+	/**
+	 * 納品先FAX(納品先)を取得する
+	 */
+	public function get_delivery_fax() {
+		return $this->delivery_fax;
+	}
+
+	/**
 	 * 備考を取得する
 	 */
 	public function get_comment() {
@@ -174,6 +345,177 @@ class Common_Cart {
 	 */
 	public function set_delivery_date($delivery_date) {
 		$this->delivery_date = $delivery_date;
+	}
+
+	/**
+	 * 送付先種類を設定する
+	 *
+	 * @param string $delivery_kind 送付先種類
+	 */
+	public function set_delivery_kind($delivery_kind) {
+		$this->delivery_kind = $delivery_kind;
+	}
+
+	/**
+	 * 送付先コード(自分)を設定する
+	 *
+	 * @param string $member_code 送付先コード(自分)
+	 */
+	public function set_member_code($member_code) {
+		$this->member_code = $member_code;
+	}
+
+	/**
+	 * 送付先名(自分)を設定する
+	 *
+	 * @param string $member_name 送付先名(自分)
+	 */
+	public function set_member_name($member_name) {
+		$this->member_name = $member_name;
+	}
+
+	/**
+	 * 送付先郵便番号(自分)を設定する
+	 *
+	 * @param string $member_zip 送付先郵便番号(自分)
+	 */
+	public function set_member_zip($member_zip) {
+		$this->member_zip = $member_zip;
+	}
+
+	/**
+	 * 送付先住所1(自分)を設定する
+	 *
+	 * @param string $member_address1 送付先住所1(自分)
+	 */
+	public function set_member_address1($member_address1) {
+		$this->member_address1 = $member_address1;
+	}
+
+	/**
+	 * 送付先住所2(自分)を設定する
+	 *
+	 * @param string $member_address2 送付先住所2(自分)
+	 */
+	public function set_member_address2($member_address2) {
+		$this->member_address2 = $member_address2;
+	}
+
+	/**
+	 * 送付先住所3(自分)を設定する
+	 *
+	 * @param string $member_address3 送付先住所3(自分)
+	 */
+	public function set_member_address3($member_address3) {
+		$this->member_address3 = $member_address3;
+	}
+
+	/**
+	 * 送付先電話番号(自分)を設定する
+	 *
+	 * @param string $member_tel 送付先電話番号(自分)
+	 */
+	public function set_member_tel($member_tel) {
+		$this->member_tel = $member_tel;
+	}
+
+	/**
+	 * 送付先FAX(自分)を設定する
+	 *
+	 * @param string $member_fax 送付先FAX(自分)
+	 */
+	public function set_member_fax($member_fax) {
+		$this->member_fax = $member_fax;
+	}
+
+	/**
+	 * 送付先コード(納品先)を設定する
+	 *
+	 * @param string $delivery_code 送付先コード(納品先)
+	 */
+	public function set_delivery_code($delivery_code) {
+		$this->delivery_code = $delivery_code;
+	}
+
+	/**
+	 * 送付先名(納品先)を設定する
+	 *
+	 * @param string $delivery_name 送付先名(納品先)
+	 */
+	public function set_delivery_name($delivery_name) {
+		$this->delivery_name = $delivery_name;
+	}
+
+	/**
+	 * 荷受け人名1(納品先)を設定する
+	 *
+	 * @param string $delivery_receiver_name1 荷受け人名1(納品先)
+	 */
+	public function set_delivery_receiver_name1($delivery_receiver_name1) {
+		$this->delivery_receiver_name1 = $delivery_receiver_name1;
+	}
+
+	/**
+	 * 荷受け人名2(納品先)を設定する
+	 *
+	 * @param string $delivery_receiver_name2 荷受け人名2(納品先)
+	 */
+	public function set_delivery_receiver_name2($delivery_receiver_name2) {
+		$this->delivery_receiver_name2 = $delivery_receiver_name2;
+	}
+
+	/**
+	 * 送付先郵便番号(納品先)を設定する
+	 *
+	 * @param string $delivery_zip 送付先郵便番号(納品先)
+	 */
+	public function set_delivery_zip($delivery_zip) {
+		$this->delivery_zip = $delivery_zip;
+	}
+
+	/**
+	 * 送付先住所1(納品先)を設定する
+	 *
+	 * @param string $delivery_address1 送付先住所1(納品先)
+	 */
+	public function set_delivery_address1($delivery_address1) {
+		$this->delivery_address1 = $delivery_address1;
+	}
+
+	/**
+	 * 送付先住所2(納品先)を設定する
+	 *
+	 * @param string $delivery_address2 送付先住所2(納品先)
+	 */
+	public function set_delivery_address2($delivery_address2) {
+		$this->delivery_address2 = $delivery_address2;
+	}
+
+	/**
+	 * 送付先住所3(納品先)を設定する
+	 *
+	 * @param string $delivery_address3 送付先住所3(納品先)
+	 */
+	public function set_delivery_address3($delivery_address3) {
+		$this->delivery_address3 = $delivery_address3;
+	}
+
+	/**
+	 * 送付先電話番号(納品先)を設定する
+	 *
+	 * @param string $delivery_tel 送付先電話番号(納品先)
+	 */
+	public function set_delivery_tel($delivery_tel) {
+		$this->delivery_tel = $delivery_tel;
+	}
+
+	/**
+	 * 送付先FAX(納品先)を設定する
+	 *
+	 * @param string $delivery_fax 送付先FAX(納品先)
+	 */
+	public function set_delivery_fax($delivery_fax) {
+		$this->delivery_fax = $delivery_fax;
 	}
 
 	/**

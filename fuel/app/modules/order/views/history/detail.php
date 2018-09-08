@@ -121,13 +121,13 @@
 				<thead>
 					<tr>
 						<th class="w20">商品名</th>
-						<th class="w6">入数</th>
+						<th class="w12">入数</th>
 						<?php if (Common_Setting::is_price()) : ?>
 							<th class="w12">価格</th>
 						<?php endif; ?>
 						<th class="w12">数量</th>
 						<?php if (Common_Setting::is_price()) : ?>
-							<th class="w17">小計</th>
+							<th class="w12">小計</th>
 						<?php endif; ?>
 					</tr>
 				</thead>
@@ -145,8 +145,17 @@
 							</td>
 
 							<td class="right">
-								<p>
-									<?php echo Arr::get($row, 'item_size'); ?>
+								<?php if (Common_Setting::is_case()) : ?>
+									<p class="hun">
+										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name_case'); ?></i></span>
+										<span class="histNums"><?php echo Arr::get($row, 'item_size_case'); ?></span>
+									</p>
+								<?php endif; ?>
+								<p class="hun">
+									<?php if (Common_Setting::is_case()) : ?>
+										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name'); ?></i></span>
+									<?php endif; ?>
+									<span class="histNums"><?php echo Arr::get($row, 'item_size'); ?></span>
 								</p>
 							</td>
 
@@ -154,15 +163,15 @@
 								<td class="right">
 									<?php if (Common_Setting::is_case()) : ?>
 										<p class="hun">
-											<span class="histUnit"><i>ケース</i></span>
-											<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'price_case_tax')); ?>円</span>
+											<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name_case'); ?></i></span>
+											<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price_case'] * $row['item_size_case'])); ?>円</span>
 										</p>
 									<?php endif; ?>
 									<p class="hun">
 										<?php if (Common_Setting::is_case()) : ?>
-											<span class="histUnit"><i>バラ</i></span>
+											<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name'); ?></i></span>
 										<?php endif; ?>
-										<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'price_tax')); ?>円</span>
+										<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price'] * $row['item_size'])); ?>円</span>
 									</p>
 								</td>
 							<?php endif; ?>
@@ -171,13 +180,13 @@
 							<td class="right">
 								<?php if (Common_Setting::is_case()) : ?>
 									<p class="hun">
-										<span class="histUnit"><i>ケース</i></span>
+										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name_case'); ?></i></span>
 										<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'amount_case')); ?></span>
 									</p>
 								<?php endif; ?>
 								<p class="hun">
 									<?php if (Common_Setting::is_case()) : ?>
-										<span class="histUnit"><i>バラ</i></span>
+										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name'); ?></i></span>
 									<?php endif; ?>
 									<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'amount')); ?></span>
 								</p>
@@ -226,6 +235,136 @@
 	</ul>
 </div>
 <!--#ship date end -->
+
+<!--#ship addr start -->
+<div class="deliveryAddr hAddr">
+	<strong>
+		納品先
+	</strong>
+
+	<ul>
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>納品先コード
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_code'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>納品先名
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_name'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>郵便番号(〒)
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_zip'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>住所1
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_address1'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>住所2
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_address2'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>住所3
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_address3'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>電話番号
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_tel'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dt>
+						<span class="icon-caret-right mr"></span>FAX
+					</dt>
+					<dd>
+						<span class="deliveryAddrBox">
+							<?php echo Arr::get($data, 'delivery_fax'); ?>
+						</span>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</ul>
+</div>
+<!--#ship addr end -->
 
 <!--#remarks start -->
 <div class="remarks hRemark">

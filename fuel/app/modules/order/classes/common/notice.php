@@ -21,7 +21,7 @@ class Common_Notice {
 			->or_where('notices.member_group_id', '=', DB::expr(ALL_MEMBER_GROUP))
 			->where_close()
 			->where('notices.del_flg', '=', DB::expr(UNDELETED));
-
+/*
 		if (Common_Assign::has_assign($member->id)) {
 			$query->where_open();
 			$query->where('notices.item_code', '=', null);
@@ -30,7 +30,7 @@ class Common_Notice {
 							 DB::expr('(SELECT item_code FROM item_assigns WHERE member_id = ' . $member->id . ' AND item_assigns.del_flg = ' . UNDELETED . ' )'));
 			$query->where_close();
 		}
-
+*/
 		return $query;
 	}
 }

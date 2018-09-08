@@ -400,10 +400,20 @@ class Controller_Member extends Controller_Base {
 			->add_rule('exist', 'member_groups', 'id');
 		$validation->add('corporation', '企業名')
 			->add_rule('max_length', 40);
+		$validation->add('sales_person_code', '営業担当者コード')
+			->add_rule('required')
+			->add_rule('exist', 'sales_representatives', 'sales_person_code');
 		$validation->add('store', '店舗名')
 			->add_rule('max_length', 40);
-		$validation->add('address', '住所')
-			->add_rule('max_length', 500);
+		$validation->add('zip', '郵便番号')
+			->add_rule('numhyphen')
+			->add_rule('max_length', 8);
+		$validation->add('address1', '住所1')
+			->add_rule('max_length', 50);
+		$validation->add('address2', '住所2')
+			->add_rule('max_length', 50);
+		$validation->add('address3', '住所3')
+			->add_rule('max_length', 50);
 		$validation->add('tel', '電話番号')
 			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
@@ -461,10 +471,20 @@ class Controller_Member extends Controller_Base {
 			->add_rule('exist', 'member_groups', 'id');
 		$validation->add('corporation', '企業名')
 			->add_rule('max_length', 40);
+		$validation->add('sales_person_code', '営業担当者コード')
+			->add_rule('required')
+			->add_rule('exist', 'sales_representatives', 'sales_person_code');
 		$validation->add('store', '店舗名')
 			->add_rule('max_length', 40);
-		$validation->add('address', '住所')
-			->add_rule('max_length', 500);
+		$validation->add('zip', '郵便番号')
+			->add_rule('numhyphen')
+			->add_rule('max_length', 8);
+		$validation->add('address1', '住所1')
+			->add_rule('max_length', 50);
+		$validation->add('address2', '住所2')
+			->add_rule('max_length', 50);
+		$validation->add('address3', '住所3')
+			->add_rule('max_length', 50);
 		$validation->add('tel', '電話番号')
 			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
@@ -544,8 +564,16 @@ class Controller_Member extends Controller_Base {
 	 * @param string $password ログインパスワード
 	 */
 	private function insert_member($data, $qr_key, $username, $password) {
-		$fields = array('member_group_id', 'code', 'name', 'corporation', 'store', 'address', 'tel', 'fax', 'email');
+		$fields = array('member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store',
+						'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'email');
 		$values = \Common_Util::filter($data, $fields);
+		$values['delivery_flg_mon'] = isset($data['delivery_flg_mon']) && $data['delivery_flg_mon'] == '1';
+		$values['delivery_flg_tue'] = isset($data['delivery_flg_tue']) && $data['delivery_flg_tue'] == '1';
+		$values['delivery_flg_wed'] = isset($data['delivery_flg_wed']) && $data['delivery_flg_wed'] == '1';
+		$values['delivery_flg_thu'] = isset($data['delivery_flg_thu']) && $data['delivery_flg_thu'] == '1';
+		$values['delivery_flg_fri'] = isset($data['delivery_flg_fri']) && $data['delivery_flg_fri'] == '1';
+		$values['delivery_flg_sat'] = isset($data['delivery_flg_sat']) && $data['delivery_flg_sat'] == '1';
+		$values['delivery_flg_sun'] = isset($data['delivery_flg_sun']) && $data['delivery_flg_sun'] == '1';
 		$values['sub_email'] = implode(',', $data['sub_email']);
 		$values['username'] = $username;
 		$values['password'] = $password;
@@ -566,8 +594,16 @@ class Controller_Member extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function update_member($member, $data) {
-		$fields = array('member_group_id', 'code', 'name', 'corporation', 'store', 'address', 'tel', 'fax', 'email', 'username', 'password');
+		$fields = array('member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store',
+						'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'email', 'username', 'password');
 		\Common_Util::copy($member, $data, $fields);
+		$member['delivery_flg_mon'] = isset($data['delivery_flg_mon']) && $data['delivery_flg_mon'] == '1';
+		$member['delivery_flg_tue'] = isset($data['delivery_flg_tue']) && $data['delivery_flg_tue'] == '1';
+		$member['delivery_flg_wed'] = isset($data['delivery_flg_wed']) && $data['delivery_flg_wed'] == '1';
+		$member['delivery_flg_thu'] = isset($data['delivery_flg_thu']) && $data['delivery_flg_thu'] == '1';
+		$member['delivery_flg_fri'] = isset($data['delivery_flg_fri']) && $data['delivery_flg_fri'] == '1';
+		$member['delivery_flg_sat'] = isset($data['delivery_flg_sat']) && $data['delivery_flg_sat'] == '1';
+		$member['delivery_flg_sun'] = isset($data['delivery_flg_sun']) && $data['delivery_flg_sun'] == '1';
 		$member->sub_email = implode(',', $data['sub_email']);
 
 		return $member->save() !== false;

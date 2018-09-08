@@ -33,6 +33,7 @@ x 6.PR商品バナー
 00.ボーダー
 
 00.メンテナンス
+00.納品先
 
 ==============================================================================*/
 
@@ -2726,7 +2727,7 @@ input.sortNum[type="text"]{
 
 .shipDate ul li select{
 	font-size:1.2rem;
-	
+
 	width:100%;
 	padding:0.6em;
 	border:1px solid #999;
@@ -3626,7 +3627,7 @@ p.help{
 	width: 100%;
 	text-decoration: none;
 	color: #333;
-	
+
 	outline:none;
 }
 
@@ -4278,4 +4279,364 @@ html.repair .copyright a{
     font-size: 240%;
     font-weight: bold;
 }
+
+
+
+/* ==========================================================================
+00.納品先
+========================================================================== */
+.shipDate{
+	width:auto;
+	margin:1em 0;
+	padding:0.8em 0;
+	border-top:1px dotted #ccc;
+}
+
+.shipDate strong{
+	display:block;
+	color:#333;
+	font-size:1.3rem;
+}
+
+.shipDate ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	letter-spacing:-0.4em;
+	font-size:1px;
+}
+
+.shipDate ul li{
+	display:inline-block;
+	width:20%;
+	font-size:12px;
+	letter-spacing:normal;
+	vertical-align:top;
+	margin:0 1em 0 0;
+}
+
+.shipDate ul li:last-child{
+	margin:0;
+	width:30%;
+}
+
+.shipDate ul li label{
+	display:block;
+	padding:0.5em;
+	background:#fafafa;
+	border:1px solid #ccc;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.shipDate ul li input[type="radio"]{
+	vertical-align:middle;
+	margin:0 1em 0 0;
+}
+
+.shipDate ul li select{
+	font-size:1.2rem;
+
+	width:100%;
+	padding:0.6em;
+	border:1px solid #999;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.shipDate ul li select[disabled="disabled"]{
+	background:#999;
+}
+
+.shipDate ul li p{
+	color:#333;
+	font-size:1.2rem;
+	margin:0;
+}
+
+.shipCustom{
+	margin: 1em 0;
+	padding: 0.8em 1em;
+	border-top: 1px dotted #ccc;
+}
+
+.scItem{
+	background:#eee;
+	border-top:1px solid #eee;
+	border-left:1px solid #eee;
+	border-right:1px solid #eee;
+	border-bottom:1px solid #ccc;
+}
+
+.scItem:last-child{
+	border-bottom:1px solid #eee;
+}
+
+.scItemIn{
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	align-items: center;
+
+	padding:1.5em;
+}
+
+.scChks{
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	align-items: center;
+
+	width:95%;
+
+	cursor:pointer;
+}
+
+.scChksName{
+	font-size:144%;
+	font-weight:bold;
+	margin:0 0 0 1em;
+}
+
+.scIcons{
+	width: 5%;
+	text-align: center;
+	font-size: 180%;
+}
+
+.scItemDesc{
+	padding:1.5em;
+
+	transition:all ease 0.15s;
+	height:0;
+	padding:0;
+	visibility:hidden;
+	opacity:0;
+	background:#fff;
+}
+
+.scItemDesc.disp{
+	height:auto;
+	padding:0.5em 0;
+	visibility:visible;
+	opacity:1;
+}
+
+.scidIn{
+	padding:1em 1.5em;
+}
+
+.scfBox{
+	display:flex;
+	flex-wrap:wrap;
+	flex-direction:row;
+	align-items:center;
+
+	border-bottom:1px dotted #eee;
+	padding:0 0 0.5em 0;
+	margin:0 0 0.5em 0;
+
+	font-size:144%;
+}
+
+.scfBox:last-child{
+	border-bottom:none;
+	padding:0;
+	margin:0;
+}
+
+.scfBox dt{
+	width:15%;
+}
+
+.scfBox dd{
+	width:85%;
+	margin:0;
+}
+
+.scfBox input[type="text"]{
+	background: none;
+	outline: none;
+	box-sizing: border-box;
+	padding: 0.6em;
+	border: 1px solid #999;
+	border-radius: 2px;
+}
+
+.scfBox select{
+	padding: 0.5em;
+	border: 1px solid #999;
+	border-radius: 2px;
+}
+
+.scfBox .short{
+	width:20%;
+}
+
+.scfBox .middle{
+	width:40%;
+}
+
+.scfBox .long{
+	width:60%;
+}
+
+.stAmount{
+	display:block;
+	font-size:120%;
+	font-weight:normal;
+	margin:0 0 0.5em 0;
+}
+
+.itemList.onlyTxt .stAmount{
+	text-align:right;
+}
+
+.deliveryAddr{
+	width:auto;
+	margin:1em 0;
+	padding:0.8em 0;
+	border-top:1px dotted #ccc;
+}
+
+.deliveryAddr strong{
+	display:block;
+	color:#333;
+	font-size:135%;
+}
+
+.deliveryAddr ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	letter-spacing:-0.4em;
+	font-size:1px;
+}
+
+.deliveryAddr ul li{
+	font-size:12px;
+	letter-spacing:normal;
+	margin:0 0 1em 0;
+}
+
+.deliveryAddr ul li:last-child{
+	margin:0;
+}
+
+.deliveryAddr ul li label{
+	display:block;
+	padding:0.5em;
+	background:#fafafa;
+	border:1px solid #ccc;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.deliveryAddr ul li input[type="text"]{
+	width:60%;
+	background:none;
+	outline:none;
+
+	box-sizing:border-box;
+
+	padding: 0.6em;
+	border: 1px solid #999;
+	border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+}
+
+.deliveryAddr ul li select{
+	/*width:20%;*/
+	padding:0.6em;
+	border:1px solid #999;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+
+	line-height:26px;
+}
+
+.deliveryAddr ul li p{
+	color:#333;
+	font-size:125%;
+	margin:0;
+}
+
+.deliveryAddr ul li em{
+	color:#999;
+	font-size:90%;
+	font-style:normal;
+	letter-spacing:-0.025em;
+}
+
+.deliveryAddr dl{
+	display:-webkit-box;
+	display:-ms-flexbox;
+	display:flex;
+	-ms-flex-wrap:wrap;
+	    flex-wrap:wrap;
+	-webkit-box-align:center;
+	-ms-flex-align:center;
+	        align-items:center;
+}
+
+.deliveryAddr dt{
+	width:15%;
+	box-sizing:border-box;
+
+	color:#333;
+	font-size:125%;
+}
+
+.deliveryAddr dd{
+	width:85%;
+	margin:0;
+	box-sizing:border-box;
+}
+
+.deliveryAddrBox{
+	display:-webkit-box;
+	display:-ms-flexbox;
+	display:flex;
+	-ms-flex-wrap:wrap;
+	    flex-wrap:wrap;
+	-webkit-box-align:center;
+	-ms-flex-align:center;
+	        align-items:center;
+}
+
+.deliveryAddr .deliveryAddrBox input[type="text"]{
+	width:20%;
+}
+
+.deliveryAddrBox em{
+	padding:0.5em 1em;
+}
+
+.deliveryAddr.hAddr ul li .deliveryAddrBox{
+	color:#333;
+	font-size:125%;
+	margin:0;
+}
+
+
+
 

@@ -150,6 +150,255 @@
 	<?php endif; ?>
 
 	<?php echo Form::open('/order/register/save'); ?>
+
+		<!--#ship custom start -->
+		<div class="shipCustom">
+			<div class="shipCustWrap">
+
+				<!--#ship cust item start -->
+				<div class="scItem">
+					<div class="scItemIn">
+						<label class="scChks" for="form_delivery_kind_1">
+							<?php echo Form::radio('delivery_kind', 1,
+								is_null($data->get_delivery_kind()) || $data->get_delivery_kind() == 1, array('id' => 'form_delivery_kind_1')); ?>
+							<span class="scChksName">自分へ送付</span>
+						</label>
+
+						<span class="scIcons">
+							<span class="icon-chevron-right"></span>
+						</span>
+					</div>
+
+					<div class="scItemDesc <?php echo (is_null($data->get_delivery_kind()) || $data->get_delivery_kind() == 1) ? 'disp' : ''; ?>">
+						<div class="scidIn">
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>発注先コード
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_code', $data->get_member_code(), array('id' => 'member_code', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_code'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>発注先名
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_name', $data->get_member_name(), array('id' => 'member_name', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_name'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>郵便番号(〒)
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_zip', $data->get_member_zip(), array('id' => 'member_zip', 'placeholder' => '', 'class' => 'short', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_zip'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>住所1
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_address1', $data->get_member_address1(), array('id' => 'member_address1', 'placeholder' => '', 'class' => 'long', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_address1'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>住所2
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_address2', $data->get_member_address2(), array('id' => 'member_address2', 'placeholder' => '', 'class' => 'long', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_address2'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>住所3
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_address3', $data->get_member_address3(), array('id' => 'member_address3', 'placeholder' => '', 'class' => 'long', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_address3'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>電話番号
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_tel', $data->get_member_tel(), array('id' => 'member_tel', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_tel'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>FAX
+								</dt>
+
+								<dd>
+									<?php echo Form::input('member_fax', $data->get_member_fax(), array('id' => 'member_fax', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('member_fax'); ?>
+								</dd>
+							</dl>
+						</div>
+					</div>
+				</div>
+				<!--#ship cust item end -->
+
+				<?php if (!empty($deliveries)) : ?>
+				<!--#ship cust item start -->
+				<div class="scItem">
+					<div class="scItemIn">
+						<label class="scChks" for="form_delivery_kind_2">
+							<?php echo Form::radio('delivery_kind', 2,
+								$data->get_delivery_kind() == 2, array('id' => 'form_delivery_kind_2')); ?>
+							<span class="scChksName">納品先へ送付</span>
+						</label>
+
+						<span class="scIcons">
+							<span class="icon-chevron-right"></span>
+						</span>
+					</div>
+
+					<div class="scItemDesc  <?php echo ($data->get_delivery_kind() == 2) ? 'disp' : ''; ?>">
+						<div class="scidIn">
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>納品先コード
+								</dt>
+
+								<dd>
+									<?php echo Form::select('delivery_code', $data->get_delivery_code(), $deliveries, array('id' => 'delivery_select', 'class' => 'select_search short')); ?>
+									<?php echo $validate_error_message('delivery_code'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>納品先名
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_name', $data->get_delivery_name(), array('id' => 'delivery_name', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_name'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>荷受け人名1
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_receiver_name1', $data->get_delivery_receiver_name1(), array('id' => 'delivery_receiver_name1', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_receiver_name1'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>荷受け人名2
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_receiver_name2', $data->get_delivery_receiver_name2(), array('id' => 'delivery_receiver_name2', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_receiver_name2'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>郵便番号(〒)
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_zip', $data->get_delivery_zip(), array('id' => 'delivery_zip', 'placeholder' => '', 'class' => 'short', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_zip'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>住所1
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_address1', $data->get_delivery_address1(), array('id' => 'delivery_address1', 'placeholder' => '', 'class' => 'long', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_address1'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>住所2
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_address2', $data->get_delivery_address2(), array('id' => 'delivery_address2', 'placeholder' => '', 'class' => 'long', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_address2'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>住所3
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_address3', $data->get_delivery_address3(), array('id' => 'delivery_address3', 'placeholder' => '', 'class' => 'long', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_address3'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>電話番号
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_tel', $data->get_delivery_tel(), array('id' => 'delivery_tel', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_tel'); ?>
+								</dd>
+							</dl>
+
+							<dl class="scfBox">
+								<dt>
+									<span class="icon-caret-right mr"></span>FAX
+								</dt>
+
+								<dd>
+									<?php echo Form::input('delivery_fax', $data->get_delivery_fax(), array('id' => 'delivery_fax', 'placeholder' => '', 'class' => 'middle', 'readonly' => 'readonly')); ?>
+									<?php echo $validate_error_message('delivery_fax'); ?>
+								</dd>
+							</dl>
+						</div>
+					</div>
+				</div>
+				<!--#ship cust item end -->
+				<?php endif ; ?>
+
+			</div>
+		</div>
+		<!--#ship custom end -->
+
 		<!--#ship date start -->
 		<div class="shipDate">
 			<strong>

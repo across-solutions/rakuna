@@ -20,21 +20,23 @@ class Controller_Login extends Controller_Base {
 	 * テンプレート
 	 */
 	public $template = 'layout/none';
-	
+
 	/**
 	 * ページタイトル
 	 */
 	protected $title = 'ログイン';
-	
+
 	/**
 	 * ログインチェックの有無
 	 */
 	protected $check_auth = false;
-	
+
 	/**
 	 * 初期表示
 	 */
 	public function action_index() {
+		Session::delete(SESSION_KEY_SALES);
+
 		$auto_login_key = Cookie::get(COOKIE_KEY_ORDER_AUTO_LOGIN);
 		if (!empty($auto_login_key)) {
 			$member = $this->get_member($auto_login_key);
@@ -49,7 +51,7 @@ class Controller_Login extends Controller_Base {
 				Response::redirect('/order/home');
 			}
 		}
-		
+
 		$this->render();
 	}
 
@@ -57,12 +59,14 @@ class Controller_Login extends Controller_Base {
 	 * ログイン処理
 	 */
 	public function action_login() {
+		Session::delete(SESSION_KEY_SALES);
+
 		$data = Input::post();
 		if (!$this->validate_login($data)) {
 			$this->render($data, 'login/index');
 			return;
 		}
-		
+
 		$auth = Auth::instance();
 		$username = Arr::get($data, 'username');
 		$password = Arr::get($data, 'password');
@@ -83,32 +87,42 @@ class Controller_Login extends Controller_Base {
 			$this->remove_auto_login($member);
 			Cookie::delete(COOKIE_KEY_ORDER_AUTO_LOGIN);
 		}
-		
+
 		Response::redirect('/order/home');
 	}
-	
+
 	/**
 	 * ログアウト
 	 */
 	public function action_logout() {
+		$is_agency = \Common_Member::is_agency();
+
+		Session::delete(SESSION_KEY_SALES);
+
 		$member = \Model_Member::find($this->get_member_id());
 		if (!empty($member)) {
 			$this->remove_auto_login($member);
 		}
 		Cookie::delete(COOKIE_KEY_ORDER_AUTO_LOGIN);
-		
+		Cookie::delete(COOKIE_KEY_SALES_AUTO_LOGIN);
+
 		Auth::logout();
-		Response::redirect('/order/login');
+
+		Session::keep_flash(SESSION_KEY_INFO_MESSAGE);
+		Session::keep_flash(SESSION_KEY_ERROR_MESSAGE);
+
+		$redirect = $is_agency ? '/sales/login' : '/order/login';
+		Response::redirect($redirect);
 	}
 
 	/**
 	 * ログインバリデート
-	 * 
+	 *
 	 * @param array $data フォームデータ
 	 */
 	private function validate_login($data) {
 		$validation = Validation::forge();
-	
+
 		$validation->add('username', 'ログインID')
 			->add_rule('required')
 			->add_rule('min_length', 5)
@@ -117,13 +131,13 @@ class Controller_Login extends Controller_Base {
 			->add_rule('required')
 			->add_rule('min_length', 5)
 			->add_rule('max_length', 15);
-	
+
 		return $this->validate($validation);
 	}
-	
+
 	/**
 	 * 発注者アカウントを取得する
-	 * 
+	 *
 	 * @param string $auto_login_key 自動ログインキー
 	 */
 	private function get_member($auto_login_key) {
@@ -133,10 +147,10 @@ class Controller_Login extends Controller_Base {
 			->where('status', Config::get('define.member_status.enable'))
 			->get_one();
 	}
-	
+
 	/**
 	 * 自動ログインキーを更新する
-	 * 
+	 *
 	 * @param Model_Member $member 発注者アカウント
 	 */
 	private function update_auto_login($member) {
@@ -144,22 +158,22 @@ class Controller_Login extends Controller_Base {
 
 		$member->auto_login_key = $auto_login_key;
 		$member->auto_login_updatetime = date('Y-m-d H:i:s');
-		
+
 		if ($member->save() === false) {
 			return false;
 		}
 		return $auto_login_key;
 	}
-	
+
 	/**
 	 * 自動ログインキーを削除する
-	 * 
+	 *
 	 * @param Model_Member $member 発注者アカウント
 	 */
 	private function remove_auto_login($member) {
 		$member->auto_login_key = null;
 		$member->auto_login_updatetime = null;
-		
+
 		return $member->save() !== false;
 	}
 }

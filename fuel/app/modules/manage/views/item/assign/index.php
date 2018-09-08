@@ -33,7 +33,7 @@
 		<p>
 		検索条件を指定して検索してください
 		</p>
-	
+
 		<table class="searchBox">
 			<tbody>
 				<tr>
@@ -56,7 +56,7 @@
 				</tr>
 			</tbody>
 		</table>
-	
+
 		<div class="searchSubmit">
 			<a href="#" class="submit" title="この条件で検索する">
 				<span class="icon-search mr"></span>この条件で検索する
@@ -77,13 +77,13 @@
 			<?php echo $data_count; ?>件のデータが見つかりました。
 			</p>
 		</div>
-	
+
 		<div class="paging">
 			<?php echo $pager; ?>
 		</div>
 	</div>
 	<!--#resultTop end -->
-	
+
 	<!--#subMenuWrap start -->
 	<div class="subMenuWrap">
 		<!--#subMenu start -->
@@ -99,23 +99,25 @@
 		<!--#subMenu end -->
 	</div>
 	<!--#subMenuWrap end -->
-	
-	
-	
+
+
+
 	<!--#list start -->
 	<div class="list">
 		<?php echo $message(); ?>
 		<table class="resultList stripe">
 			<thead>
 				<tr>
-					<th class="w15">発注者コード</th>
-					<th class="w15">発注者名</th>
-					<th class="w15">商品コード</th>
+					<th class="w10">発注者コード</th>
+					<th class="w20">発注者名</th>
+					<th class="w10">商品コード</th>
 					<th>商品名</th>
-					<th class="w8">削除</th>
+					<th class="w8">ケース単価</th>
+					<th class="w8">バラ単価</th>
+					<th class="w5">編集</th>
 				</tr>
 			</thead>
-		
+
 			<tbody>
 				<?php foreach($rows as $row) : ?>
 					<tr>
@@ -131,19 +133,25 @@
 						<td class="left">
 							<?php echo Arr::get($row, 'item_name'); ?>
 						</td>
+						<td class="right">
+							<?php echo Common_Util::format_number(Arr::get($row, 'price_case')); ?>
+						</td>
+						<td class="right">
+							<?php echo Common_Util::format_number(Arr::get($row, 'price')); ?>
+						</td>
 						<td class="center">
-							<a href="/manage/item/assign/delete/<?php echo Arr::get($row, 'id'); ?>" class="dialog">
-								<span class="icon-trash decEdit"></span>
+							<a href="/manage/item/assign/edit/<?php echo Arr::get($row, 'id'); ?>" class="dialog">
+								<span class="icon-edit decEdit"></span>
 							</a>
 						</td>
 					</tr>
 				<?php endforeach; ?>
 			</tbody>
 		</table>
-	
+
 	</div>
 	<!--#list end -->
-	
+
 	<!--#resultBottom start -->
 	<div class="resultBottom clearfix">
 		<div class="resultText">
@@ -151,7 +159,7 @@
 			<?php echo $data_count; ?>件のデータが見つかりました。
 			</p>
 		</div>
-	
+
 		<div class="paging">
 			<?php echo $pager; ?>
 		</div>

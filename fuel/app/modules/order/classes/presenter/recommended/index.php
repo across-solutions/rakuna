@@ -36,14 +36,14 @@ class Presenter_Recommended_Index extends \Presenter_Base {
 			->join('items', 'LEFT')
 				->on('items.code', '=', 'recommended_items.item_code')
 				->and_on('items.del_flg', '=', DB::expr(UNDELETED));
-
+/*
 		if (Common_Assign::has_assign($member_id)) {
 			$query->join('item_assigns', 'INNER')
 				->on('items.code', '=', 'item_assigns.item_code')
 				->and_on('item_assigns.member_id', '=', DB::expr($member_id))
 				->and_on('item_assigns.del_flg', '=', DB::expr(UNDELETED));
 		}
-
+*/
 		$query->where('recommended_groups.del_flg', '=', DB::expr(UNDELETED))
 			->group_by('recommended_groups.id')
 			->order_by('recommended_groups.id', 'asc');

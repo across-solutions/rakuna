@@ -231,10 +231,6 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			parent::set_error($num, '商品カナ名は50文字以下で入力してください[' . $value . ']');
 			return false;
 		}
-		if (!Common_Validation::_validation_zenkaku_katakana($value)) {
-			parent::set_error($num, '商品カナ名は全角カタカナで入力してください[' . $value . ']');
-			return false;
-		}
 		return true;
 	}
 

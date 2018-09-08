@@ -103,6 +103,16 @@
 						<span class="icon-angle-right mr"></span>発注者管理
 					</a>
 				</li>
+				<li>
+					<a href="/manage/delivery" title="納品先管理">
+						<span class="icon-angle-right mr"></span>納品先管理
+					</a>
+				</li>
+				<li>
+					<a href="/manage/sales/representative" title="営業担当管理">
+						<span class="icon-angle-right mr"></span>営業担当管理
+					</a>
+				</li>
 			</ul>
 			<!--#second cat end -->
 		</li>

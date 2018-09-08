@@ -15,10 +15,10 @@ class Presenter_Item_Assign_Index extends \Presenter_Pagination {
 			->from('item_assigns')
 			->join('items', 'INNER')
 				->on('item_assigns.item_code', '=', 'items.code')
-				->and_on('items.del_flg', '=', DB::expr(UNDELETED))
+				->on('items.del_flg', '=', DB::escape(UNDELETED))
 			->join('members', 'INNER')
 				->on('item_assigns.member_id', '=', 'members.id')
-				->and_on('members.del_flg', '=', DB::expr(UNDELETED));
+				->on('members.del_flg', '=', DB::escape(UNDELETED));
 		$this->add_condition($query, $data);
 
 		$result = $query->execute()->as_array();
@@ -31,14 +31,15 @@ class Presenter_Item_Assign_Index extends \Presenter_Pagination {
 	 */
 	protected function get_rows($data, $limit, $offset) {
 		$query = DB::select('item_assigns.id', array('members.code', 'member_code'), array('members.name', 'member_name'),
-				array('items.code', 'item_code'), array('items.name', 'item_name'))
+				array('items.code', 'item_code'), array('items.name', 'item_name'), array('item_assigns.price', 'price'),
+				array('item_assigns.price_case', 'price_case'))
 			->from('item_assigns')
 			->join('items', 'INNER')
 				->on('item_assigns.item_code', '=', 'items.code')
-				->and_on('items.del_flg', '=', DB::expr(UNDELETED))
+				->on('items.del_flg', '=', DB::escape(UNDELETED))
 			->join('members', 'INNER')
 				->on('item_assigns.member_id', '=', 'members.id')
-				->and_on('members.del_flg', '=', DB::expr(UNDELETED))
+				->on('members.del_flg', '=', DB::escape(UNDELETED))
 			->order_by('members.code', 'asc')
 			->order_by('items.code', 'asc')
 			->limit($limit)
@@ -55,7 +56,7 @@ class Presenter_Item_Assign_Index extends \Presenter_Pagination {
 	 * @param array $data 検索条件
 	 */
 	private function add_condition(&$query, $data) {
-		$query->where('item_assigns.del_flg', '=', DB::expr(UNDELETED));
+		$query->where('item_assigns.del_flg', '=', UNDELETED);
 
 		$member_code = Arr::get($data, 'member_code');
 		if (!is_null($member_code) && trim($member_code) != '') {

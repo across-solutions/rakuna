@@ -36,6 +36,9 @@
 				</thead>
 				<tbody>
 					<?php foreach($rows as $key => $row) : ?>
+						<?php $hidden_flg_single = Arr::get($row, 'hidden_flg_single'); ?>
+						<?php $hidden_flg_case = Arr::get($row, 'hidden_flg_case'); ?>
+
 						<tr id="item_<?php echo Arr::get($row, 'code'); ?>">
 							<td class="left">
 								<em>
@@ -50,25 +53,44 @@
 							</td>
 
 							<td class="right spOnly">
-								<p>
-									<?php echo Arr::get($row, 'size'); ?>
-								</p>
+								<?php if ($hidden_flg_case == UNDELETED) : ?>
+									<?php if (Common_Setting::is_case()) : ?>
+										<p class="hun">
+											<span class="histUnit"><i><?php echo Arr::get($row, 'unit_name_case'); ?></i></span>
+											<span class="histNums"><?php echo Arr::get($row, 'size_case'); ?></span>
+										</p>
+									<?php endif; ?>
+								<?php endif; ?>
+
+								<?php if ($hidden_flg_single == UNDELETED) : ?>
+									<p class="hun">
+										<?php if (Common_Setting::is_case()) : ?>
+											<span class="histUnit"><i><?php echo Arr::get($row, 'unit_name'); ?></i></span>
+										<?php endif; ?>
+										<span class="histNums"><?php echo Arr::get($row, 'size'); ?></span>
+									</p>
+								<?php endif; ?>
 							</td>
 
 							<?php if (Common_Setting::is_price()) : ?>
 								<td class="right spOnly">
-									<?php if (Common_Setting::is_case()) : ?>
+									<?php if ($hidden_flg_case == UNDELETED) : ?>
+										<?php if (Common_Setting::is_case()) : ?>
+											<p class="hun">
+												<span class="histUnit"><i><?php echo Arr::get($row, 'unit_name_case'); ?></i></span>
+												<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'price_case_tax')); ?>円</span>
+											</p>
+										<?php endif; ?>
+									<?php endif; ?>
+
+									<?php if ($hidden_flg_single == UNDELETED) : ?>
 										<p class="hun">
-											<span class="histUnit"><i>ケース</i></span>
-											<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'price_case_tax')); ?>円</span>
+											<?php if (Common_Setting::is_case()) : ?>
+												<span class="histUnit"><i><?php echo Arr::get($row, 'unit_name'); ?></i></span>
+											<?php endif; ?>
+											<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'price_tax')); ?>円</span>
 										</p>
 									<?php endif; ?>
-									<p class="hun">
-										<?php if (Common_Setting::is_case()) : ?>
-											<span class="histUnit"><i>バラ</i></span>
-										<?php endif; ?>
-										<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'price_tax')); ?>円</span>
-									</p>
 								</td>
 							<?php endif; ?>
 
@@ -89,67 +111,71 @@
 							</td>
 
 							<td class="center">
-							<?php if (Common_Setting::is_case()) : ?>
-								<div class="buttons buttonsLatent">
-									<strong>ケース</strong>
-									<ul>
-										<li>
-											<input class="amount" type="text" size="2" value="<?php echo Arr::get($row, 'amount_case', 0); ?>" href="/order/ajax/cart/update_case/<?php echo Arr::get($row, 'id'); ?>.json">
-										</li>
-										<li>
-											<a href="/order/ajax/cart/plus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
-												<span class="ring"></span>
-												<span class="icon-plus"></span>
-												<b class="case">C</b>
-											</a>
-										</li>
-										<li>
-											<a href="/order/ajax/cart/minus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
-												<span class="ring"></span>
-												<span class="icon-minus"></span>
-												<b class="case">C</b>
-											</a>
-										</li>
-										<li class="listViewTrashButton">
-											<a href="/order/ajax/cart/del_case/<?php echo Arr::get($row, 'id'); ?>.json" title="ごみ箱" class="item_modify wave">
-												<span class="ring"></span>
-												<span class="icon-trash"></span>
-												<b class="case">C</b>
-											</a>
-										</li>
-									</ul>
-								</div>
-							<?php endif; ?>
+								<?php if ($hidden_flg_case == UNDELETED) : ?>
+									<?php if (Common_Setting::is_case()) : ?>
+										<div class="buttons buttonsLatent">
+											<strong><?php echo Arr::get($row, 'unit_name_case'); ?></strong>
+											<ul>
+												<li>
+													<input class="amount" type="text" size="2" value="<?php echo Arr::get($row, 'amount_case', 0); ?>" href="/order/ajax/cart/update_case/<?php echo Arr::get($row, 'id'); ?>.json">
+												</li>
+												<li>
+													<a href="/order/ajax/cart/plus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
+														<span class="ring"></span>
+														<span class="icon-plus"></span>
+														<b class="case">C</b>
+													</a>
+												</li>
+												<li>
+													<a href="/order/ajax/cart/minus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
+														<span class="ring"></span>
+														<span class="icon-minus"></span>
+														<b class="case">C</b>
+													</a>
+												</li>
+												<li class="listViewTrashButton">
+													<a href="/order/ajax/cart/del_case/<?php echo Arr::get($row, 'id'); ?>.json" title="ごみ箱" class="item_modify wave">
+														<span class="ring"></span>
+														<span class="icon-trash"></span>
+														<b class="case">C</b>
+													</a>
+												</li>
+											</ul>
+										</div>
+									<?php endif; ?>
+								<?php endif; ?>
 
-								<div class="buttons buttonsLatent">
-									<?php if (Common_Setting::is_case()) : ?><strong class="strongBara">バラ</strong><?php endif; ?>
-									<ul>
-										<li>
-											<input class="amount" type="text" size="2" value="<?php echo Arr::get($row, 'amount', 0); ?>" href="/order/ajax/cart/update/<?php echo Arr::get($row, 'id'); ?>.json">
-										</li>
-										<li>
-											<a href="/order/ajax/cart/plus/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
-												<span class="ring"></span>
-												<span class="icon-plus"></span>
-												<b class="bara">B</b>
-											</a>
-										</li>
-										<li>
-											<a href="/order/ajax/cart/minus/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
-												<span class="ring"></span>
-												<span class="icon-minus"></span>
-												<b class="bara">B</b>
-											</a>
-										</li>
-										<li class="listViewTrashButton">
-											<a href="/order/ajax/cart/del/<?php echo Arr::get($row, 'id'); ?>.json" title="ごみ箱" class="item_modify wave">
-												<span class="ring"></span>
-												<span class="icon-trash"></span>
-												<b class="bara">B</b>
-											</a>
-										</li>
-									</ul>
-								</div>
+								<?php if ($hidden_flg_single == UNDELETED) : ?>
+									<div class="buttons buttonsLatent">
+										<?php if (Common_Setting::is_case()) : ?><strong class="strongBara"><?php echo Arr::get($row, 'unit_name'); ?></strong><?php endif; ?>
+										<ul>
+											<li>
+												<input class="amount" type="text" size="2" value="<?php echo Arr::get($row, 'amount', 0); ?>" href="/order/ajax/cart/update/<?php echo Arr::get($row, 'id'); ?>.json">
+											</li>
+											<li>
+												<a href="/order/ajax/cart/plus/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
+													<span class="ring"></span>
+													<span class="icon-plus"></span>
+													<b class="bara">B</b>
+												</a>
+											</li>
+											<li>
+												<a href="/order/ajax/cart/minus/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
+													<span class="ring"></span>
+													<span class="icon-minus"></span>
+													<b class="bara">B</b>
+												</a>
+											</li>
+											<li class="listViewTrashButton">
+												<a href="/order/ajax/cart/del/<?php echo Arr::get($row, 'id'); ?>.json" title="ごみ箱" class="item_modify wave">
+													<span class="ring"></span>
+													<span class="icon-trash"></span>
+													<b class="bara">B</b>
+												</a>
+											</li>
+										</ul>
+									</div>
+								<?php endif; ?>
 							</td>
 
 							<?php if ($sort) : ?>
@@ -157,7 +183,7 @@
 									<span class="sortNums">
 										<?php echo $page_index + $key + 1; ?>
 									</span>
-									
+
 									<?php echo Form::input('sort_num[' . Arr::get($row, 'favorite_id') . ']', Arr::get($sort_num, Arr::get($row, 'favorite_id')), array('class' => 'sortNum ' . $validate_error_class('sort_num.' . Arr::get($row, 'favorite_id')), 'size' => '2')); ?>
 								</td>
 							<?php endif; ?>

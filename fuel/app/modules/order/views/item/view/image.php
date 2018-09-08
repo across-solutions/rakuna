@@ -22,53 +22,59 @@
 							</a>
 						</div>
 
-						<?php if (Common_Setting::is_case()) : ?>
+						<?php $hidden_flg_case = Arr::get($row, 'hidden_flg_case'); ?>
+						<?php if ($hidden_flg_case == UNDELETED) : ?>
+							<?php if (Common_Setting::is_case()) : ?>
+								<div class="buttons">
+									<strong><?php echo Arr::get($row, 'unit_name_case'); ?></strong>
+									<ul>
+										<li>
+											<input id="amount_case<?php echo Arr::get($row, 'id'); ?>" class="amount" type="text" value="<?php echo Arr::get($row, 'amount_case', 0); ?>" href="/order/ajax/cart/update_case/<?php echo Arr::get($row, 'id'); ?>.json">
+										</li>
+										<li>
+											<a href="/order/ajax/cart/plus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
+												<span class="ring"></span>
+												<span class="icon-plus"></span>
+												<b class="case">C</b>
+											</a>
+										</li>
+										<li>
+											<a href="/order/ajax/cart/minus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
+												<span class="ring"></span>
+												<span class="icon-minus"></span>
+												<b class="case">C</b>
+											</a>
+										</li>
+									</ul>
+								</div>
+							<?php endif; ?>
+						<?php endif; ?>
+
+						<?php $hidden_flg_single = Arr::get($row, 'hidden_flg_single'); ?>
+						<?php if ($hidden_flg_single == UNDELETED) : ?>
 							<div class="buttons">
-								<strong>ケース</strong>
+								<strong><?php if (Common_Setting::is_case()) : ?><?php echo Arr::get($row, 'unit_name'); ?><?php endif; ?></strong>
 								<ul>
 									<li>
-										<input id="amount_case<?php echo Arr::get($row, 'id'); ?>" class="amount" type="text" value="<?php echo Arr::get($row, 'amount_case', 0); ?>" href="/order/ajax/cart/update_case/<?php echo Arr::get($row, 'id'); ?>.json">
+										<input id="amount<?php echo Arr::get($row, 'id'); ?>" class="amount" type="text" value="<?php echo Arr::get($row, 'amount', 0); ?>" href="/order/ajax/cart/update/<?php echo Arr::get($row, 'id'); ?>.json">
 									</li>
 									<li>
-										<a href="/order/ajax/cart/plus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
+										<a href="/order/ajax/cart/plus/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
 											<span class="ring"></span>
 											<span class="icon-plus"></span>
-											<b class="case">C</b>
+											<b class="bara">B</b>
 										</a>
 									</li>
 									<li>
-										<a href="/order/ajax/cart/minus_case/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
+										<a href="/order/ajax/cart/minus/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
 											<span class="ring"></span>
 											<span class="icon-minus"></span>
-											<b class="case">C</b>
+											<b class="bara">B</b>
 										</a>
 									</li>
 								</ul>
 							</div>
 						<?php endif; ?>
-
-						<div class="buttons">
-							<strong><?php if (Common_Setting::is_case()) : ?>バラ<?php endif; ?></strong>
-							<ul>
-								<li>
-									<input id="amount<?php echo Arr::get($row, 'id'); ?>" class="amount" type="text" value="<?php echo Arr::get($row, 'amount', 0); ?>" href="/order/ajax/cart/update/<?php echo Arr::get($row, 'id'); ?>.json">
-								</li>
-								<li>
-									<a href="/order/ajax/cart/plus/<?php echo Arr::get($row, 'id'); ?>.json" title="プラス" class="plus item_modify wave">
-										<span class="ring"></span>
-										<span class="icon-plus"></span>
-										<b class="bara">B</b>
-									</a>
-								</li>
-								<li>
-									<a href="/order/ajax/cart/minus/<?php echo Arr::get($row, 'id'); ?>.json" title="マイナス" class="minus item_modify wave">
-										<span class="ring"></span>
-										<span class="icon-minus"></span>
-										<b class="bara">B</b>
-									</a>
-								</li>
-							</ul>
-						</div>
 
 					</div>
 

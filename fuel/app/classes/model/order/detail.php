@@ -3,7 +3,7 @@
  * 受注明細モデルクラス
  */
 class Model_Order_Detail extends Model_Base {
-	
+
 	protected static $_properties = array(
 		'id',
 		'order_id',
@@ -12,7 +12,11 @@ class Model_Order_Detail extends Model_Base {
 		'item_id',
 		'item_code',
 		'item_name',
+		'item_unit_name',
+		'item_unit_name_case',
 		'item_size',
+		'item_size_case',
+		'item_type',
 		'jan_code',
 		'price',
 		'price_tax',
@@ -32,7 +36,7 @@ class Model_Order_Detail extends Model_Base {
 	protected static $_search_fields = array(
 		'search_field' => array('item_code', 'item_name')
 	);
-	
+
 	protected static $_belongs_to = array(
 		'orders' => array(
 			'cascade_save' => false,

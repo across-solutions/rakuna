@@ -2,6 +2,9 @@
 // 発注ログインURL
 define('ORDER_LOGIN_URL', 'http://rakuna.local/order');
 
+// メンテナンスモード
+define('MAINTENANCE_MODE', false);
+
 // バージョン
 define('VERSION', '　');
 
@@ -14,11 +17,17 @@ define('SESSION_KEY_ERROR_MESSAGE', 'error_message');
 // カート情報セッションキー
 define('SESSION_KEY_CART', 'cart_info');
 
+// 代理発注セッションキー
+define('SESSION_KEY_SALES', 'sales_info');
+
 // 自動ログインクッキーキー(発注)
 define('COOKIE_KEY_ORDER_AUTO_LOGIN', 'oral');
 
 // 自動ログインクッキーキー(受注)
 define('COOKIE_KEY_MANAGE_AUTO_LOGIN', 'mgal');
+
+// 自動ログインクッキーキー(代理発注)
+define('COOKIE_KEY_SALES_AUTO_LOGIN', 'slal');
 
 // 自動ログインクッキー有効期間(秒)
 define('COOKIE_EXPIRATION_AUTO_LOGIN', 60 * 60 * 24 * 30);
@@ -169,6 +178,12 @@ return array(
 
 	// 管理者アカウントステータス
 	'user_status' => array(
+		'enable' => '1',		// 有効
+		'disable' => '2'		// 無効
+	),
+
+	// 営業担当アカウントステータス
+	'sales_status' => array(
 		'enable' => '1',		// 有効
 		'disable' => '2'		// 無効
 	),

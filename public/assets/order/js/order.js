@@ -313,9 +313,104 @@ $(function() {
 		return false;
 	});
 
+	$("select#delivery_select").on("change",function() {
+		clear_delivery();
+		clear_delivery_date();
+
+		if ($(this).val() == "") {
+			return false;
+		}
+		$.ajax({
+			type : "GET",
+			cache : false,
+			url : "/order/ajax/delivery/data/" + $(this).val() + ".json",
+			success : function(data) {
+				if (!check_error(data)) {
+					return;
+				}
+				$("#delivery_name").val(data.name);
+				$("#delivery_receiver_name1").val(data.receiver_name1);
+				$("#delivery_receiver_name2").val(data.receiver_name2);
+				$("#delivery_zip").val(data.zip);
+				$("#delivery_address1").val(data.address1);
+				$("#delivery_address2").val(data.address2);
+				$("#delivery_address3").val(data.address3);
+				$("#delivery_tel").val(data.tel);
+				$("#delivery_fax").val(data.fax);
+
+				$("#delivery_date_select").children("option").remove();
+				$.each(data.dates, function(k, val) {
+					$.map(val, function(name, date) {
+						$("#delivery_date_select").append($("<option>").val(date).text(name));
+					});
+				});
+			},
+			error : function(data) {
+				$(location).attr("href", "/order/login/logout");
+			}
+		});
+	});
+
+	$(".scChks").on("change",function(){
+		$(".scItemDesc").removeClass("disp");
+		$(this).parent().next().addClass("disp");
+		$("html, body").animate({scrollTop: $(this).parent().offset().top}, 500, "swing");
+		return false;
+	});
+
+	$("input[name='delivery_kind']:radio").on("change",function() {
+		clear_delivery_date();
+
+		var val = $(this).val();
+		if (val == 1) {
+			clear_delivery();
+			$("select#delivery_select option").attr("selected", false)
+
+			$.ajax({
+				type : "GET",
+				url : "/order/ajax/member/data.json",
+				cache : false,
+				context : this,
+				async: false,
+				success : function(data) {
+					if (!check_error(data)) {
+						return;
+					}
+
+					$("#delivery_date_select").children("option").remove();
+					$.each(data.dates, function(k, val) {
+						$.map(val, function(name, date) {
+							$("#delivery_date_select").append($("<option>").val(date).text(name));
+						});
+					});
+
+				},
+				error : function(data) {
+					$(location).attr("href", "/order/login/logout");
+				}
+			});
+		}
+	});
+
 	setAccordion();
 
 });
+
+function clear_delivery() {
+	$("#delivery_name").val("");
+	$("#delivery_receiver_name1").val("");
+	$("#delivery_receiver_name2").val("");
+	$("#delivery_zip").val("");
+	$("#delivery_address1").val("");
+	$("#delivery_address2").val("");
+	$("#delivery_address3").val("");
+	$("#delivery_tel").val("");
+	$("#delivery_fax").val("");
+}
+
+function clear_delivery_date() {
+	$("#delivery_date_select").children("option").not(":first-child").remove();
+}
 
 function setAccordion() {
 

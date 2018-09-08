@@ -85,7 +85,6 @@ class Presenter_Notice_Detail extends \Presenter_Base {
 			->join('carts', 'LEFT')
 				->on('carts.item_id', '=', 'items.id')
 				->and_on('carts.member_id', '=', DB::expr($member_id))
-				->and_on('carts.del_flg', '=', DB::expr(UNDELETED))
 			->join('favorites', 'LEFT')
 				->on('favorites.item_code', '=', 'items.code')
 				->and_on('favorites.member_id', '=', DB::expr($member_id))

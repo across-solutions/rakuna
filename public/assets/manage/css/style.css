@@ -2150,3 +2150,239 @@ input.sortNum.error_field{
 	color:#333;
 	background:#eee;
 }
+
+
+
+/* ==========================================================================
+00.カスタム
+========================================================================== */
+.digDeliveryDates{
+	width:auto;
+	margin:2em 0 0 0;
+}
+
+.digDeliveryDates .title{
+	border-bottom:1px dotted #ccc;
+}
+
+.digDeliveryDates strong{
+	width:auto;
+	font-size:140%;
+	font-weight:normal;
+	letter-spacing:0.05em;
+}
+
+.digDeliveryDates ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	letter-spacing:-0.4em;
+	font-size:1px;
+}
+
+.digDeliveryDates ul li{
+	font-size:12px;
+	letter-spacing:normal;
+	margin:0 0 1em 0;
+}
+
+.digDeliveryDates ul li:last-child{
+	margin:0;
+}
+
+.digDeliveryDates ul li label{
+	display:block;
+	padding:0.5em;
+	background:#fafafa;
+	border:1px solid #ccc;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.digDeliveryDates ul li p{
+	color:#333;
+	font-size:125%;
+	margin:0;
+}
+.digDeliveryDates ul li p.error {
+	color: #ff0000;
+	margin: 0.5em 0;
+	font-size:100%;
+}
+
+.digDeliveryDates ul li em{
+	color:#999;
+	font-size:90%;
+	font-style:normal;
+	letter-spacing:-0.025em;
+}
+
+.digDeliveryDates dl{
+	display:-webkit-box;
+	display:-ms-flexbox;
+	display:flex;
+	-ms-flex-wrap:wrap;
+	    flex-wrap:wrap;
+	-webkit-box-align:center;
+	-ms-flex-align:center;
+	        align-items:center;
+}
+
+.digDeliveryDates dt{
+	width:20%;
+	box-sizing:border-box;
+
+	color:#333;
+	font-size:125%;
+}
+
+.digDeliveryDates dd{
+	width:80%;
+	margin:0;
+	box-sizing:border-box;
+}
+
+.digDeliveryDates dd span.cld{
+	font-size: 125%;
+	color: #e62074;
+	border: 1px solid #e62074;
+	line-height: 100%;
+	display: inline-block;
+	padding: 0.35em;
+	vertical-align: middle;
+}
+
+.shipDatesBox{
+	display:-webkit-box;
+	display:-ms-flexbox;
+	display:flex;
+	-ms-flex-wrap:wrap;
+	    flex-wrap:wrap;
+	-webkit-box-align:center;
+	-ms-flex-align:center;
+	        align-items:center;
+}
+
+.shipDatesBox em{
+	padding:0.5em 1em;
+}
+
+.shipDatesBox input{
+	border: 1px solid #999;
+	padding: 0.4em;
+	background: #ffeeee;
+}
+
+.shipDatesBox select{
+	border: 1px solid #999;
+	padding: 0.4em;
+	background: #ffeeee;
+}
+
+
+
+.digDeliveryAddr{
+	width:auto;
+	margin:2em 0 0 0;
+}
+
+.digDeliveryAddr .title{
+	border-bottom:1px dotted #ccc;
+}
+
+.digDeliveryAddr strong{
+	width:auto;
+	font-size:140%;
+	font-weight:normal;
+	letter-spacing:0.05em;
+}
+
+.digDeliveryAddr ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+	letter-spacing:-0.4em;
+	font-size:1px;
+}
+
+.digDeliveryAddr ul li{
+	font-size:12px;
+	letter-spacing:normal;
+	margin:0 0 1em 0;
+}
+
+.digDeliveryAddr ul li:last-child{
+	margin:0;
+}
+
+.digDeliveryAddr ul li label{
+	display:block;
+	padding:0.5em;
+	background:#fafafa;
+	border:1px solid #ccc;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.digDeliveryAddr ul li p{
+	color:#333;
+	font-size:125%;
+	margin:0;
+}
+
+.digDeliveryAddr ul li em{
+	color:#999;
+	font-size:90%;
+	font-style:normal;
+	letter-spacing:-0.025em;
+}
+
+.digDeliveryAddr dl{
+	display:-webkit-box;
+	display:-ms-flexbox;
+	display:flex;
+	-ms-flex-wrap:wrap;
+	    flex-wrap:wrap;
+	-webkit-box-align:center;
+	-ms-flex-align:center;
+	        align-items:center;
+}
+
+.digDeliveryAddr dt{
+	width:20%;
+	box-sizing:border-box;
+
+	color:#333;
+	font-size:125%;
+}
+
+.digDeliveryAddr dd{
+	width:80%;
+	margin:0;
+	box-sizing:border-box;
+}
+
+.shipAddrBox{
+	display:-webkit-box;
+	display:-ms-flexbox;
+	display:flex;
+	-ms-flex-wrap:wrap;
+	    flex-wrap:wrap;
+	-webkit-box-align:center;
+	-ms-flex-align:center;
+	        align-items:center;
+}
+
+.shipAddrBox em{
+	padding:0.5em 1em;
+}
+
+

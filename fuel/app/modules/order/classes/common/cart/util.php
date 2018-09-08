@@ -18,7 +18,7 @@ class Common_Cart_Util {
 	 */
 	public static function gets($member_id, $check_renewal = true) {
 		$query = DB::select('items.id', 'items.code', 'items.name', 'items.size', 'items.comment',
-				'items.price', 'items.price_case',
+				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size',
 				array('items.renewal_datetime', 'item_renewal_datetime'), 'carts.amount', 'carts.amount_case',
 				array('carts.item_renewal_datetime', 'cart_item_renewal_datetime'),
 				array('carts.item_assign_renewal_datetime', 'cart_assign_renewal_datetime'), 'carts.updated')
@@ -28,13 +28,15 @@ class Common_Cart_Util {
 				->on('items.del_flg', '=', DB::escape(UNDELETED))
 			->where('carts.member_id', '=', $member_id);
 
-			if (Common_Assign::has_assign($member_id)) {
-				$query->select(array('item_assigns.renewal_datetime', 'assign_renewal_datetime'));
-				$query->join('item_assigns', 'INNER')
+			//if (Common_Assign::has_assign($member_id)) {
+				$query->select(array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
+								array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
+								array('item_assigns.renewal_datetime', 'assign_renewal_datetime'));
+				$query->join('item_assigns', 'LEFT')
 					->on('carts.member_id', '=', 'item_assigns.member_id')
 					->on('items.code', '=', 'item_assigns.item_code')
 					->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
-			}
+			//}
 
 		$carts = $query->execute();
 
@@ -269,13 +271,13 @@ class Common_Cart_Util {
 			->where('items.id', '=', $item_id)
 			->where('items.del_flg', '=', UNDELETED);
 
-		if (Common_Assign::has_assign($member_id)) {
+		//if (Common_Assign::has_assign($member_id)) {
 			$query->select(array('item_assigns.renewal_datetime', 'item_assign_renewal_datetime'));
-			$query->join('item_assigns', 'INNER')
+			$query->join('item_assigns', 'LEFT')
 				->on('item_assigns.item_code', '=', 'items.code')
 				->and_on('item_assigns.member_id', '=', DB::escape($member_id))
 				->and_on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
-		}
+		//}
 
 		return $query->execute()->current();
 	}

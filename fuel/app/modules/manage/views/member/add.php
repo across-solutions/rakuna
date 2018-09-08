@@ -73,6 +73,21 @@
 
 			<dl class="clearfix">
 				<dt>
+					<label for="catSalesPersonCode">
+					営業担当者コード
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('sales_person_code',Arr::get($data, 'sales_person_code'), array('id' => 'catSalesPersonCode', 'placeholder' => '0000000000000')); ?>
+					<a class="tooltip" rel="tooltip" title="必須項目です。<br/>半角英数字で入力してください。<br/>20文字以内で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('sales_person_code'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
 					<label for="catCorporation">
 					企業名
 					</label>
@@ -103,16 +118,61 @@
 
 			<dl class="clearfix">
 				<dt>
-					<label for="catAddress">
-					住所
+					<label for="zip">
+						郵便番号
 					</label>
 				</dt>
 				<dd>
-					<?php echo Form::textarea('address', Arr::get($data, 'address'), array('id' => 'catAddress', 'placeholder' => 'サンプル住所')); ?>
-					<a class="tooltip" rel="tooltip" title="500文字以内で入力してください。">
+					<?php echo Form::input('zip', Arr::get($data, 'zip'), array('id' => 'zip', 'placeholder' => '000-0000')); ?>
+					<a class="tooltip" rel="tooltip" title="半角数字、または、ハイフンで入力してください。<br/>8文字以内で入力してください。">
 						<span class="icon-question decEdit"></span>
 					</a>
-					<?php echo $validate_error_message('address'); ?>
+					<?php echo $validate_error_message('zip'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
+					<label for="address1">
+						住所1
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('address1', Arr::get($data, 'address1'), array('id' => 'address1', 'placeholder' => 'サンプル住所1')); ?>
+					<a class="tooltip" rel="tooltip" title="50文字以内で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('address1'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
+					<label for="address2">
+						住所2
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('address2', Arr::get($data, 'address2'), array('id' => 'address2', 'placeholder' => 'サンプル住所2')); ?>
+					<a class="tooltip" rel="tooltip" title="50文字以内で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('address2'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
+					<label for="address3">
+						住所3
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('address3', Arr::get($data, 'address3'), array('id' => 'address3', 'placeholder' => 'サンプル住所3')); ?>
+					<a class="tooltip" rel="tooltip" title="50文字以内で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('address3'); ?>
 				</dd>
 			</dl>
 
@@ -143,6 +203,30 @@
 						<span class="icon-question decEdit"></span>
 					</a>
 					<?php echo $validate_error_message('fax'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
+					<label for="deliveryFlg">
+					納品可能曜日
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::checkbox('delivery_flg_mon', '1', Arr::get($data, 'delivery_flg_mon'), array('id' => 'deliveryFlgMon')); ?>
+					<label for="deliveryFlgMon">月</label>
+					<?php echo Form::checkbox('delivery_flg_tue', '1', Arr::get($data, 'delivery_flg_tue'), array('id' => 'deliveryFlgTue')); ?>
+					<label for="deliveryFlgTue">火</label>
+					<?php echo Form::checkbox('delivery_flg_wed', '1', Arr::get($data, 'delivery_flg_wed'), array('id' => 'deliveryFlgWed')); ?>
+					<label for="deliveryFlgWed">水</label>
+					<?php echo Form::checkbox('delivery_flg_thu', '1', Arr::get($data, 'delivery_flg_thu'), array('id' => 'deliveryFlgThu')); ?>
+					<label for="deliveryFlgThu">木</label>
+					<?php echo Form::checkbox('delivery_flg_fri', '1', Arr::get($data, 'delivery_flg_fri'), array('id' => 'deliveryFlgFri')); ?>
+					<label for="deliveryFlgFri">金</label>
+					<?php echo Form::checkbox('delivery_flg_sat', '1', Arr::get($data, 'delivery_flg_sat'), array('id' => 'deliveryFlgSat')); ?>
+					<label for="deliveryFlgSat">土</label>
+					<?php echo Form::checkbox('delivery_flg_sun', '1', Arr::get($data, 'delivery_flg_sun'), array('id' => 'deliveryFlgSun')); ?>
+					<label for="deliveryFlgSun">日</label>
 				</dd>
 			</dl>
 

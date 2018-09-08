@@ -128,6 +128,138 @@
 	</div>
 	<!--#dig comment end -->
 
+	<!--#dig shipAddr start -->
+	<div class="digDeliveryAddr">
+		<div class="title">
+			<strong>
+				納品先
+			</strong>
+		</div>
+
+		<ul>
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>納品先コード
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_code'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>納品先名
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_name'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>郵便番号(〒)
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_zip'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>住所1
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_address1'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>住所2
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_address2'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>住所3
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_address3'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>電話番号
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_tel'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>FAX
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo Arr::get($data, 'delivery_fax'); ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+		</ul>
+	</div>
+	<!--#dig shipAddr end -->
+
 	<!--#dig comment start -->
 	<div class="digComment">
 		<dl>

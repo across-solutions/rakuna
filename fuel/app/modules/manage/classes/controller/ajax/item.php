@@ -33,51 +33,44 @@ class Controller_Ajax_Item extends Controller_Ajax_Base {
 	}
 
 	private function get_item($item_code, $member_id){
-		\Module::load('Order');
-
-		$query = \Model_Item::query()
-			   ->related('item_categories')
-			   ->where('code', '=', $item_code);
-
-		if(\Order\Common_Assign::has_assign($member_id)){
-			$query->related('item_assigns',
-							array('join_type' => 'inner',
-								  'join_on' => array(
-									  array('member_id', '=', \DB::expr($member_id))
-								  )));
-		}
-
-		$item = $query->get_one();
-
-		return $item;
+		return DB::select('items.id', 'items.code', 'items.name',
+				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size',
+				array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
+				array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
+				array('item_categories.code', 'category_code'), array('item_categories.name', 'category_name'))
+			->from('items')
+			->join('item_categories', 'LEFT')
+				->on('item_categories.id', '=', 'items.item_category_id')
+				->on('item_categories.del_flg', '=', DB::escape(UNDELETED))
+			->join('item_assigns', 'LEFT')
+				->on('item_assigns.item_code', '=', 'items.code')
+				->on('item_assigns.member_id', '=', DB::escape($member_id))
+				->on('item_assigns.del_flg', '=', DB::escape(UNDELETED))
+			->where('items.code', '=', $item_code)
+			->where('items.del_flg', '=', UNDELETED)
+			->execute()
+			->current();
 	}
 
-
-	private function create_order_detail($item, $amount, $amount_case) {
-		$item_categories = $item->item_categories;
-
-		$values = array();
-
-		if (!empty($item_categories)) {
-			$values['category_code'] = $item_categories->code;
-			$values['category_name'] = $item_categories->name;
-		}
-		$values['item_id'] = $item->id;
-		$values['item_code'] = $item->code;
-		$values['item_name'] = $item->name;
-		$values['item_size'] = $item->size;
-		$values['jan_code'] = $item->jan_code;
-		$values['price'] = $item->price;
+	private function create_order_detail($item) {
+		$values['item_id'] = $item['id'];
+		$values['item_code'] = $item['code'];
+		$values['item_name'] = $item['name'];
+		$values['unit_name_case'] = $item['unit_name_case'];
+		$values['unit_name'] = $item['unit_name'];
+		$values['size_case'] = $item['size_case'];
+		$values['size'] = $item['size'];
+		$values['category_code'] = $item['category_code'];
+		$values['category_name'] = $item['category_name'];
+		$values['price'] = $item['price'] * $item['size'];
 		$values['price_tax'] = \Common_Util::add_tax($values['price']);
-		$values['amount'] = $amount;
-		$values['price_case'] = $item->price_case;
+		$values['amount'] = 0;
+		$values['price_case'] = $item['price_case'] * $item['size_case'];
 		$values['price_case_tax'] = \Common_Util::add_tax($values['price_case']);
-		$values['amount_case'] = $amount_case;
-		$values['total'] = $values['price'] * $values['amount'] + $values['price_case'] * $values['amount_case'];
-		$values['total_tax'] = $values['price_tax'] * $values['amount'] + $values['price_case_tax'] * $values['amount_case'];
+		$values['amount_case'] = 0;
+		$values['total'] = 0;
+		$values['total_tax'] = 0;
 
-		return \Model_Order_Detail::forge($values);
+		return $values;
 	}
-
-
 }

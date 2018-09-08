@@ -13,6 +13,8 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		parent::view();
 
 		$this->dates = $this->get_delivery_dates();
+
+		$this->deliveries = $this->get_delivery_list();
 	}
 
 	/**
@@ -39,6 +41,32 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		}
 
 		return $dates;
+	}
+
+	/**
+	 * 納品先リストを取得する
+	 */
+	private function get_delivery_list() {
+		$member_id = $this->get_member_id();
+		$member_code = \Common_Member::get_member_code();
+
+		$query = DB::select('deliveries.code', 'deliveries.name')
+					->from('deliveries')
+					->where('deliveries.member_code', '=', $member_code)
+					->where('deliveries.del_flg', '=', DB::escape(UNDELETED))
+					->order_by('deliveries.id', 'asc');
+
+		$deliveries = $query->execute()->as_array();
+
+		$list = array();
+		if (!empty($deliveries)) {
+			$list[''] = '';
+			foreach ($deliveries as $delivery) {
+				$list[$delivery['code']] = $delivery['name'];
+			}
+		}
+
+		return $list;
 	}
 
 	/**

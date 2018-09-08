@@ -44,7 +44,7 @@
 		<p>
 		検索条件を指定して検索してください
 		</p>
-	
+
 		<table class="searchBox">
 			<tbody>
 				<tr>
@@ -67,7 +67,7 @@
 				</tr>
 			</tbody>
 		</table>
-	
+
 		<div class="searchSubmit">
 			<a href="#" class="submit" title="この条件で検索する">
 				<span class="icon-search mr"></span>この条件で検索する
@@ -88,13 +88,13 @@
 			<?php echo $data_count; ?>件のデータが見つかりました。
 			</p>
 		</div>
-	
+
 		<div class="paging">
 			<?php echo $pager; ?>
 		</div>
 	</div>
 	<!--#resultTop end -->
-	
+
 	<!--#subMenuWrap start -->
 	<div class="subMenuWrap">
 		<!--#subMenu start -->
@@ -110,7 +110,7 @@
 		<!--#subMenu end -->
 	</div>
 	<!--#subMenuWrap end -->
-	
+
 	<!--#list start -->
 	<div class="list">
 		<?php echo $message(); ?>
@@ -120,7 +120,10 @@
 					<th class="w10">カテゴリ</th>
 					<th class="w15">商品コード</th>
 					<th>商品名</th>
-					<th class="w12">入数</th>
+					<th class="w8">ケース単位</th>
+					<th class="w8">バラ単位</th>
+					<th class="w8">ケース入数</th>
+					<th class="w8">バラ入数</th>
 					<?php if (Common_Setting::is_price()) : ?>
 						<?php if (Common_Setting::is_case()) : ?>
 							<th class="w8">バラ単価</th>
@@ -132,7 +135,7 @@
 					<th class="w8">編集</th>
 				</tr>
 			</thead>
-		
+
 			<tbody>
 				<?php foreach($rows as $row) : ?>
 					<tr>
@@ -146,6 +149,15 @@
 						</td>
 						<td class="left">
 							<?php echo Arr::get($row, 'name'); ?>
+						</td>
+						<td class="center">
+							<?php echo Arr::get($row, 'unit_name_case'); ?>
+						</td>
+						<td class="center">
+							<?php echo Arr::get($row, 'unit_name'); ?>
+						</td>
+						<td class="center">
+							<?php echo Arr::get($row, 'size_case'); ?>
 						</td>
 						<td class="center">
 							<?php echo Arr::get($row, 'size'); ?>
@@ -171,7 +183,7 @@
 		</table>
 	</div>
 	<!--#list end -->
-	
+
 	<!--#resultBottom start -->
 	<div class="resultBottom clearfix">
 		<div class="resultText">
@@ -179,7 +191,7 @@
 			<?php echo $data_count; ?>件のデータが見つかりました。
 			</p>
 		</div>
-	
+
 		<div class="paging">
 			<?php echo $pager; ?>
 		</div>

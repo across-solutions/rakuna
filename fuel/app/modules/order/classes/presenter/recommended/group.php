@@ -47,7 +47,6 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 			->join('carts', 'LEFT')
 				->on('carts.item_id', '=', 'items.id')
 				->and_on('carts.member_id', '=', DB::expr($member_id))
-				->and_on('carts.del_flg', '=', DB::expr(UNDELETED))
 			->join('favorites', 'LEFT')
 				->on('favorites.item_code', '=', 'items.code')
 				->and_on('favorites.member_id', '=', DB::expr($member_id))
@@ -57,12 +56,12 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 				->and_on('order_frequencies.member_id', '=', DB::expr($member_id))
 				->and_on('order_frequencies.del_flg', '=', DB::expr(UNDELETED));
 
-		if (Common_Assign::has_assign($member_id)) {
-			$query->join('item_assigns', 'INNER')
+		//if (Common_Assign::has_assign($member_id)) {
+			$query->join('item_assigns', 'LEFT')
 			->on('item_assigns.item_code', '=', 'items.code')
 			->and_on('item_assigns.member_id', '=', DB::expr($member_id))
 			->and_on('item_assigns.del_flg', '=', DB::expr(UNDELETED));
-		}
+		//}
 
 		$this->add_condition($query, $data);
 
@@ -77,9 +76,12 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 	protected function get_rows($data, $limit, $offset) {
 		$member_id = $this->get_member_id();
 
-		$query = DB::select('items.code', 'items.name', 'items.size', 'items.comment', 'items.price', 'items.price_case', 'items.id',
+		$query = DB::select('items.id', 'items.code', 'items.name', 'items.comment',
+				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size',
 				 array('item_categories.code', 'category_code'), array('item_categories.name', 'category_name'), 'carts.amount',
 				'carts.amount_case', array('favorites.id', 'favorite_id'), array('recommended_items.recommended_group_id', 'recommended_group_id'),
+				array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
+				array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
 				array('recommended_items.sort_num', 'sort_num')
 				 )
 				->from('items')
@@ -93,7 +95,6 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 				->join('carts', 'LEFT')
 					->on('carts.item_id', '=', 'items.id')
 					->and_on('carts.member_id', '=', DB::expr($member_id))
-					->and_on('carts.del_flg', '=', DB::expr(UNDELETED))
 				->join('favorites', 'LEFT')
 					->on('favorites.item_code', '=', 'items.code')
 					->and_on('favorites.member_id', '=', DB::expr($member_id))
@@ -103,12 +104,12 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 					->and_on('order_frequencies.member_id', '=', DB::expr($member_id))
 					->and_on('order_frequencies.del_flg', '=', DB::expr(UNDELETED));
 
-		if (Common_Assign::has_assign($member_id)) {
-			$query->join('item_assigns', 'INNER')
+		//if (Common_Assign::has_assign($member_id)) {
+			$query->join('item_assigns', 'LEFT')
 			->on('item_assigns.item_code', '=', 'items.code')
 			->and_on('item_assigns.member_id', '=', DB::expr($member_id))
 			->and_on('item_assigns.del_flg', '=', DB::expr(UNDELETED));
-		}
+		//}
 
 		$this->add_condition($query, $data);
 		$query->order_by('sort_num', 'desc');
@@ -179,14 +180,14 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 			->join('items', 'LEFT')
 				->on('items.code', '=', 'recommended_items.item_code')
 				->and_on('items.del_flg', '=', DB::expr(UNDELETED));
-
+/*
 		if (Common_Assign::has_assign($member_id)) {
 			$query->join('item_assigns', 'INNER')
 				->on('items.code', '=', 'item_assigns.item_code')
 				->and_on('item_assigns.member_id', '=', DB::expr($member_id))
 				->and_on('item_assigns.del_flg', '=', DB::expr(UNDELETED));
 		}
-
+*/
 		$query->where('recommended_groups.del_flg', '=', DB::expr(UNDELETED))
 			->group_by('recommended_groups.id')
 			->order_by('recommended_groups.id', 'asc');
