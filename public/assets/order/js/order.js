@@ -315,7 +315,7 @@ $(function() {
 
 	$("select#delivery_select").on("change",function() {
 		clear_delivery();
-		clear_delivery_date();
+		//clear_delivery_date();
 
 		if ($(this).val() == "") {
 			return false;
@@ -337,13 +337,14 @@ $(function() {
 				$("#delivery_address3").val(data.address3);
 				$("#delivery_tel").val(data.tel);
 				$("#delivery_fax").val(data.fax);
-
+/*
 				$("#delivery_date_select").children("option").remove();
 				$.each(data.dates, function(k, val) {
 					$.map(val, function(name, date) {
 						$("#delivery_date_select").append($("<option>").val(date).text(name));
 					});
 				});
+*/
 			},
 			error : function(data) {
 				$(location).attr("href", "/order/login/logout");
@@ -359,7 +360,7 @@ $(function() {
 	});
 
 	$("input[name='delivery_kind']:radio").on("change",function() {
-		clear_delivery_date();
+		//clear_delivery_date();
 
 		var val = $(this).val();
 		if (val == 1) {
@@ -390,6 +391,30 @@ $(function() {
 				}
 			});
 		}
+	});
+
+	$("select#order_type_select").on("change",function() {
+		if ($(this).val() == "") {
+			$("#shipping_div_select").val("");
+			$("#warehouse_div_select").val("");
+			return false;
+		}
+
+		$.ajax({
+			type : "GET",
+			cache : false,
+			url : "/order/ajax/type/data/" + $(this).val() + ".json",
+			success : function(data) {
+				if (!check_error(data)) {
+					return;
+				}
+				$("#shipping_div_select").val(data.code);
+				$("#warehouse_div_select").val(data.warehouse_code);
+			},
+			error : function(data) {
+				$(location).attr("href", "/order/login/logout");
+			}
+		});
 	});
 
 	setAccordion();

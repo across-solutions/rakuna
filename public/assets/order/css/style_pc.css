@@ -2743,6 +2743,22 @@ input.sortNum[type="text"]{
 	background:#999;
 }
 
+.shipDate ul li input[type="text"]{
+	width:50%;
+	background:none;
+	outline:none;
+
+	box-sizing:border-box;
+
+	padding: 0.6em;
+	border: 1px solid #999;
+	border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+}
+
 .shipDate ul li p{
 	color:#333;
 	font-size:1.2rem;

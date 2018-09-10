@@ -59,6 +59,16 @@ class Common_Cart {
 
 	private $delivery_fax = null;
 
+	private $order_type = null;
+
+	private $shipping_date = null;
+
+	private $shipping_div = null;
+
+	private $warehouse_div = null;
+
+	private $order_no = null;
+
 	private $comment = null;
 
 	private $carts = array();
@@ -332,6 +342,41 @@ class Common_Cart {
 	}
 
 	/**
+	 * 発注タイプを取得する
+	 */
+	public function get_order_type() {
+		return $this->order_type;
+	}
+
+	/**
+	 * 出荷予定日を取得する
+	 */
+	public function get_shipping_date() {
+		return $this->shipping_date;
+	}
+
+	/**
+	 * 出荷区分を取得する
+	 */
+	public function get_shipping_div() {
+		return $this->shipping_div;
+	}
+
+	/**
+	 * 倉庫区分を取得する
+	 */
+	public function get_warehouse_div() {
+		return $this->warehouse_div;
+	}
+
+	/**
+	 * オーダーNo.を取得する
+	 */
+	public function get_order_no() {
+		return $this->order_no;
+	}
+
+	/**
 	 * 備考を取得する
 	 */
 	public function get_comment() {
@@ -516,6 +561,51 @@ class Common_Cart {
 	 */
 	public function set_delivery_fax($delivery_fax) {
 		$this->delivery_fax = $delivery_fax;
+	}
+
+	/**
+	 * 発注タイプを設定する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function set_order_type($order_type) {
+		$this->order_type = $order_type;
+	}
+
+	/**
+	 * 出荷予定日を設定する
+	 *
+	 * @param string $shipping_date 出荷予定日
+	 */
+	public function set_shipping_date($shipping_date) {
+		$this->shipping_date = $shipping_date;
+	}
+
+	/**
+	 * 出荷区分を設定する
+	 *
+	 * @param string $shipping_div 出荷区分
+	 */
+	public function set_shipping_div($shipping_div) {
+		$this->shipping_div = $shipping_div;
+	}
+
+	/**
+	 * 倉庫区分を設定する
+	 *
+	 * @param string $warehouse_div 倉庫区分
+	 */
+	public function set_warehouse_div($warehouse_div) {
+		$this->warehouse_div = $warehouse_div;
+	}
+
+	/**
+	 * オーダーNo.を設定する
+	 *
+	 * @param int $order_no オーダーNo.
+	 */
+	public function set_order_no($order_no) {
+		$this->order_no = $order_no;
 	}
 
 	/**

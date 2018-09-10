@@ -220,22 +220,6 @@
 </div>
 <!--#item list end -->
 
-<!--#ship date start -->
-<div class="shipDate hDate">
-	<strong>
-		納品希望日
-	</strong>
-
-	<ul>
-		<li>
-			<p>
-				<?php echo $delivery_date($data, 'delivery_date'); ?>
-			</p>
-		</li>
-	</ul>
-</div>
-<!--#ship date end -->
-
 <!--#ship addr start -->
 <div class="deliveryAddr hAddr">
 	<strong>
@@ -365,6 +349,102 @@
 	</ul>
 </div>
 <!--#ship addr end -->
+
+<!--#ship date start -->
+<div class="shipDate hDate">
+	<strong>
+		発注タイプ
+	</strong>
+
+	<ul>
+		<li>
+			<p>
+				<?php echo Arr::get($data, 'order_type_name'); ?>
+			</p>
+		</li>
+	</ul>
+</div>
+<!--#ship date end -->
+
+<!--#ship date start -->
+<div class="shipDate hDate">
+	<strong>
+		出荷予定日
+	</strong>
+
+	<ul>
+		<li>
+			<p>
+				<?php echo $shipping_date($data, 'shipping_date'); ?>
+			</p>
+		</li>
+	</ul>
+</div>
+<!--#ship date end -->
+
+<!--#ship date start -->
+<div class="shipDate hDate">
+	<strong>
+		納期
+	</strong>
+
+	<ul>
+		<li>
+			<p>
+				<?php echo $delivery_date($data, 'delivery_date'); ?>
+			</p>
+		</li>
+	</ul>
+</div>
+<!--#ship date end -->
+
+<!--#ship date start -->
+<div class="shipDate hDate">
+	<strong>
+		出荷区分
+	</strong>
+
+	<ul>
+		<li>
+			<p>
+				<?php echo Arr::get($data, 'shipping_div_name'); ?>
+			</p>
+		</li>
+	</ul>
+</div>
+<!--#ship date end -->
+
+<!--#ship date start -->
+<div class="shipDate hDate">
+	<strong>
+		倉庫
+	</strong>
+
+	<ul>
+		<li>
+			<p>
+				<?php echo Arr::get($data, 'warehouse_div_name'); ?>
+			</p>
+		</li>
+	</ul>
+</div>
+<!--#ship date end -->
+
+<!--#ship date start -->
+<div class="shipDate hDate">
+	<strong>
+		オーダーNo.
+	</strong>
+
+	<ul>
+		<li>
+			<p>
+				<?php echo Arr::get($data, 'order_no'); ?>
+			</p>
+		</li>
+	</ul>
+</div>
+<!--#ship date end -->
 
 <!--#remarks start -->
 <div class="remarks hRemark">

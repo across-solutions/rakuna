@@ -88,12 +88,12 @@ class Controller_Ajax_Delivery extends Controller_Ajax_Base {
 		$result['address3'] = Arr::get($delivery, 'address3');
 		$result['tel'] = Arr::get($delivery, 'tel');
 		$result['fax'] = Arr::get($delivery, 'fax');
-
+/*
 		$dates = \Common_Util::get_delivery_dates('deliveries', $member_code, Arr::get($delivery, 'code'));
 		foreach ($dates as $key => $value) {
 			$result['dates'][] = array($key => $value);
 		}
-
+*/
 		return $this->response($result);
 	}
 }

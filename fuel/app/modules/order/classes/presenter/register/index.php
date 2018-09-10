@@ -1,6 +1,7 @@
 <?php
 namespace Order;
 use Fuel\Core\DB;
+use Fuel\Core\Config;
 /**
  * レジプレゼンタクラス
  */
@@ -11,6 +12,14 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 	 */
 	public function view() {
 		parent::view();
+
+		$this->order_types = $this->get_order_type_list();
+
+		$this->shipping_div = array('' => '');
+		$this->shipping_div += Config::get('define.shipping_div');
+
+		$this->warehouse_div = array('' => '');
+		$this->warehouse_div += Config::get('define.warehouse_div');
 
 		$this->dates = $this->get_delivery_dates();
 
@@ -28,7 +37,7 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		$start = date('Y-m-d', strtotime('+1 day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
-		$dates = \Common_Util::range_date($start, $limit, '指定しない');
+		$dates = \Common_Util::range_date($start, $limit, '');
 
 		$holidays = \Model_Holiday::query()
 			->where('date', '>=', $start)
@@ -41,6 +50,28 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		}
 
 		return $dates;
+	}
+
+	/**
+	 * 発注タイプリストを取得する
+	 */
+	private function get_order_type_list() {
+		$query = DB::select('order_types.id', 'order_types.name')
+					->from('order_types')
+					->where('order_types.del_flg', '=', DB::escape(UNDELETED))
+					->order_by('order_types.id', 'asc');
+
+		$order_types = $query->execute()->as_array();
+
+		$list = array();
+		if (!empty($order_types)) {
+			$list[''] = '';
+			foreach ($order_types as $order_type) {
+				$list[$order_type['id']] = $order_type['name'];
+			}
+		}
+
+		return $list;
 	}
 
 	/**

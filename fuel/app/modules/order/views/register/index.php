@@ -402,8 +402,41 @@
 		<!--#ship date start -->
 		<div class="shipDate">
 			<strong>
-				納品希望日
-				<?php echo $validate_error_message('delivery_date_check'); ?>
+				発注タイプ
+			</strong>
+
+			<ul>
+				<li>
+					<div class="deliveryWrap">
+						<?php echo Form::select('order_type', $data->get_order_type(), $order_types, array('id' => 'order_type_select')); ?>
+						<?php echo $validate_error_message('order_type'); ?>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<!--#ship date end -->
+
+		<!--#ship date start -->
+		<div class="shipDate">
+			<strong>
+				出荷予定日
+			</strong>
+
+			<ul>
+				<li>
+					<div class="deliveryWrap">
+						<?php echo Form::select('shipping_date', $data->get_shipping_date(), $dates, array('id' => 'shipping_date_select')); ?>
+						<?php echo $validate_error_message('shipping_date'); ?>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<!--#ship date end -->
+
+		<!--#ship date start -->
+		<div class="shipDate">
+			<strong>
+				納期
 			</strong>
 
 			<ul>
@@ -412,12 +445,63 @@
 						<?php echo Form::select('delivery_date', $data->get_delivery_date(), $dates, array('id' => 'delivery_date_select')); ?>
 					</div>
 					<p>
-						納品希望日がある場合はご指定ください。
+						納期がある場合はご指定ください。
 					</p>
 					<em>
 						※ご希望に添えない場合もございます。ご了承ください。
 					</em>
 					<?php echo $validate_error_message('delivery_date'); ?>
+				</li>
+			</ul>
+		</div>
+		<!--#ship date end -->
+
+		<!--#ship date start -->
+		<div class="shipDate">
+			<strong>
+				出荷区分
+			</strong>
+
+			<ul>
+				<li>
+					<div class="deliveryWrap">
+						<?php echo Form::select('shipping_div', $data->get_shipping_div(), $shipping_div, array('id' => 'shipping_div_select')); ?>
+						<?php echo $validate_error_message('shipping_div'); ?>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<!--#ship date end -->
+
+		<!--#ship date start -->
+		<div class="shipDate">
+			<strong>
+				倉庫
+			</strong>
+
+			<ul>
+				<li>
+					<div class="deliveryWrap">
+						<?php echo Form::select('warehouse_div', $data->get_warehouse_div(), $warehouse_div, array('id' => 'warehouse_div_select')); ?>
+						<?php echo $validate_error_message('warehouse_div'); ?>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<!--#ship date end -->
+
+		<!--#ship date start -->
+		<div class="shipDate">
+			<strong>
+				オーダーNo.
+			</strong>
+
+			<ul>
+				<li>
+					<div class="deliveryWrap">
+						<?php echo Form::input('order_no', $data->get_order_no(), array('id' => 'order_no', 'placeholder' => '')); ?>
+						<?php echo $validate_error_message('order_no'); ?>
+					</div>
 				</li>
 			</ul>
 		</div>

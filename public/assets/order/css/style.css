@@ -2502,6 +2502,16 @@ input.sortNum[type="text"]{
 	-webkit-appearance: button;
 }
 
+.shipDate ul li input[type="text"]{
+	width:100%;
+	box-sizing:border-box;
+	border: 1px solid #999;
+	border-radius: 2px;
+	padding:0.6em;
+	background:none;
+	outline:none;
+}
+
 .shipDate ul li p{
 	color:#333;
 	font-size:1rem;
@@ -3868,6 +3878,97 @@ opacity:0;
 	background: #eee;
 }
 
+
+
+/* ship addr add css */
+.deliveryAddr{
+	width:auto;
+	margin:1em 0;
+	padding:0 0.8em;
+}
+
+.deliveryAddr strong{
+	display:block;
+	color:#333;
+	font-size:1.2rem;
+}
+
+.deliveryAddr ul{
+	margin:0;
+	padding:0;
+	list-style-type:none;
+}
+
+.deliveryAddr ul li{
+	margin:0 0 0.8em 0;
+}
+
+.deliveryAddr ul li:last-child{
+	margin:0;
+}
+
+.deliveryAddr ul li label{
+	display:block;
+	padding:0.5em;
+	background:#fafafa;
+	border:1px solid #ccc;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
+.deliveryAddr ul li input[type="text"]{
+	width:100%;
+	box-sizing:border-box;
+	border: 1px solid #999;
+	border-radius: 2px;
+	padding:0.6em;
+	background:none;
+	outline:none;
+}
+
+.deliveryWrap{
+	position:relative;
+}
+
+.deliveryAddr .deliveryWrap:after{
+	display:none;
+}
+
+.deliveryAddr ul li p{
+	color:#333;
+	font-size:100%;
+	margin:0;
+}
+
+.deliveryAddr ul li em{
+	color:#999;
+	font-size:90%;
+	font-style:normal;
+	letter-spacing:-0.025em;
+}
+
+.deliveryAddr dd{
+	margin:0;
+}
+
+.deliveryAddr ul li select{
+	width:100%;
+	padding:0.6em;
+	border:1px solid #999;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+
+	appearance: button;
+	-webkit-appearance: button;
+}
 
 
 /* ==========================================================================
