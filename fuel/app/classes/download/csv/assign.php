@@ -17,11 +17,7 @@ class Download_Csv_Assign extends Download_Csv_Base {
 	 */
 	protected function get_data($params) {
 		$query = DB::select(array('item_assigns.item_code', 'item_code'), array('members.code', 'member_code'),
-				array('item_assigns.price', 'item_price'), array('item_assigns.price_case', 'item_price_case'),
-				array('item_assigns.price_carton', 'item_price_carton'),
-				array('item_assigns.unit_code', 'item_unit_code'),
-				array('item_assigns.unit_code_case', 'item_unit_code_case'),
-				array('item_assigns.unit_code_carton', 'item_unit_code_carton'))
+				array('item_assigns.price', 'item_price'), array('item_assigns.price_case', 'item_price_case'))
 			->from('item_assigns')
 			->join('items', 'INNER')
 				->on('item_assigns.item_code', '=', 'items.code')
@@ -29,15 +25,6 @@ class Download_Csv_Assign extends Download_Csv_Base {
 			->join('members', 'INNER')
 				->on('item_assigns.member_id', '=', 'members.id')
 				->on('members.del_flg', '=', DB::escape(UNDELETED))
-			->join(array('item_units', 'item_unit'), 'LEFT')
-				->on('item_unit.code', '=', 'item_assigns.unit_code')
-				->on('item_unit.del_flg', '=', DB::escape(UNDELETED))
-			->join(array('item_units', 'item_unit_case'), 'LEFT')
-				->on('item_unit_case.code', '=', 'item_assigns.unit_code_case')
-				->on('item_unit_case.del_flg', '=', DB::escape(UNDELETED))
-			->join(array('item_units', 'item_unit_carton'), 'LEFT')
-				->on('item_unit_carton.code', '=', 'item_assigns.unit_code_carton')
-				->on('item_unit_carton.del_flg', '=', DB::escape(UNDELETED))
 			->order_by('members.code', 'asc')
 			->order_by('items.code', 'asc');
 

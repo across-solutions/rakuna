@@ -18,11 +18,6 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	private $is_update_record = false;
 
 	/**
-	 * 拠点リスト
-	 */
-	private $warehouses = array();
-
-	/**
 	 * ログインIDリスト
 	 */
 	private $usernames = array();
@@ -55,28 +50,32 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::validate()
 	 */
 	protected function validate(&$data, $num) {
-		$this->is_update_record = array_key_exists($data['sales_representative_sales_person_code'], $this->sales_representatives);
+		$control_code = $data['control_code'];
+		if (!$this->validate_control_code($control_code, $num)) {
+			return false;
+		}
 
-		foreach ($data as $key => $value) {
-			switch ($key) {
-				case 'warehouse_code':
-					$this->validate_warehouse_code($value, $num);
-					break;
-				case 'sales_representative_sales_person_code':
-					$this->validate_sales_representative_sales_person_code($value, $num);
-					break;
-				case 'sales_representative_sales_person_name':
-					$this->validate_sales_representative_sales_person_name($value, $num);
-					break;
-				case 'sales_representative_auth_div':
-					$this->validate_sales_representative_auth_div($value, $num);
-					break;
-				case 'sales_representative_username':
-					$this->validate_sales_representative_username($value, $num, $data['sales_representative_sales_person_code']);
-					break;
-				case 'sales_representative_password':
-					$this->validate_sales_representative_password($value, $num);
-					break;
+		if ($control_code == '0') {
+			foreach ($data as $key => $value) {
+				switch ($key) {
+					case 'sales_person_code':
+						$this->validate_sales_person_code($value, $num);
+						break;
+					case 'sales_person_name':
+						$this->validate_sales_person_name($value, $num);
+						break;
+					case 'username':
+						$this->validate_username($value, $num, $data['sales_person_code']);
+						break;
+					case 'password':
+						$this->validate_password($value, $num);
+						break;
+				}
+			}
+		} elseif ($control_code == '1') {
+			// 削除
+			if (!array_key_exists($data['sales_person_code'], $this->sales_representatives)) {
+				return false;
 			}
 		}
 
@@ -87,27 +86,23 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::save_line()
 	 */
 	protected function save_line($data) {
-		if (array_key_exists($data['sales_representative_sales_person_code'], $this->sales_representatives)) {
-			if (!$this->update_sales_representative($this->sales_representatives[$data['sales_representative_sales_person_code']], $data)) {
-				return false;
-			}
-			unset($this->sales_representatives[$data['sales_representative_sales_person_code']]);
-		} else {
-			if (!$this->insert_sales_representative($data)) {
-				return false;
-			}
-		}
+		$control_code = $data['control_code'];
 
-		return true;
-	}
-
-	/**
-	 * @see Upload_Csv_Base::save_after()
-	 */
-	protected function save_after() {
-		foreach ($this->sales_representatives as $sales_representative) {
-			if (!$this->delete_sales_representative($sales_representative)) {
-				return false;
+		if ($control_code == '0') {
+			if (array_key_exists($data['sales_person_code'], $this->sales_representatives)) {
+				if (!$this->update_sales_representative($this->sales_representatives[$data['sales_person_code']], $data)) {
+					return false;
+				}
+			} else {
+				if (!$this->insert_sales_representative($data)) {
+					return false;
+				}
+			}
+		} elseif ($control_code == '1') {
+			if (array_key_exists($data['sales_person_code'], $this->sales_representatives)) {
+				if (!$this->delete_sales_representative($this->sales_representatives[$data['sales_person_code']])) {
+					return false;
+				}
 			}
 		}
 
@@ -118,24 +113,25 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::get_unique_key()
 	 */
 	protected function get_unique_key($data) {
-		return $data['sales_representative_sales_person_code'];
+		return $data['sales_person_code'];
 	}
 
 	/**
-	 * 拠点コードバリデート
+	 * 状態フラグバリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
-	private function validate_warehouse_code($value, $num) {
+	private function validate_control_code($value, $num) {
 		if ($value == '') {
-			parent::set_error($num, '拠点コードを入力してください');
+			parent::set_error($num, '状態フラグを入力してください');
 			return false;
 		}
-		if (!array_key_exists($value, $this->warehouses)) {
-			parent::set_error($num, '拠点が存在しません[' . $value . ']');
+		if ($value != '0' && $value != '1') {
+			parent::set_error($num, '状態フラグは0、または、1で入力してください[' .$value .']');
 			return false;
 		}
+		return true;
 	}
 
 	/**
@@ -144,7 +140,7 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
-	private function validate_sales_representative_sales_person_code($value, $num) {
+	private function validate_sales_person_code($value, $num) {
 		if ($value == '') {
 			parent::set_error($num, '営業担当者コードを入力してください');
 			return false;
@@ -166,7 +162,7 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
-	private function validate_sales_representative_sales_person_name($value, $num) {
+	private function validate_sales_person_name($value, $num) {
 		if ($value == '') {
 			parent::set_error($num, '営業担当者名を入力してください');
 			return false;
@@ -181,32 +177,13 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	}
 
 	/**
-	 * 代理発注権限バリデート
-	 *
-	 * @param string $value 値
-	 * @param int $num 行番号
-	 */
-	private function validate_sales_representative_auth_div($value, $num) {
-		if ($value == '') {
-			parent::set_error($num, '代理発注権限を入力してください');
-			return false;
-		}
-
-		if (in_array($value, Config::get('define.auth_div')) === false) {
-			parent::set_error($num, '代理発注権限が不正です[' . $value . ']');
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * ログインIDバリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 * @param string $sales_person_code 営業担当者コード
 	 */
-	private function validate_sales_representative_username($value, $num, $sales_person_code) {
+	private function validate_username($value, $num, $sales_person_code) {
 		if (is_null($value) || $value == '') {
 			if ($this->is_update_record) {
 				parent::set_error($num, 'ログインIDを入力してください');
@@ -251,7 +228,7 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
-	private function validate_sales_representative_password($value, $num) {
+	private function validate_password($value, $num) {
 		if (is_null($value) || $value == '') {
 			if ($this->is_update_record) {
 				parent::set_error($num, 'パスワードを入力してください');
@@ -274,18 +251,6 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 		}
 
 		return true;
-	}
-
-	/**
-	 * 拠点コードリストを取得する
-	 */
-	private function list_warehouse_code() {
-		return DB::select('code', 'id')
-			->from('warehouses')
-			->where('del_flg', UNDELETED)
-			->order_by('code', 'asc')
-			->execute()
-			->as_array('code', 'id');
 	}
 
 	/**
@@ -324,7 +289,7 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function create_username($data) {
-		$username = $data['sales_representative_username'];
+		$username = $data['username'];
 		if (!is_null($username) && $username != '') {
 			return $username;
 		}
@@ -344,7 +309,7 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function create_password($data) {
-		$password = $data['sales_representative_password'];
+		$password = $data['password'];
 		if (!is_null($password) && $password != '') {
 			return $password;
 		}

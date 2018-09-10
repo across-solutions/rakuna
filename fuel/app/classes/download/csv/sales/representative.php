@@ -34,6 +34,10 @@ class Download_Csv_Sales_Representative extends Download_Csv_Base {
 	 * @see Download_Csv_Base::modifier()
 	 */
 	protected function modifier($counter, $data, $key) {
+		if ($key == 'control_code') {
+			return '0';
+		}
+
 		return parent::modifier($counter, $data, $key);
 	}
 

@@ -128,6 +128,12 @@ define('FILE_NAME_DOWNLOAD_ASSIGN', 'assign.csv');
 // 発注者CSVダウンロードファイル名
 define('FILE_NAME_DOWNLOAD_MEMBER', 'member.csv');
 
+// 納品先CSVダウンロードファイル名
+define('FILE_NAME_DOWNLOAD_DELIVERY', 'delivery.csv');
+
+// 営業担当者CSVダウンロードファイル名
+define('FILE_NAME_DOWNLOAD_SALES_REPRESENTATIVE', 'sales_representative.csv');
+
 // 非営業日CSVダウンロードファイル名
 define('FILE_NAME_DOWNLOAD_HOLIDAY', 'holiday.csv');
 
@@ -225,7 +231,9 @@ return array(
 		'member' => 5,						// 発注者CSV
 		'holiday' => 6,						// 非営業日CSV
 		'recommended_item' => 7,			// いつもの商品CSV
-		'recommended_group_assign' => 8		// いつものグループ割当CSV
+		'recommended_group_assign' => 8,	// いつものグループ割当CSV
+		'delivery' => 9,					// 納品先CSV
+		'sales_representative' => 10		// 営業担当者CSV
 	),
 
 	// 管理側ユーザグループ種類

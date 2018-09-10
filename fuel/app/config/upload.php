@@ -145,6 +145,18 @@ return array(
 			'extension' => 'csv',
 			'max_size' => 20971520
 		),
+		'delivery_csv' => array(
+			'ext_whitelist' => array('csv'),
+			'type_whitelist' => array('text'),
+			'extension' => 'csv',
+			'max_size' => 20971520
+		),
+		'sales_representative_csv' => array(
+			'ext_whitelist' => array('csv'),
+			'type_whitelist' => array('text'),
+			'extension' => 'csv',
+			'max_size' => 20971520
+		),
 		'item_image' => array(
 			'ext_whitelist' => array('jpg', 'jpeg'),
 			'type_whitelist' => array('image'),
@@ -248,6 +260,14 @@ return array(
 			'max_size' => '20MB'
 		),
 		'member_csv' => array(
+			'extension' => 'CSV',
+			'max_size' => '20MB'
+		),
+		'delivery_csv' => array(
+			'extension' => 'CSV',
+			'max_size' => '20MB'
+		),
+		'sales_representative_csv' => array(
 			'extension' => 'CSV',
 			'max_size' => '20MB'
 		),
