@@ -257,6 +257,42 @@
 			</div>
 		</li>
 
+		<?php $delivery_receiver_name1 = Arr::get($data, 'delivery_receiver_name1'); ?>
+		<?php if (!empty($delivery_receiver_name1)): ?>
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>荷受け人名1
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo $delivery_receiver_name1; ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+		<?php endif; ?>
+
+		<?php $delivery_receiver_name2 = Arr::get($data, 'delivery_receiver_name2'); ?>
+		<?php if (!empty($delivery_receiver_name2)): ?>
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>荷受け人名2
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo $delivery_receiver_name2; ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+		<?php endif; ?>
+
 		<li>
 			<div class="deliveryWrap">
 				<dl>
@@ -407,7 +443,7 @@
 	<ul>
 		<li>
 			<p>
-				<?php echo Arr::get($data, 'shipping_div_name'); ?>
+				<?php echo Arr::get($data, 'shipping_div'); ?>
 			</p>
 		</li>
 	</ul>
@@ -423,7 +459,7 @@
 	<ul>
 		<li>
 			<p>
-				<?php echo Arr::get($data, 'warehouse_div_name'); ?>
+				<?php echo Arr::get($data, 'warehouse_div'); ?>
 			</p>
 		</li>
 	</ul>

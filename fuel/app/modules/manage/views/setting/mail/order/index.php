@@ -58,13 +58,17 @@
 						{$manage-name}：管理者名<br/>
 						{$order-name}：発注者名<br/>
 						{$order-date}：発注日時<br/>
-						{$order-delivery-date}：納品希望日<br/>
-						{$order-comment}：備考欄<br/>
 						{$order-list}：発注内容<br/>
-						{$order-amount-case}：ケース合計金額<br/>
-						{$order-amount}：バラ合計金額<br/>
 						{$order-payment}：合計金額<br/>
-						{$order-tax}：消費税額
+						{$order-tax}：消費税額<br/>
+						{$order-delivery-list}：納品先<br/>
+						{$order-type}：発注タイプ<br/>
+						{$order-shipping-date}：出荷予定日<br/>
+						{$order-delivery-date}：納期<br/>
+						{$order-shipping_div_name}：出荷区分<br/>
+						{$order-warehouse_div_name}：倉庫<br/>
+						{$order-no}：オーダーNo.<br/>
+						{$order-comment}：備考欄<br/>
 					">
 						<span class="icon-question decEdit"></span>
 					</a>
