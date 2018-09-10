@@ -1,6 +1,6 @@
 <?php
 // 発注ログインURL
-define('ORDER_LOGIN_URL', 'http://rakuna.local/order');
+define('ORDER_LOGIN_URL', 'https://www.rakuna-web-order.com/order');
 
 // メンテナンスモード
 define('MAINTENANCE_MODE', false);
