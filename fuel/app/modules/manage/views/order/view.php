@@ -90,7 +90,7 @@
 						</td>
 						<?php if (Common_Setting::is_price() && Common_Setting::is_case()) : ?>
 							<td class="right">
-								<?php echo Common_Util::format_number(Arr::get($row, 'price_case_tax')); ?>
+								<?php echo Common_Util::format_number(\Common_Util::add_tax($row['price_case'] * $row['item_size_case'], $data['tax_rate'], 1)); ?>
 							</td>
 						<?php endif; ?>
 						<?php if (Common_Setting::is_case()) : ?>
@@ -100,7 +100,7 @@
 						<?php endif; ?>
 						<?php if (Common_Setting::is_price()) : ?>
 							<td class="right">
-								<?php echo Common_Util::format_number(Arr::get($row, 'price_tax')); ?>
+								<?php echo Common_Util::format_number(\Common_Util::add_tax($row['price'] * $row['item_size'], $data['tax_rate'], 1)); ?>
 							</td>
 						<?php endif; ?>
 						<td class="right">
@@ -114,19 +114,6 @@
 
 	</div>
 	<!--#dig list end -->
-
-	<!--#dig comment start -->
-	<div class="digComment">
-		<dl>
-			<dt>
-				納品希望日
-			</dt>
-			<dd>
-				<?php echo $delivery_date($data, 'delivery_date'); ?>
-			</dd>
-		</dl>
-	</div>
-	<!--#dig comment end -->
 
 	<!--#dig shipAddr start -->
 	<div class="digDeliveryAddr">
@@ -166,6 +153,42 @@
 					</dl>
 				</div>
 			</li>
+
+			<?php $delivery_receiver_name1 = Arr::get($data, 'delivery_receiver_name1'); ?>
+			<?php if (!empty($delivery_receiver_name1)): ?>
+				<li>
+					<div class="deliveryWrap">
+						<dl>
+							<dt>
+								<span class="icon-caret-right mr"></span>荷受け人名1
+							</dt>
+							<dd>
+								<span class="deliveryAddrBox">
+									<?php echo $delivery_receiver_name1; ?>
+								</span>
+							</dd>
+						</dl>
+					</div>
+				</li>
+			<?php endif; ?>
+
+			<?php $delivery_receiver_name2 = Arr::get($data, 'delivery_receiver_name2'); ?>
+			<?php if (!empty($delivery_receiver_name2)): ?>
+				<li>
+					<div class="deliveryWrap">
+						<dl>
+							<dt>
+								<span class="icon-caret-right mr"></span>荷受け人名2
+							</dt>
+							<dd>
+								<span class="deliveryAddrBox">
+									<?php echo $delivery_receiver_name2; ?>
+								</span>
+							</dd>
+						</dl>
+					</div>
+				</li>
+			<?php endif; ?>
 
 			<li>
 				<div class="deliveryWrap">
@@ -259,6 +282,84 @@
 		</ul>
 	</div>
 	<!--#dig shipAddr end -->
+
+	<!--#dig comment start -->
+	<div class="digComment">
+		<dl>
+			<dt>
+				発注タイプ
+			</dt>
+			<dd>
+				<?php echo Arr::get($data, 'order_type_name'); ?>
+			</dd>
+		</dl>
+	</div>
+	<!--#dig comment end -->
+
+	<!--#dig comment start -->
+	<div class="digComment">
+		<dl>
+			<dt>
+				出荷予定日
+			</dt>
+			<dd>
+				<?php echo $shipping_date($data, 'shipping_date'); ?>
+			</dd>
+		</dl>
+	</div>
+	<!--#dig comment end -->
+
+	<!--#dig comment start -->
+	<div class="digComment">
+		<dl>
+			<dt>
+				納期
+			</dt>
+			<dd>
+				<?php echo $delivery_date($data, 'delivery_date'); ?>
+			</dd>
+		</dl>
+	</div>
+	<!--#dig comment end -->
+
+	<!--#dig comment start -->
+	<div class="digComment">
+		<dl>
+			<dt>
+				出荷区分
+			</dt>
+			<dd>
+				<?php echo Arr::get($data, 'shipping_div'); ?>
+			</dd>
+		</dl>
+	</div>
+	<!--#dig comment end -->
+
+	<!--#dig comment start -->
+	<div class="digComment">
+		<dl>
+			<dt>
+				倉庫
+			</dt>
+			<dd>
+				<?php echo Arr::get($data, 'warehouse_div'); ?>
+			</dd>
+		</dl>
+	</div>
+	<!--#dig comment end -->
+
+	<!--#dig comment start -->
+	<div class="digComment">
+		<dl>
+			<dt>
+				オーダーNo.
+			</dt>
+			<dd>
+				<?php echo Arr::get($data, 'order_no'); ?>
+			</dd>
+		</dl>
+	</div>
+	<!--#dig comment end -->
 
 	<!--#dig comment start -->
 	<div class="digComment">

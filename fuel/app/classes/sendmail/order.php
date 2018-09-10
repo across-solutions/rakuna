@@ -98,15 +98,15 @@ class Sendmail_Order extends Sendmail_Base {
 			$text .= '商品名 : ' . $detail->item_name . "\n";
 			if (Common_Setting::is_price()) {
 				if (Common_Setting::is_case() && $detail->amount_case > 0) {
-					$text .= $detail->item_unit_name_case . ' : ' . Common_Util::format_number(\Common_Util::add_tax($detail->price_case * $detail->item_size_case)) . '円 × '
+					$text .= $detail->item_unit_name_case . ' : ' . Common_Util::format_number(\Common_Util::add_tax($detail->price_case * $detail->item_size_case, $order->tax_rate, 1)) . '円 × '
 						. Common_Util::format_number($detail->amount_case) . ' = '
-						. Common_Util::format_number(\Common_Util::add_tax($detail->price_case * $detail->item_size_case * $detail->amount_case)) . "円\n";
+						. Common_Util::format_number(\Common_Util::add_tax($detail->price_case * $detail->item_size_case * $detail->amount_case, $order->tax_rate, 1)) . "円\n";
 				}
 				if ($detail->amount > 0) {
 					$text .= Common_Setting::is_case() ? $detail->item_unit_name . ' : ' : '金額　： ';
-					$text .= Common_Util::format_number(\Common_Util::add_tax($detail->price * $detail->item_size)) . '円 × '
+					$text .= Common_Util::format_number(\Common_Util::add_tax($detail->price * $detail->item_size, $order->tax_rate, 1)) . '円 × '
 						. Common_Util::format_number($detail->amount) . ' = '
-						. Common_Util::format_number(\Common_Util::add_tax($detail->price * $detail->item_size * $detail->amount)) . "円\n";
+						. Common_Util::format_number(\Common_Util::add_tax($detail->price * $detail->item_size * $detail->amount, $order->tax_rate, 1)) . "円\n";
 				}
 			} else {
 				if (Common_Setting::is_case() && $detail->amount_case > 0) {

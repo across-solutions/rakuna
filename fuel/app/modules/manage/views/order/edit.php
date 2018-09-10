@@ -98,13 +98,13 @@
 		<tbody>
 			<?php foreach($order->order_details as $row) : ?>
 				<?php echo Presenter::forge('base', 'view', null,
-											View::forge('order/edit_row', array('row' => $row))
+											View::forge('order/edit_row', array('row' => $row, 'order' => $order))
 				);?>
 			<?php endforeach ?>
 
 			<?php foreach($new_order_details as $row) : ?>
 				<?php echo Presenter::forge('base', 'view', null,
-											View::forge('order/edit_row', array('row' => $row))
+											View::forge('order/edit_row', array('row' => $row, 'order' => $order))
 				);?>
 			<?php endforeach ?>
 		</tbody>
@@ -112,19 +112,6 @@
 
 </div>
 <!--#dig list end -->
-
-<!--#dig comment start -->
-<div class="digComment">
-	<dl>
-		<dt>
-			納品希望日
-		</dt>
-		<dd>
-			<?php echo $delivery_date($order, 'delivery_date'); ?>
-		</dd>
-	</dl>
-</div>
-<!--#dig comment end -->
 
 <!--#dig shipAddr start -->
 <div class="digDeliveryAddr">
@@ -164,6 +151,42 @@
 				</dl>
 			</div>
 		</li>
+
+		<?php $delivery_receiver_name1 = Arr::get($order, 'delivery_receiver_name1'); ?>
+		<?php if (!empty($delivery_receiver_name1)): ?>
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>荷受け人名1
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo $delivery_receiver_name1; ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+		<?php endif; ?>
+
+		<?php $delivery_receiver_name2 = Arr::get($order, 'delivery_receiver_name2'); ?>
+		<?php if (!empty($delivery_receiver_name2)): ?>
+			<li>
+				<div class="deliveryWrap">
+					<dl>
+						<dt>
+							<span class="icon-caret-right mr"></span>荷受け人名2
+						</dt>
+						<dd>
+							<span class="deliveryAddrBox">
+								<?php echo $delivery_receiver_name2; ?>
+							</span>
+						</dd>
+					</dl>
+				</div>
+			</li>
+		<?php endif; ?>
 
 		<li>
 			<div class="deliveryWrap">
@@ -257,6 +280,144 @@
 	</ul>
 </div>
 <!--#dig shipAddr end -->
+
+<!--#dig ship dates start -->
+<div class="digShipDates">
+	<div class="title">
+		<strong>
+			発注タイプ
+		</strong>
+	</div>
+
+	<ul>
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dd>
+						<span class="shipDatesBox">
+							<?php echo Form::select('order_type', Arr::get($order, 'order_type_id'), $order_types, array('id' => 'order_type_select')); ?>
+						</span>
+						<?php echo $validate_error_message('order_type'); ?>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</ul>
+</div>
+<!--#dig ship dates end -->
+
+<!--#dig ship dates start -->
+<div class="digShipDates">
+	<div class="title">
+		<strong>
+			出荷予定日
+		</strong>
+	</div>
+
+	<ul>
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dd>
+						<span class="shipDatesBox">
+							<?php echo Form::input('shipping_date', Arr::get($order, 'shipping_date'), array('id' => 'catShippingDate', 'placeholder' => 'YYYY-MM-DD')); ?>
+						</span>
+						<?php echo $validate_error_message('shipping_date'); ?>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</ul>
+</div>
+<!--#dig ship dates end -->
+
+<!--#dig comment start -->
+<div class="digComment">
+	<dl>
+		<dt>
+			納期
+		</dt>
+		<dd>
+			<?php echo $delivery_date($order, 'delivery_date'); ?>
+		</dd>
+	</dl>
+</div>
+<!--#dig comment end -->
+
+<!--#dig ship dates start -->
+<div class="digShipDates">
+	<div class="title">
+		<strong>
+			出荷区分
+		</strong>
+	</div>
+
+	<ul>
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dd>
+						<span class="shipDatesBox">
+							<?php echo Form::select('shipping_div', Arr::get($order, 'shipping_div'), $shipping_div, array('id' => 'shipping_div_select')); ?>
+						</span>
+						<?php echo $validate_error_message('shipping_div'); ?>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</ul>
+</div>
+<!--#dig ship dates end -->
+
+<!--#dig ship dates start -->
+<div class="digShipDates">
+	<div class="title">
+		<strong>
+			倉庫
+		</strong>
+	</div>
+
+	<ul>
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dd>
+						<span class="shipDatesBox">
+							<?php echo Form::select('warehouse_div', Arr::get($order, 'warehouse_div'), $warehouse_div, array('id' => 'warehouse_div_select')); ?>
+						</span>
+						<?php echo $validate_error_message('warehouse_div'); ?>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</ul>
+</div>
+<!--#dig ship dates end -->
+
+<!--#dig ship dates start -->
+<div class="digShipDates">
+	<div class="title">
+		<strong>
+			オーダーNo.
+		</strong>
+	</div>
+
+	<ul>
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dd>
+						<span class="shipDatesBox">
+							<?php echo Form::input('order_no', Arr::get($order, 'order_no'), array('id' => 'catOrderNo', 'placeholder' => '0000000000')); ?>
+						</span>
+						<?php echo $validate_error_message('order_no'); ?>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</ul>
+</div>
+<!--#dig ship dates end -->
 
 <!--#dig comment start -->
 <div class="digComment">

@@ -164,14 +164,14 @@
 									<?php if (Common_Setting::is_case()) : ?>
 										<p class="hun">
 											<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name_case'); ?></i></span>
-											<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price_case'] * $row['item_size_case'])); ?>円</span>
+											<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price_case'] * $row['item_size_case'], $data['tax_rate'], 1)); ?>円</span>
 										</p>
 									<?php endif; ?>
 									<p class="hun">
 										<?php if (Common_Setting::is_case()) : ?>
 											<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name'); ?></i></span>
 										<?php endif; ?>
-										<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price'] * $row['item_size'])); ?>円</span>
+										<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price'] * $row['item_size'], $data['tax_rate'], 1)); ?>円</span>
 									</p>
 								</td>
 							<?php endif; ?>

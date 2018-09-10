@@ -7,6 +7,7 @@ use Fuel\Core\DB;
 use Fuel\Core\File;
 use Fuel\Core\Format;
 use Fuel\Core\Arr;
+use Fuel\Core\Config;
 /**
  * 受注管理コントローラクラス
  */
@@ -270,7 +271,6 @@ class Controller_Order extends Controller_Base {
 			$total_payment = 0;
 			$total_payment_tax = 0;
 
-
 			foreach ($new_order_details as $detail) {
 
 				$amount = $detail->amount;
@@ -287,10 +287,13 @@ class Controller_Order extends Controller_Base {
 					return false;
 				}
 
+				$tax_price = \Common_Util::add_tax($detail->price * $detail->item_size, $order->tax_rate, 1);
+				$tax_price_case = \Common_Util::add_tax($detail->price_case * $detail->item_size_case, $order->tax_rate, 1);
+
 				$total_amount += $amount;
 				$total_amount_case += $amount_case;
-				$total_payment += $detail->price * $amount + $detail->price_case * $amount_case;
-				$total_payment_tax += $detail->price_tax * $amount + $detail->price_case_tax * $amount_case;
+				$total_payment += $detail->price * $detail->item_size * $amount + $detail->price_case * $detail->item_size_case * $amount_case;
+				$total_payment_tax += $tax_price * $amount + $tax_price_case * $amount_case;
 			}
 
 			foreach ($order->order_details as $detail) {
@@ -309,13 +312,16 @@ class Controller_Order extends Controller_Base {
 					}
 				}
 
+				$tax_price = \Common_Util::add_tax($detail->price * $detail->item_size, $order->tax_rate, 1);
+				$tax_price_case = \Common_Util::add_tax($detail->price_case * $detail->item_size_case, $order->tax_rate, 1);
+
 				$total_amount += $amount;
 				$total_amount_case += $amount_case;
-				$total_payment += $detail->price * $amount + $detail->price_case * $amount_case;
-				$total_payment_tax += $detail->price_tax * $amount + $detail->price_case_tax * $amount_case;
+				$total_payment += $detail->price * $detail->item_size * $amount + $detail->price_case * $detail->item_size_case * $amount_case;
+				$total_payment_tax += $tax_price * $amount + $tax_price_case * $amount_case;
 			}
 
-			if (!$this->update_order($order, $total_amount, $total_amount_case, $total_payment, $total_payment_tax)) {
+			if (!$this->update_order($order, $total_amount, $total_amount_case, $total_payment, $total_payment_tax, $data)) {
 				DB::rollback_transaction();
 				return false;
 			}
@@ -372,6 +378,26 @@ class Controller_Order extends Controller_Base {
 													->add_rule('numeric_between', 0, 100);
 			}
 		}
+
+		$validation->add('order_type', '発注タイプ')
+			->add_rule('required')
+			->add_rule('exist', 'order_types', 'id');
+
+		$validation->add('shipping_div', '出荷区分')
+			->add_rule('required')
+			->add_rule('match_collection', Config::get('define.shipping_div'));
+
+		$validation->add('warehouse_div', '倉庫')
+			->add_rule('required')
+			->add_rule('match_collection', Config::get('define.warehouse_div'));
+
+		$validation->add('order_no', 'オーダーNo.')
+			->add_rule('numeric')
+			->add_rule('max_length', 10);
+
+		$validation->add('shipping_date', '出荷予定日')
+			->add_rule('required')
+			->add_rule('valid_date', 'Y-m-d');
 
 		return $this->validate($validation, $data);
 	}
@@ -484,6 +510,50 @@ class Controller_Order extends Controller_Base {
 	}
 
 	/**
+	 * 商品を取得する
+	 *
+	 * @param int $item_id 商品ID
+	 * @param int $member_id 発注者ID
+	 */
+	private function get_item($item_id, $member_id) {
+		$query = DB::select('items.id', 'items.code', 'items.jan_code', 'items.name',
+				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size', 'items.type',
+				array('item_categories.code', 'category_code'),
+				array('item_categories.name', 'category_name'),
+				array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
+				array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'))
+			->from('items')
+			->join('item_categories', 'LEFT')
+				->on('item_categories.id', '=', 'items.item_category_id')
+				->on('item_categories.del_flg', '=', DB::escape(UNDELETED))
+			->where('items.id', '=', $item_id)
+			->where('items.del_flg', '=', UNDELETED);
+
+		$query->join('item_assigns', 'LEFT')
+			->on('item_assigns.item_code', '=', 'items.code')
+			->on('item_assigns.member_id', '=', DB::escape($member_id))
+			->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
+
+		$item = $query->execute()->current();
+
+		return $item;
+	}
+
+	/**
+	 * 発注タイプリストを取得する
+	 *
+	 * @param int $order_type_id 発注タイプID
+	 */
+	private function get_order_type($order_type_id) {
+		$query = DB::select('order_types.id', 'order_types.name')
+					->from('order_types')
+					->where('order_types.id', '=', $order_type_id)
+					->where('order_types.del_flg', '=', UNDELETED);
+
+		return $query->execute()->current();
+	}
+
+	/**
 	 * 受注を更新する
 	 *
 	 * @param Model_Order $order 受注
@@ -491,10 +561,16 @@ class Controller_Order extends Controller_Base {
 	 * @param int $amount_case 数量(ケース)
 	 * @param int $payment 合計額
 	 * @param int $payment_tax 合計額(税込)
+	 * @param array $data フォームデータ
 	 */
-	private function update_order($order, $amount, $amount_case, $payment, $payment_tax) {
+	private function update_order($order, $amount, $amount_case, $payment, $payment_tax, $data) {
 		if ($order->amount == $amount && $order->amount_case == $amount_case
-				&& $order->payment == $payment && $order->payment_tax == $payment_tax) {
+				&& $order->payment == $payment && $order->payment_tax == $payment_tax
+				&& $order->order_type_id == $data['order_type']
+				&& $order->shipping_date == $data['shipping_date']
+				&& $order->shipping_div == $data['shipping_div']
+				&& $order->warehouse_div == $data['warehouse_div']
+				&& $order->order_no == $data['order_no']) {
 			return true;
 		}
 
@@ -503,6 +579,18 @@ class Controller_Order extends Controller_Base {
 		$order->payment = $payment;
 		$order->payment_tax = $payment_tax;
 		$order->tax = $payment_tax - $payment;
+
+		$order_type_id = $data['order_type'];
+		$order_type = $this->get_order_type($order_type_id);
+
+		$order->order_type_id = $order_type_id;
+		$order->order_type_name = Arr::get($order_type, 'name');
+		$order->shipping_date = $data['shipping_date'];
+		$order->shipping_div = $data['shipping_div'];
+		$order->shipping_div_name = Config::get('define.shipping_div_disp.' . $data['shipping_div']);
+		$order->warehouse_div = $data['warehouse_div'];
+		$order->warehouse_div_name = Config::get('define.warehouse_div_disp.' . $data['warehouse_div']);
+		$order->order_no = $data['order_no'] === '' ? null : $data['order_no'];
 
 		return $order->save() !== false;
 	}
@@ -539,7 +627,7 @@ class Controller_Order extends Controller_Base {
 		$amounts = $data['new_amount'];
 
 		foreach ($amounts as $id => $amount) {
-			$item = \Model_Item::find($id);
+			$item = $this->get_item($id, $member_id);
 
 			if(!empty($item)){
 				$amount_case = 0;
@@ -555,28 +643,26 @@ class Controller_Order extends Controller_Base {
 	}
 
 	private function create_order_detail($item, $amount, $amount_case) {
-		$item_categories = $item->item_categories;
-
 		$values = array();
-
-		if (!empty($item_categories)) {
-			$values['category_code'] = $item_categories->code;
-			$values['category_name'] = $item_categories->name;
-		}
-
-		$values['item_id'] = $item->id;
-		$values['item_code'] = $item->code;
-		$values['item_name'] = $item->name;
-		$values['item_size'] = $item->size;
-		$values['jan_code'] = $item->jan_code;
-		$values['price'] = $item->price;
-		$values['price_tax'] = \Common_Util::add_tax($values['price']);
+		$values['category_code'] = $item['category_code'];
+		$values['category_name'] = $item['category_name'];
+		$values['item_id'] = $item['id'];
+		$values['item_code'] = $item['code'];
+		$values['item_name'] = $item['name'];
+		$values['item_unit_name'] = $item['unit_name'];
+		$values['item_unit_name_case'] = $item['unit_name_case'];
+		$values['item_size'] = $item['size'];
+		$values['item_size_case'] = $item['size_case'];
+		$values['item_type'] = $item['type'];
+		$values['jan_code'] = $item['jan_code'];
+		$values['price'] = $item['price'];
+		$values['price_tax'] =\Common_Util::add_tax($values['price']);
 		$values['amount'] = $amount;
-		$values['price_case'] = $item->price_case;
+		$values['price_case'] = $item['price_case'];
 		$values['price_case_tax'] = \Common_Util::add_tax($values['price_case']);
 		$values['amount_case'] = $amount_case;
-		$values['total'] = $values['price'] * $values['amount'] + $values['price_case'] * $values['amount_case'];
-		$values['total_tax'] = $values['price_tax'] * $values['amount'] + $values['price_case_tax'] * $values['amount_case'];
+		$values['total'] = $values['price'] * $values['item_size'] * $values['amount'] + $values['price_case'] * $values['item_size_case'] * $values['amount_case'];
+		$values['total_tax'] = \Common_Util::add_tax($values['price'] * $values['item_size'] * $values['amount']) + \Common_Util::add_tax($values['price_case'] * $values['item_size_case'] * $values['amount_case']);
 
 		return \Model_Order_Detail::forge($values);
 	}

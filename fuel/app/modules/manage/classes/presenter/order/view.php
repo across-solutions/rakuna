@@ -13,6 +13,10 @@ class Presenter_Order_View extends \Presenter_Base {
 	public function view() {
 		parent::view();
 
+		$this->shipping_date = function($data, $key) {
+			return $this->shipping_date($data, $key);
+		};
+
 		$this->delivery_date = function($data, $key) {
 			return $this->delivery_date($data, $key);
 		};
@@ -23,7 +27,22 @@ class Presenter_Order_View extends \Presenter_Base {
 	}
 
 	/**
-	 * 納品希望日を取得する
+	 * 出荷予定日を取得する
+	 *
+	 * @param array $data データ配列
+	 * @param string $key キー
+	 */
+	private function shipping_date($data, $key) {
+		$shipping_date = Arr::get($data, $key);
+		if (empty($shipping_date)) {
+			return '';
+		}
+
+		return \Common_Util::add_week_on_date($shipping_date);
+	}
+
+	/**
+	 * 納期を取得する
 	 *
 	 * @param array $data データ配列
 	 * @param string $key キー
@@ -31,7 +50,7 @@ class Presenter_Order_View extends \Presenter_Base {
 	private function delivery_date($data, $key) {
 		$delivery_date = Arr::get($data, $key);
 		if (empty($delivery_date)) {
-			return '納品希望日指定なし';
+			return '';
 		}
 
 		return \Common_Util::add_week_on_date($delivery_date);

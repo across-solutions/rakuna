@@ -14,7 +14,7 @@
 
 	<?php if (Common_Setting::is_price() && Common_Setting::is_case()) : ?>
 		<td class="right">
-			<?php echo Common_Util::format_number(Arr::get($row, 'price_case_tax')); ?>
+			<?php echo Common_Util::format_number(\Common_Util::add_tax($row['price_case'] * $row['item_size_case'], $order['tax_rate'], 1)); ?>
 		</td>
 	<?php endif; ?>
 	<?php if (Common_Setting::is_case()) : ?>
@@ -30,7 +30,7 @@
 	<?php endif; ?>
 	<?php if (Common_Setting::is_price()) : ?>
 		<td class="right">
-			<?php echo Common_Util::format_number(Arr::get($row, 'price_tax')); ?>
+			<?php echo Common_Util::format_number(\Common_Util::add_tax($row['price'] * $row['item_size'], $order['tax_rate'], 1)); ?>
 		</td>
 	<?php endif; ?>
 	<td class="center">
