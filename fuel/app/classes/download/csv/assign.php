@@ -17,7 +17,8 @@ class Download_Csv_Assign extends Download_Csv_Base {
 	 */
 	protected function get_data($params) {
 		$query = DB::select(array('item_assigns.item_code', 'item_code'), array('members.code', 'member_code'),
-				array('item_assigns.price', 'item_price'), array('item_assigns.price_case', 'item_price_case'))
+				array('item_assigns.price', 'item_price'), array('item_assigns.price_case', 'item_price_case'),
+				'item_assigns.hidden_flg_case', 'item_assigns.hidden_flg_single')
 			->from('item_assigns')
 			->join('items', 'INNER')
 				->on('item_assigns.item_code', '=', 'items.code')

@@ -26,11 +26,6 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	private $assigns = array();
 
 	/**
-	 * 商品単位リスト
-	 */
-	private $item_units = array();
-
-	/**
 	 * コンストラクタ
 	 *
 	 * @param array $file CSVファイル
@@ -41,7 +36,6 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 		$this->members = $this->list_member_code();
 		$this->items = $this->list_item_code();
 		$this->assigns = $this->list_assign();
-		$this->item_units = $this->list_item_unit();
 	}
 
 	/**
@@ -64,22 +58,16 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 					$this->validate_item_code($value, $num);
 					break;
 				case 'item_price':
-					$this->validate_price($value, $num, $data['item_unit_code']);
-					break;
-				case 'item_unit_code':
-					$this->validate_unit_code($value, $num, $data['item_price']);
+					$this->validate_price($value, $num);
 					break;
 				case 'item_price_case':
-					$this->validate_price_case($value, $num, $data['item_unit_code_case']);
+					$this->validate_price_case($value, $num);
 					break;
-				case 'item_unit_code_case':
-					$this->validate_unit_code_case($value, $num, $data['item_price_case']);
+				case 'hidden_flg_single':
+					$this->validate_hidden_flg_single($value, $num);
 					break;
-				case 'item_price_carton':
-					$this->validate_price_carton($value, $num, $data['item_unit_code_carton']);
-					break;
-				case 'item_unit_code_carton':
-					$this->validate_unit_code_carton($value, $num, $data['item_price_carton']);
+				case 'hidden_flg_case':
+					$this->validate_hidden_flg_case($value, $num);
 					break;
 				case 'control_code':
 					$this->validate_control_code($value, $num);
@@ -123,7 +111,7 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::get_unique_key()
 	 */
 	protected function get_unique_key($data) {
-		return $data['item_code'] . '_' . $data['member_code'];
+		return $data['item_code'] . $data['member_code'];
 	}
 
 	/**
@@ -168,15 +156,10 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
-	 * @param string $unit_code 単位コード(バラ)
 	 */
-	private function validate_price($value, $num, $unit_code) {
+	private function validate_price($value, $num) {
 		if ($value == '') {
-			if ($unit_code == '') {
-				return true;
-			}
-			parent::set_error($num, '単位コード(バラ)が入力されている場合、単価(バラ)の入力は必須です');
-			return false;
+			return true;
 		}
 		if (!is_numeric($value)) {
 			parent::set_error($num, '単価(バラ)は数値で入力してください[' . $value . ']');
@@ -190,49 +173,14 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	}
 
 	/**
-	 * 単位コード(バラ)バリデート
-	 *
-	 * @param string $value 値
-	 * @param int $num 行番号
-	 * @param string $price 単価(バラ)
-	 */
-	private function validate_unit_code($value, $num, $price) {
-		if ($value == '') {
-			if ($price == '') {
-				return true;
-			}
-			parent::set_error($num, '単価(バラ)が入力されている場合、単位コード(バラ)の入力は必須です');
-			return false;
-		}
-		if (!Common_Validation::_validation_alphanum($value)) {
-			parent::set_error($num, '単位コード(バラ)は半角英数字で入力してください[' . $value . ']');
-			return false;
-		}
-		if (Str::length($value) > 10) {
-			parent::set_error($num, '単位コード(バラ)は10文字以下で入力してください[' . $value . ']');
-			return false;
-		}
-		if (!array_key_exists($value, $this->item_units)) {
-			parent::set_error($num, '単位コード(バラ)は登録されていません[' . $value . ']');
-			return false;
-		}
-		return true;
-	}
-
-	/**
 	 * 単価(ケース)バリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
-	 * @param string $unit_code_case 単位コード(ケース)
 	 */
-	private function validate_price_case($value, $num, $unit_code_case) {
+	private function validate_price_case($value, $num) {
 		if ($value == '') {
-			if ($unit_code_case== '') {
-				return true;
-			}
-			parent::set_error($num, '単位コード(ケース)が入力されている場合、単価(ケース)の入力は必須です');
-			return false;
+			return true;
 		}
 		if (!is_numeric($value)) {
 			parent::set_error($num, '単価(ケース)は数値で入力してください[' . $value . ']');
@@ -246,86 +194,36 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	}
 
 	/**
-	 * 単位コード(ケース)バリデート
+	 * 非表示フラグ(バラ)バリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
-	 * @param string $price_case 単価(ケース)
 	 */
-	private function validate_unit_code_case($value, $num, $price_case) {
+	private function validate_hidden_flg_single($value, $num) {
 		if ($value == '') {
-			if ($price_case== '') {
-				return true;
-			}
-			parent::set_error($num, '単価(ケース)が入力されている場合、単位コード(ケース)の入力は必須です');
+			parent::set_error($num, '非表示フラグ(バラ)を入力してください');
 			return false;
 		}
-		if (!Common_Validation::_validation_alphanum($value)) {
-			parent::set_error($num, '単位コード(ケース)は半角英数字で入力してください[' . $value . ']');
-			return false;
-		}
-		if (Str::length($value) > 10) {
-			parent::set_error($num, '単位コード(ケース)は10文字以下で入力してください[' . $value . ']');
-			return false;
-		}
-		if (!array_key_exists($value, $this->item_units)) {
-			parent::set_error($num, '単位コード(ケース)は登録されていません[' . $value . ']');
+		if ($value != '0' && $value != '1') {
+			parent::set_error($num, '非表示フラグ(バラ)は0、または、1で入力してください[' .$value .']');
 			return false;
 		}
 		return true;
 	}
 
 	/**
-	 * 単価(カートン)バリデート
+	 * 非表示フラグ(ケース)バリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
-	 * @param string $unit_code_carton 単位コード(カートン)
 	 */
-	private function validate_price_carton($value, $num, $unit_code_carton) {
+	private function validate_hidden_flg_case($value, $num) {
 		if ($value == '') {
-			if ($unit_code_carton== '') {
-				return true;
-			}
-			parent::set_error($num, '単位コード(カートン)が入力されている場合、単価(カートン)の入力は必須です');
+			parent::set_error($num, '非表示フラグ(ケース)を入力してください');
 			return false;
 		}
-		if (!is_numeric($value)) {
-			parent::set_error($num, '単価(カートン)は数値で入力してください[' . $value . ']');
-			return false;
-		}
-		if ($value < 0 || $value > 9999999) {
-			parent::set_error($num, '単価(カートン)は0以上、9999999以下で入力してください[' . $value . ']');
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * 単位コード(カートン)バリデート
-	 *
-	 * @param string $value 値
-	 * @param int $num 行番号
-	 * @param string $price_carton 単価(カートン)
-	 */
-	private function validate_unit_code_carton($value, $num, $price_carton) {
-		if ($value == '') {
-			if ($price_carton== '') {
-				return true;
-			}
-			parent::set_error($num, '単価(カートン)が入力されている場合、単位コード(カートン)の入力は必須です');
-			return false;
-		}
-		if (!Common_Validation::_validation_alphanum($value)) {
-			parent::set_error($num, '単位コード(カートン)は半角英数字で入力してください[' . $value . ']');
-			return false;
-		}
-		if (Str::length($value) > 10) {
-			parent::set_error($num, '単位コード(カートン)は10文字以下で入力してください[' . $value . ']');
-			return false;
-		}
-		if (!array_key_exists($value, $this->item_units)) {
-			parent::set_error($num, '単位コード(カートン)は登録されていません[' . $value . ']');
+		if ($value != '0' && $value != '1') {
+			parent::set_error($num, '非表示フラグ(ケース)は0、または、1で入力してください[' .$value .']');
 			return false;
 		}
 		return true;
@@ -377,8 +275,8 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	 * 割当リストを取得する
 	 */
 	private function list_assign() {
-		$assigns = DB::select('id', 'item_code', 'member_id', 'price', 'unit_code',
-							'price_case', 'unit_code_case', 'price_carton', 'unit_code_carton')
+		$assigns = DB::select('id', 'item_code', 'member_id', 'price', 'price_case',
+								'hidden_flg_single', 'hidden_flg_case')
 			->from('item_assigns')
 			->where('del_flg', UNDELETED)
 			->order_by('item_code', 'ASC')
@@ -396,24 +294,6 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	}
 
 	/**
-	 * 商品単位リストを取得する
-	 */
-	private function list_item_unit() {
-		$results = DB::select('code', 'name')
-		->from('item_units')
-		->where('del_flg', '=', UNDELETED)
-		->order_by('code', 'ASC')
-		->execute();
-
-		$list = array();
-		foreach ($results as $result) {
-			$list[$result['code']] = $result;
-		}
-
-		return $list;
-	}
-
-	/**
 	 * 割当商品を登録する
 	 *
 	 * @param array $data 行データ
@@ -424,11 +304,9 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 		$values['item_code'] = $data['item_code'];
 		$values['member_id'] = $member_id;
 		$values['price'] = $data['item_price'] === '' ? null : $data['item_price'];
-		$values['unit_code'] = $data['item_unit_code'] === '' ? null : $data['item_unit_code'];
 		$values['price_case'] = $data['item_price_case'] === '' ? null : $data['item_price_case'];
-		$values['unit_code_case'] = $data['item_unit_code_case'] === '' ? null : $data['item_unit_code_case'];
-		$values['price_carton'] = $data['item_price_carton'] === '' ? null : $data['item_price_carton'];
-		$values['unit_code_carton'] = $data['item_unit_code_carton'] === '' ? null : $data['item_unit_code_carton'];
+		$values['hidden_flg_single'] = $data['hidden_flg_single'];
+		$values['hidden_flg_case'] = $data['hidden_flg_case'];
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
@@ -446,28 +324,20 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	 */
 	private function update_item_assign($data, $assign) {
 		$price = $data['item_price'] === '' ? null : $data['item_price'];
-		$unit_code = $data['item_unit_code'] === '' ? null : $data['item_unit_code'];
 		$price_case = $data['item_price_case'] === '' ? null : $data['item_price_case'];
-		$unit_code_case = $data['item_unit_code_case'] === '' ? null : $data['item_unit_code_case'];
-		$price_carton = $data['item_price_carton'] === '' ? null : $data['item_price_carton'];
-		$unit_code_carton = $data['item_unit_code_carton'] === '' ? null : $data['item_unit_code_carton'];
 
 		if ($price === $assign['price']
-				&& $unit_code === $assign['unit_code']
 				&& $price_case === $assign['price_case']
-				&& $unit_code_case === $assign['unit_code_case']
-				&& $price_carton === $assign['price_carton']
-				&& $unit_code_carton === $assign['unit_code_carton']) {
+				&& $assign['hidden_flg_single'] == $data['hidden_flg_single']
+				&& $assign['hidden_flg_case'] == $data['hidden_flg_case']) {
 			return true;
 		}
 
 		return DB::update('item_assigns')
 			->value('price', $price)
-			->value('unit_code', $unit_code)
 			->value('price_case', $price_case)
-			->value('unit_code_case', $unit_code_case)
-			->value('price_carton', $price_carton)
-			->value('unit_code_carton', $unit_code_carton)
+			->value('hidden_flg_single', $data['hidden_flg_single'])
+			->value('hidden_flg_case', $data['hidden_flg_case'])
 			->value('renewal_datetime', date('Y-m-d H:i:s'))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))

@@ -20,6 +20,7 @@ class Download_Csv_Member extends Download_Csv_Base {
 			array('members.code' , 'member_code'),
 			array('members.name' , 'member_name'),
 			array('member_groups.code' , 'group_code'),
+			array('members.sales_person_code' , 'sales_person_code'),
 			array('members.corporation' , 'member_corporation'),
 			array('members.store' , 'member_store'),
 			array('members.zip' , 'member_zip'),
