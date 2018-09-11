@@ -1,10 +1,14 @@
 $(function() {
+
+	is_submitted = false;
+
 	if ($("img").length != 0) {
 		$("img:last").bind("load", function() {
 			resize_dialog();
 		});
 	}
 	resize_dialog();
+	$(".dialog").show();
 
 	$("div.information_title").click(function(){
 		$(this).nextAll(".information_contents").slideToggle(0, function(){
@@ -17,10 +21,17 @@ $(function() {
 	});
 
 	$(".submit").click(function() {
+		$(this).text('処理中です…');
+		$(this).css("cursor", "default");
+
 		if ($(this).attr("href") != "#") {
 			$(this).closest("form").attr("action", $(this).attr("href"));
 		}
-		$(this).closest("form").submit();
+
+		if (is_submitted === false) {
+			$(this).closest("form").submit();
+			is_submitted = true;
+		}
 		return false;
 	});
 
@@ -105,7 +116,7 @@ $(function() {
 			success : function (data){
 
 				if(data.error){
-					$error_el.text('商品が見つかりませんでした。または発注者に割当されていません。');
+					$error_el.text('商品が見つかりませんでした。');
 					return;
 				}
 
@@ -118,9 +129,14 @@ $(function() {
 					return;
 				}
 
+				$(".dialog").hide();
+
 				var html = $("<div/>").html(data.html).text(); //HTMLアンエスケープ
 				$(".digResultList tbody").append(html);
 				$(".digList").scrollTop($(".digList").height()+1000);
+
+				resize_dialog();
+				$(".dialog").show();
 
 			},
 			error: function(xhr, textStatus, errorThrown){
