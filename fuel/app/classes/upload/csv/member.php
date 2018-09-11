@@ -20,6 +20,11 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	private $members = array();
 
 	/**
+	 * 営業担当者コードリスト
+	 */
+	private $sales_representatives = array();
+
+	/**
 	 * ヘッダ行の有無
 	 */
 	protected $has_header = true;
@@ -58,6 +63,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		parent::__construct($file);
 
 		$this->member_groups = $this->list_member_group_code();
+		$this->sales_representatives = $this->list_sales_person_code();
 		$this->members = $this->list_member_code();
 	}
 
@@ -97,14 +103,26 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 					case 'group_code':
 						$this->validate_group_code($value, $num);
 						break;
+					case 'sales_person_code':
+						$this->validate_sales_person_code($value, $num);
+						break;
 					case 'member_corporation':
 						$this->validate_member_corporation($value, $num);
 						break;
 					case 'member_store':
 						$this->validate_member_store($value, $num);
 						break;
-					case 'member_address':
-						$this->validate_member_address($value, $num);
+					case 'member_zip':
+						$this->validate_member_zip($value, $num);
+						break;
+					case 'member_address1':
+						$this->validate_member_address1($value, $num);
+						break;
+					case 'member_address2':
+						$this->validate_member_address2($value, $num);
+						break;
+					case 'member_address3':
+						$this->validate_member_address3($value, $num);
 						break;
 					case 'member_tel':
 						$this->validate_member_tel($value, $num);
@@ -300,6 +318,24 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	}
 
 	/**
+	 * 営業担当者コードバリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_sales_person_code($value, $num) {
+		if ($value == '') {
+			return true;
+		}
+
+		if (!array_key_exists($value, $this->sales_representatives)) {
+			parent::set_error($num, '営業担当者コードが存在しません[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * 企業名バリデート
 	 *
 	 * @param string $value 値
@@ -332,14 +368,66 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	}
 
 	/**
-	 * 住所バリデート
+	 * 郵便番号バリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
-	private function validate_member_address($value, $num) {
+	private function validate_member_zip($value, $num) {
+		if (is_null($value) || $value == '') {
+			return true;
+		}
+		$max_length = 8;
+		if (Str::length($value) > $max_length ) {
+			parent::set_error($num, '郵便番号は'.$max_length.'文字以下で入力してください[' . $value . ']');
+			return false;
+		}
+		if (!Common_Validation::_validation_numhyphen($value)) {
+			parent::set_error($num, '郵便番号は数字、または、ハイフンで入力してください[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
 
-		$max_length = 500;
+	/**
+	 * 住所1バリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_member_address1($value, $num) {
+		$max_length = 50;
+		if (Str::length($value) > $max_length ) {
+			parent::set_error($num, '住所1は'.$max_length.'文字以下で入力してください[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 住所2バリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_member_address2($value, $num) {
+		$max_length = 50;
+		if (Str::length($value) > $max_length ) {
+			parent::set_error($num, '住所2は'.$max_length.'文字以下で入力してください[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 住所3バリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_member_address3($value, $num) {
+
+		$max_length = 50;
 		if (Str::length($value) > $max_length ) {
 			parent::set_error($num, '住所は'.$max_length.'文字以下で入力してください[' . $value . ']');
 			return false;
@@ -529,10 +617,26 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	}
 
 	/**
+	 * 営業担当アカウントコードドリストを取得する
+	 */
+	private function list_sales_person_code() {
+		return DB::select('sales_person_code', 'id')
+			->from('sales_representatives')
+			->where('del_flg', '=', UNDELETED)
+			->order_by(DB::expr('Cast(sales_person_code AS SIGNED)'), 'ASC')
+			->execute()
+			->as_array('sales_person_code', 'id');
+	}
+
+	/**
 	 * 発注者コードリストを取得する
 	 */
 	private function list_member_code() {
-		$members = DB::select('id', 'member_group_id', 'code', 'name', 'corporation', 'store', 'address', 'tel', 'fax', 'email', 'sub_email', 'username', 'password' )
+		$members = DB::select('id', 'member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store',
+								'zip', 'address1', 'address2', 'address3', 'tel', 'fax',
+								'delivery_flg_mon', 'delivery_flg_tue', 'delivery_flg_wed', 'delivery_flg_thu',
+								'delivery_flg_fri', 'delivery_flg_sat', 'delivery_flg_sun',
+								'email', 'sub_email', 'username', 'password' )
 				->from('members')
 				->where('del_flg', UNDELETED)
 				->order_by('code', 'asc')
@@ -564,6 +668,14 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			}
 		}
 
+		$delivery_flg_mon = isset($data['member_delivery_flg_mon']) && $data['member_delivery_flg_mon'] == '1';
+		$delivery_flg_tue = isset($data['member_delivery_flg_tue']) && $data['member_delivery_flg_tue'] == '1';
+		$delivery_flg_wed = isset($data['member_delivery_flg_wed']) && $data['member_delivery_flg_wed'] == '1';
+		$delivery_flg_thu = isset($data['member_delivery_flg_thu']) && $data['member_delivery_flg_thu'] == '1';
+		$delivery_flg_fri = isset($data['member_delivery_flg_fri']) && $data['member_delivery_flg_fri'] == '1';
+		$delivery_flg_sat = isset($data['member_delivery_flg_sat']) && $data['member_delivery_flg_sat'] == '1';
+		$delivery_flg_sun = isset($data['member_delivery_flg_sun']) && $data['member_delivery_flg_sun'] == '1';
+
 		$qr_key = \Common_Util::random_string(RANDOM_QR_KEY_NUM);
 		$username = $this->create_username($data);
 		$password = $this->create_password($data);
@@ -575,11 +687,22 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$values['code'] = $data['member_code'];
 		$values['name'] = $data['member_name'];
 		$values['member_group_id'] = $member_group_id;
+		$values['sales_person_code'] = $data['sales_person_code'];
 		$values['corporation'] = $data['member_corporation'];
 		$values['store'] = $data['member_store'];
-		$values['address'] = $data['member_address'];
+		$values['zip'] = $data['member_zip'];
+		$values['address1'] = $data['member_address1'];
+		$values['address2'] = $data['member_address2'];
+		$values['address3'] = $data['member_address3'];
 		$values['tel'] = $data['member_tel'];
 		$values['fax'] = $data['member_fax'];
+		$values['delivery_flg_mon'] = $delivery_flg_mon;
+		$values['delivery_flg_tue'] = $delivery_flg_tue;
+		$values['delivery_flg_wed'] = $delivery_flg_wed;
+		$values['delivery_flg_thu'] = $delivery_flg_thu;
+		$values['delivery_flg_fri'] = $delivery_flg_fri;
+		$values['delivery_flg_sat'] = $delivery_flg_sat;
+		$values['delivery_flg_sun'] = $delivery_flg_sun;
 
 		$values['email'] = $data['email'];
 		$values['sub_email'] = implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) );
@@ -590,7 +713,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$values['qr_key'] = $qr_key;
 		$values['status'] = Config::get('define.member_status.enable');
 
-		$values['search_field'] =  $data['member_code'] . ' ' . $data['member_name'];
+		$values['search_field'] = Common_Util::mb_converts($data, array('member_code', 'member_name'));
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
 		$values['created'] = date('Y-m-d H:i:s');
@@ -620,17 +743,36 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		for ($i = 1; $i <= 5; $i++) {
 			if (!isset($data['sub_email'.$i])) {
 				$data['sub_email'.$i] = $member_sub_email_divided[$i - 1];
+			}
 		}
-		}
+
+		$delivery_flg_mon = isset($data['member_delivery_flg_mon']) && $data['member_delivery_flg_mon'] == '1';
+		$delivery_flg_tue = isset($data['member_delivery_flg_tue']) && $data['member_delivery_flg_tue'] == '1';
+		$delivery_flg_wed = isset($data['member_delivery_flg_wed']) && $data['member_delivery_flg_wed'] == '1';
+		$delivery_flg_thu = isset($data['member_delivery_flg_thu']) && $data['member_delivery_flg_thu'] == '1';
+		$delivery_flg_fri = isset($data['member_delivery_flg_fri']) && $data['member_delivery_flg_fri'] == '1';
+		$delivery_flg_sat = isset($data['member_delivery_flg_sat']) && $data['member_delivery_flg_sat'] == '1';
+		$delivery_flg_sun = isset($data['member_delivery_flg_sun']) && $data['member_delivery_flg_sun'] == '1';
 
 		if ( $member['code'] == $data['member_code']
 				&& $member['name'] == $data['member_name']
 			 	&& $member['member_group_id'] == $member_group_id
+				&& $member['sales_person_code'] == $data['sales_person_code']
 				&& $member['corporation'] == $data['member_corporation']
 				&& $member['store'] == $data['member_store']
-				&& $member['address'] == $data['member_address']
+				&& $member['zip'] == $data['member_zip']
+				&& $member['address1'] == $data['member_address1']
+				&& $member['address2'] == $data['member_address2']
+				&& $member['address3'] == $data['member_address3']
 				&& $member['tel'] == $data['member_tel']
 				&& $member['fax'] == $data['member_fax']
+				&& $member['delivery_flg_mon'] == $delivery_flg_mon
+				&& $member['delivery_flg_tue'] == $delivery_flg_tue
+				&& $member['delivery_flg_wed'] == $delivery_flg_wed
+				&& $member['delivery_flg_thu'] == $delivery_flg_thu
+				&& $member['delivery_flg_fri'] == $delivery_flg_fri
+				&& $member['delivery_flg_sat'] == $delivery_flg_sat
+				&& $member['delivery_flg_sun'] == $delivery_flg_sun
 				&& $member['email'] == $data['email']
 				&& $member_sub_email_divided[0] == $data['sub_email1']
 				&& $member_sub_email_divided[1] == $data['sub_email2']
@@ -645,16 +787,27 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$query = DB::update('members')
 			->value('name', $data['member_name'])
 			->value('member_group_id', $member_group_id)
+			->value('sales_person_code', $data['sales_person_code'])
 			->value('corporation', $data['member_corporation'])
 			->value('store', $data['member_store'])
-			->value('address', $data['member_address'])
+			->value('zip', $data['member_zip'])
+			->value('address1', $data['member_address1'])
+			->value('address2', $data['member_address2'])
+			->value('address3', $data['member_address3'])
 			->value('tel', $data['member_tel'])
 			->value('fax', $data['member_fax'])
+			->value('delivery_flg_mon', $delivery_flg_mon)
+			->value('delivery_flg_tue', $delivery_flg_tue)
+			->value('delivery_flg_wed', $delivery_flg_wed)
+			->value('delivery_flg_thu', $delivery_flg_thu)
+			->value('delivery_flg_fri', $delivery_flg_fri)
+			->value('delivery_flg_sat', $delivery_flg_sat)
+			->value('delivery_flg_sun', $delivery_flg_sun)
 			->value('email', $data['email'])
 			->value('sub_email', implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) ) )
 			->value('username', $data['username'])
 			->value('password', $data['password'])
-			->value('search_field', $data['member_code'] . ' ' . $data['member_name']  )
+			->value('search_field', Common_Util::mb_converts($data, array('member_code', 'member_name')))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('id', '=', $member['id']);
