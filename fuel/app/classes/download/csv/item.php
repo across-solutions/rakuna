@@ -21,10 +21,14 @@ class Download_Csv_Item extends Download_Csv_Base {
 			array('items.code' , 'item_code'),
 			array('items.name' , 'item_name'),
 			array('items.yomigana' , 'item_yomigana'),
+			array('items.unit_name' , 'item_unit_name'),
+			array('items.unit_name_case' , 'item_unit_name_case'),
 			array('items.size' , 'item_size'),
+			array('items.size_case' , 'item_size_case'),
+			array('items.type' , 'item_type'),
 			array('items.comment' , 'item_comment'),
-			array('items.price_case' , 'item_price_case'),
 			array('items.price' , 'item_price'),
+			array('items.price_case' , 'item_price_case'),
 			array('items.jan_code', 'jan_code')
 		)
 		->from('items')

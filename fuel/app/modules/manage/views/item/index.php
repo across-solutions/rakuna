@@ -120,10 +120,10 @@
 					<th class="w10">カテゴリ</th>
 					<th class="w15">商品コード</th>
 					<th>商品名</th>
-					<th class="w8">ケース単位</th>
 					<th class="w8">バラ単位</th>
-					<th class="w8">ケース入数</th>
+					<th class="w8">ケース単位</th>
 					<th class="w8">バラ入数</th>
+					<th class="w8">ケース入数</th>
 					<?php if (Common_Setting::is_price()) : ?>
 						<?php if (Common_Setting::is_case()) : ?>
 							<th class="w8">バラ単価</th>
@@ -151,16 +151,16 @@
 							<?php echo Arr::get($row, 'name'); ?>
 						</td>
 						<td class="center">
-							<?php echo Arr::get($row, 'unit_name_case'); ?>
-						</td>
-						<td class="center">
 							<?php echo Arr::get($row, 'unit_name'); ?>
 						</td>
 						<td class="center">
-							<?php echo Arr::get($row, 'size_case'); ?>
+							<?php echo Arr::get($row, 'unit_name_case'); ?>
 						</td>
 						<td class="center">
 							<?php echo Arr::get($row, 'size'); ?>
+						</td>
+						<td class="center">
+							<?php echo Arr::get($row, 'size_case'); ?>
 						</td>
 						<?php if (Common_Setting::is_price()) : ?>
 							<td class="right">

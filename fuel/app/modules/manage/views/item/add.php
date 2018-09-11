@@ -87,21 +87,6 @@
 
 			<dl class="clearfix">
 				<dt>
-					<label for="unitNameCase">
-					ケース単位<span class="red">*</span>
-					</label>
-				</dt>
-				<dd>
-					<?php echo Form::input('unit_name_case', Arr::get($data, 'unit_name_case'), array('id' => 'unitNameCase', 'placeholder' => 'ケース')); ?>
-					<a class="tooltip" rel="tooltip" title="必須項目です。<br/>10文字以内で入力してください。">
-						<span class="icon-question decEdit"></span>
-					</a>
-					<?php echo $validate_error_message('unit_name_case'); ?>
-				</dd>
-			</dl>
-
-			<dl class="clearfix">
-				<dt>
 					<label for="unitName">
 					バラ単位<span class="red">*</span>
 					</label>
@@ -117,16 +102,16 @@
 
 			<dl class="clearfix">
 				<dt>
-					<label for="quantityCase">
-					ケース入数<span class="red">*</span>
+					<label for="unitNameCase">
+					ケース単位<span class="red">*</span>
 					</label>
 				</dt>
 				<dd>
-					<?php echo Form::input('size_case', Arr::get($data, 'size_case'), array('id' => 'quantityCase', 'placeholder' => '12')); ?>
-					<a class="tooltip" rel="tooltip" title="必須項目です。<br/>数字で入力してください。<br/>10,000未満で入力してください。">
+					<?php echo Form::input('unit_name_case', Arr::get($data, 'unit_name_case'), array('id' => 'unitNameCase', 'placeholder' => 'ケース')); ?>
+					<a class="tooltip" rel="tooltip" title="必須項目です。<br/>10文字以内で入力してください。">
 						<span class="icon-question decEdit"></span>
 					</a>
-					<?php echo $validate_error_message('size_case'); ?>
+					<?php echo $validate_error_message('unit_name_case'); ?>
 				</dd>
 			</dl>
 
@@ -147,8 +132,23 @@
 
 			<dl class="clearfix">
 				<dt>
+					<label for="quantityCase">
+					ケース入数<span class="red">*</span>
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('size_case', Arr::get($data, 'size_case'), array('id' => 'quantityCase', 'placeholder' => '12')); ?>
+					<a class="tooltip" rel="tooltip" title="必須項目です。<br/>数字で入力してください。<br/>10,000未満で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('size_case'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
 					<label for="itemType">
-						商品タイプ
+						商品タイプ<span class="red">*</span>
 					</label>
 				</dt>
 				<dd>

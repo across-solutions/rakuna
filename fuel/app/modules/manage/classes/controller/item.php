@@ -376,20 +376,22 @@ class Controller_Item extends Controller_Base {
 			->add_rule('max_length', 50);
 		$validation->add('item_category_id', 'カテゴリ')
 			->add_rule('exist', 'item_categories', 'id');
-		$validation->add('unit_name_case', 'ケース単位')
-			->add_rule('required')
-			->add_rule('max_length', 10);
 		$validation->add('unit_name', 'バラ単位')
 			->add_rule('required')
 			->add_rule('max_length', 10);
-		$validation->add('size_case', 'ケース入数')
+		$validation->add('unit_name_case', 'ケース単位')
 			->add_rule('required')
-			->add_rule('numeric')
-			->add_rule('numeric_between', 0, 9999);
+			->add_rule('max_length', 10);
 		$validation->add('size', 'バラ入数')
 			->add_rule('required')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999);
+		$validation->add('size_case', 'ケース入数')
+			->add_rule('required')
+			->add_rule('numeric')
+			->add_rule('numeric_between', 0, 9999);
+		$validation->add('type', '商品タイプ')
+			->add_rule('required');
 		$validation->add('comment', '商品説明文')
 			->add_rule('max_length', 500);
 		$validation->add('price', \Common_Setting::is_case() ? 'バラ単価' : '単価')
@@ -431,20 +433,22 @@ class Controller_Item extends Controller_Base {
 			->add_rule('max_length', 50);
 		$validation->add('item_category_id', 'カテゴリ')
 			->add_rule('exist', 'item_categories', 'id');
-		$validation->add('unit_name_case', 'ケース単位')
-			->add_rule('required')
-			->add_rule('max_length', 10);
 		$validation->add('unit_name', 'バラ単位')
 			->add_rule('required')
 			->add_rule('max_length', 10);
-		$validation->add('size_case', 'ケース入数')
+		$validation->add('unit_name_case', 'ケース単位')
 			->add_rule('required')
-			->add_rule('numeric')
-			->add_rule('numeric_between', 0, 9999);
+			->add_rule('max_length', 10);
 		$validation->add('size', 'バラ入数')
 			->add_rule('required')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999);
+		$validation->add('size_case', 'ケース入数')
+			->add_rule('required')
+			->add_rule('numeric')
+			->add_rule('numeric_between', 0, 9999);
+		$validation->add('type', '商品タイプ')
+			->add_rule('required');
 		$validation->add('comment')
 			->add_rule('max_length', 500);
 		$validation->add('price', \Common_Setting::is_case() ? 'バラ単価' : '単価')
@@ -514,8 +518,8 @@ class Controller_Item extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function insert_item($data) {
-		$fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name_case', 'unit_name',
-						'size_case', 'size', 'type', 'comment', 'price', 'price_case', 'jan_code', 'pr_flg');
+		$fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
+						'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'jan_code', 'pr_flg');
 		$values = \Common_Util::filter($data, $fields);
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
 
@@ -538,9 +542,9 @@ class Controller_Item extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function update_item($item, $data) {
-		$update_fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name_case', 'unit_name',
-								'size_case', 'size', 'type', 'comment', 'jan_code', 'pr_flg');
-		$renewal_fields = array('code');
+		$update_fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
+								'size', 'size_case', 'type', 'comment', 'jan_code', 'pr_flg');
+		$renewal_fields = array('code', 'size', 'size_case');
 
 		if (isset($data['price'])) {
 			$update_fields[] = 'price';
