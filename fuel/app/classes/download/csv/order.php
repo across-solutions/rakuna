@@ -41,16 +41,37 @@ class Download_Csv_Order extends Download_Csv_Base {
 			array('orders.id', 'order_id'),
 			array('orders.member_code', 'member_code'),
 			array('orders.member_name', 'member_name'),
+			array('orders.sales_person_code', 'sales_person_code'),
+			array('orders.sales_person_name', 'sales_person_name'),
+			array('orders.delivery_code', 'delivery_code'),
+			array('orders.delivery_name', 'delivery_name'),
+			array('orders.delivery_receiver_name1', 'delivery_receiver_name1'),
+			array('orders.delivery_receiver_name2', 'delivery_receiver_name2'),
+			array('orders.delivery_zip', 'delivery_zip'),
+			array('orders.delivery_address1', 'delivery_address1'),
+			array('orders.delivery_address2', 'delivery_address2'),
+			array('orders.delivery_address3', 'delivery_address3'),
+			array('orders.delivery_tel', 'delivery_tel'),
+			array('orders.delivery_fax', 'delivery_fax'),
+			array('orders.order_type_name', 'order_type_name'),
 			array('orders.order_datetime', 'order_datetime'),
+			array('orders.shipping_date', 'shipping_date'),
 			array('orders.delivery_date', 'delivery_date'),
+			array('orders.shipping_div', 'shipping_div'),
+			array('orders.warehouse_div', 'warehouse_div'),
+			array('orders.order_no', 'order_no'),
 			array('orders.comment', 'comment'),
 			array('order_details.id', 'order_detail_id'),
 			array('order_details.category_code', 'category_code'),
 			array('order_details.category_name', 'category_name'),
 			array('order_details.item_code', 'item_code'),
 			array('order_details.item_name', 'item_name'),
+			array('order_details.item_size_case', 'item_size_case'),
+			array('order_details.item_unit_name_case', 'item_unit_name_case'),
 			array('order_details.price_case_tax', 'price_case'),
 			array('order_details.amount_case', 'amount_case'),
+			array('order_details.item_size', 'item_size'),
+			array('order_details.item_unit_name', 'item_unit_name'),
 			array('order_details.price_tax', 'price'),
 			array('order_details.amount', 'amount')
 		)
@@ -78,6 +99,11 @@ class Download_Csv_Order extends Download_Csv_Base {
 		if ($key == 'line_num') {
 			$this->line_num++;
 			return $this->line_num;
+		}
+
+		if ($key == 'total_amount') {
+			$total_amount = $data['item_size'] * $data['amount'] + $data['item_size_case'] * $data['amount_case'];
+			return $total_amount;
 		}
 
 		return parent::modifier($counter, $data, $key);
