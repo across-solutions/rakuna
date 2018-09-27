@@ -25,6 +25,11 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	private $sales_representatives = array();
 
 	/**
+	 * 配達曜日コードリスト
+	 */
+	private $delivery_weeks = array();
+
+	/**
 	 * ヘッダ行の有無
 	 */
 	protected $has_header = true;
@@ -64,6 +69,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 
 		$this->member_groups = $this->list_member_group_code();
 		$this->sales_representatives = $this->list_sales_person_code();
+		$this->delivery_weeks = $this->list_delivery_week_code();
 		$this->members = $this->list_member_code();
 	}
 
@@ -129,6 +135,9 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 						break;
 					case 'member_fax':
 						$this->validate_member_fax($value, $num);
+						break;
+					case 'delivery_week_code':
+						$this->validate_delivery_week_code($value, $num);
 						break;
 					case 'username':
 						$this->validate_member_username($value, $num);
@@ -461,7 +470,6 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		return true;
 	}
 
-
 	/**
 	 * 電話番号、FAXバリデート
 	 *
@@ -485,6 +493,24 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			return false;
 		}
 
+		return true;
+	}
+
+	/**
+	 * 配達曜日コードバリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_delivery_week_code($value, $num) {
+		if ($value == '') {
+			return true;
+		}
+
+		if (!array_key_exists($value, $this->delivery_weeks)) {
+			parent::set_error($num, '配達曜日コードが存在しません[' . $value . ']');
+			return false;
+		}
 		return true;
 	}
 
@@ -629,13 +655,23 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	}
 
 	/**
+	 * 配達曜日コードドリストを取得する
+	 */
+	private function list_delivery_week_code() {
+		return DB::select('code', 'id')
+			->from('delivery_weeks')
+			->where('del_flg', '=', UNDELETED)
+			->order_by(DB::expr('Cast(code AS SIGNED)'), 'ASC')
+			->execute()
+			->as_array('code', 'id');
+	}
+
+	/**
 	 * 発注者コードリストを取得する
 	 */
 	private function list_member_code() {
 		$members = DB::select('id', 'member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store',
-								'zip', 'address1', 'address2', 'address3', 'tel', 'fax',
-								'delivery_flg_mon', 'delivery_flg_tue', 'delivery_flg_wed', 'delivery_flg_thu',
-								'delivery_flg_fri', 'delivery_flg_sat', 'delivery_flg_sun',
+								'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'delivery_week_code',
 								'email', 'sub_email', 'username', 'password' )
 				->from('members')
 				->where('del_flg', UNDELETED)
@@ -668,14 +704,6 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			}
 		}
 
-		$delivery_flg_mon = isset($data['member_delivery_flg_mon']) && $data['member_delivery_flg_mon'] == '1';
-		$delivery_flg_tue = isset($data['member_delivery_flg_tue']) && $data['member_delivery_flg_tue'] == '1';
-		$delivery_flg_wed = isset($data['member_delivery_flg_wed']) && $data['member_delivery_flg_wed'] == '1';
-		$delivery_flg_thu = isset($data['member_delivery_flg_thu']) && $data['member_delivery_flg_thu'] == '1';
-		$delivery_flg_fri = isset($data['member_delivery_flg_fri']) && $data['member_delivery_flg_fri'] == '1';
-		$delivery_flg_sat = isset($data['member_delivery_flg_sat']) && $data['member_delivery_flg_sat'] == '1';
-		$delivery_flg_sun = isset($data['member_delivery_flg_sun']) && $data['member_delivery_flg_sun'] == '1';
-
 		$qr_key = \Common_Util::random_string(RANDOM_QR_KEY_NUM);
 		$username = $this->create_username($data);
 		$password = $this->create_password($data);
@@ -696,13 +724,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$values['address3'] = $data['member_address3'];
 		$values['tel'] = $data['member_tel'];
 		$values['fax'] = $data['member_fax'];
-		$values['delivery_flg_mon'] = $delivery_flg_mon;
-		$values['delivery_flg_tue'] = $delivery_flg_tue;
-		$values['delivery_flg_wed'] = $delivery_flg_wed;
-		$values['delivery_flg_thu'] = $delivery_flg_thu;
-		$values['delivery_flg_fri'] = $delivery_flg_fri;
-		$values['delivery_flg_sat'] = $delivery_flg_sat;
-		$values['delivery_flg_sun'] = $delivery_flg_sun;
+		$values['delivery_week_code'] = $data['delivery_week_code'];
 
 		$values['email'] = $data['email'];
 		$values['sub_email'] = implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) );
@@ -746,14 +768,6 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			}
 		}
 
-		$delivery_flg_mon = isset($data['member_delivery_flg_mon']) && $data['member_delivery_flg_mon'] == '1';
-		$delivery_flg_tue = isset($data['member_delivery_flg_tue']) && $data['member_delivery_flg_tue'] == '1';
-		$delivery_flg_wed = isset($data['member_delivery_flg_wed']) && $data['member_delivery_flg_wed'] == '1';
-		$delivery_flg_thu = isset($data['member_delivery_flg_thu']) && $data['member_delivery_flg_thu'] == '1';
-		$delivery_flg_fri = isset($data['member_delivery_flg_fri']) && $data['member_delivery_flg_fri'] == '1';
-		$delivery_flg_sat = isset($data['member_delivery_flg_sat']) && $data['member_delivery_flg_sat'] == '1';
-		$delivery_flg_sun = isset($data['member_delivery_flg_sun']) && $data['member_delivery_flg_sun'] == '1';
-
 		if ( $member['code'] == $data['member_code']
 				&& $member['name'] == $data['member_name']
 			 	&& $member['member_group_id'] == $member_group_id
@@ -766,13 +780,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 				&& $member['address3'] == $data['member_address3']
 				&& $member['tel'] == $data['member_tel']
 				&& $member['fax'] == $data['member_fax']
-				&& $member['delivery_flg_mon'] == $delivery_flg_mon
-				&& $member['delivery_flg_tue'] == $delivery_flg_tue
-				&& $member['delivery_flg_wed'] == $delivery_flg_wed
-				&& $member['delivery_flg_thu'] == $delivery_flg_thu
-				&& $member['delivery_flg_fri'] == $delivery_flg_fri
-				&& $member['delivery_flg_sat'] == $delivery_flg_sat
-				&& $member['delivery_flg_sun'] == $delivery_flg_sun
+				&& $member['delivery_week_code'] == $data['delivery_week_code']
 				&& $member['email'] == $data['email']
 				&& $member_sub_email_divided[0] == $data['sub_email1']
 				&& $member_sub_email_divided[1] == $data['sub_email2']
@@ -796,13 +804,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			->value('address3', $data['member_address3'])
 			->value('tel', $data['member_tel'])
 			->value('fax', $data['member_fax'])
-			->value('delivery_flg_mon', $delivery_flg_mon)
-			->value('delivery_flg_tue', $delivery_flg_tue)
-			->value('delivery_flg_wed', $delivery_flg_wed)
-			->value('delivery_flg_thu', $delivery_flg_thu)
-			->value('delivery_flg_fri', $delivery_flg_fri)
-			->value('delivery_flg_sat', $delivery_flg_sat)
-			->value('delivery_flg_sun', $delivery_flg_sun)
+			->value('delivery_week_code', $data['delivery_week_code'])
 			->value('email', $data['email'])
 			->value('sub_email', implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) ) )
 			->value('username', $data['username'])

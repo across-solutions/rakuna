@@ -151,6 +151,12 @@ return array(
 			'extension' => 'csv',
 			'max_size' => 20971520
 		),
+		'delivery_week_csv' => array(
+			'ext_whitelist' => array('csv'),
+			'type_whitelist' => array('text'),
+			'extension' => 'csv',
+			'max_size' => 20971520
+		),
 		'sales_representative_csv' => array(
 			'ext_whitelist' => array('csv'),
 			'type_whitelist' => array('text'),
@@ -264,6 +270,10 @@ return array(
 			'max_size' => '20MB'
 		),
 		'delivery_csv' => array(
+			'extension' => 'CSV',
+			'max_size' => '20MB'
+		),
+		'delivery_week_csv' => array(
 			'extension' => 'CSV',
 			'max_size' => '20MB'
 		),

@@ -29,13 +29,7 @@ class Download_Csv_Delivery extends Download_Csv_Base {
 			array('deliveries.address3' , 'delivery_address3'),
 			array('deliveries.tel' , 'delivery_tel'),
 			array('deliveries.fax' , 'delivery_fax'),
-			array('deliveries.delivery_flg_mon' , 'delivery_delivery_flg_mon'),
-			array('deliveries.delivery_flg_tue' , 'delivery_delivery_flg_tue'),
-			array('deliveries.delivery_flg_wed' , 'delivery_delivery_flg_wed'),
-			array('deliveries.delivery_flg_thu' , 'delivery_delivery_flg_thu'),
-			array('deliveries.delivery_flg_fri' , 'delivery_delivery_flg_fri'),
-			array('deliveries.delivery_flg_sun' , 'delivery_delivery_flg_sun'),
-			array('deliveries.delivery_flg_sat' , 'delivery_delivery_flg_sat')
+			array('deliveries.delivery_week_code' , 'delivery_week_code')
 		)
 		->from('deliveries');
 

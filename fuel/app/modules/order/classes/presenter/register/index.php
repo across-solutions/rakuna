@@ -21,33 +21,39 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		$this->warehouse_div = array('' => '');
 		$this->warehouse_div += Config::get('define.warehouse_div');
 
-		$this->dates = $this->get_delivery_dates();
+		$this->shipping_dates = $this->get_shipping_dates();
+
+		$this->delivery_dates = $this->get_delivery_dates();
 
 		$this->deliveries = $this->get_delivery_list();
 	}
 
 	/**
-	 * 納品希望日取得
+	 * 出荷日取得
 	 *
-	 * @return array $dates 納品希望日
+	 * @return array $dates 出荷日
 	 */
-	private function get_delivery_dates() {
-
+	private function get_shipping_dates() {
 		$limit = 10;
 		$start = date('Y-m-d', strtotime('+1 day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, '');
 
-		$holidays = \Model_Holiday::query()
-			->where('date', '>=', $start)
-			->where('date', '<=', $end)
-			->get();
+		return $dates;
+	}
 
-		foreach($holidays as $holiday){
-			$key = date('Ymd', strtotime($holiday->date));
-			unset($dates[$key]);
-		}
+	/**
+	 * 納期取得
+	 *
+	 * @return array $dates 納期
+	 */
+	private function get_delivery_dates() {
+		$limit = 12;
+		$start = date('Y-m-d', strtotime('+1 day'));
+		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
+
+		$dates = \Common_Util::range_date($start, $limit, '');
 
 		return $dates;
 	}

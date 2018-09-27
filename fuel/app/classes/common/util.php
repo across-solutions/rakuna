@@ -521,34 +521,82 @@ class Common_Util {
 	}
 
 	/**
-	 * 納品希望日取得
+	 * 直近の指定曜日の日付を取得する
+	 *
+	 * @param string $date 日付
+	 * @param int $week 曜日
+	 */
+	public static function previous_date($date, $week) {
+		for ($i = 0; $i < 7; $i++) {
+			if (date('w', strtotime($date)) == $week) {
+				return $date;
+			}
+			$date = date('Y-m-d', strtotime($date . ' -1 day'));
+		}
+		return $date;
+	}
+
+	/**
+	 * 直近の配達曜日の日付を取得する(非営業日を除く)
 	 *
 	 * @param string $table テーブル名
 	 * @param string $member_code 発注者コード
 	 * @param string $delivery_code 納品先コード
-	 * @return array $dates 納品希望日
 	 */
-	public static function get_delivery_dates($table, $member_code, $delivery_code = null) {
+	public static function get_nearest_shipping_date($table, $member_code, $delivery_code = null) {
 		$limit = 10;
-		$start = date('Y-m-d', strtotime('+1 day'));
-		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
+		$start = date('Ymd', strtotime('+1 day'));
+		$end = date('Ymd', strtotime($limit . ' day', strtotime($start)));
+		$date = $start;
 
-		$dates = self::range_date($start, $limit, '指定しない');
+		$list_holiday = self::get_list_holiday($start, $end);
+		$list_week = self::get_list_week($table, $member_code, $delivery_code);
 
+		if (empty($list_week)) {
+			return null;
+		}
+		while (true) {
+			if (array_key_exists(date('w', strtotime($date)), $list_week)) {
+				if (!array_key_exists($date, $list_holiday)) {
+					return $date;
+				}
+			}
+			$date = date('Ymd', strtotime($date . ' +1 day'));
+		}
+	}
+
+	/**
+	 * 非営業日リストを取得する
+	 *
+	 * @param string $start 開始日
+	 * @param string $end 終了日
+	 */
+	private static function get_list_holiday($start, $end){
 		$holidays = \Model_Holiday::query()
 			->where('date', '>=', $start)
 			->where('date', '<=', $end)
 			->get();
 
+		$list_holiday = array();
 		foreach($holidays as $holiday){
 			$key = date('Ymd', strtotime($holiday->date));
-			unset($dates[$key]);
+			$list_holiday[$key] = $key;
 		}
 
-		$query = DB::select('delivery_flg_sun', 'delivery_flg_mon', 'delivery_flg_tue',
-				'delivery_flg_wed', 'delivery_flg_thu', 'delivery_flg_fri', 'delivery_flg_sat')
-			->where('del_flg', '=', UNDELETED)
-			->from($table);
+		return $list_holiday;
+	}
+
+	/**
+	 * 配達曜日リストを取得する
+	 *
+	 * @param string $table テーブル名
+	 * @param string $member_code 発注者コード
+	 * @param string $delivery_code 納品先コード
+	 */
+	private static function get_list_week($table, $member_code, $delivery_code) {
+		$query = DB::select('delivery_week_code')
+					->where('del_flg', '=', UNDELETED)
+					->from($table);
 
 		if ('members' == $table) {
 			$query->where('code', '=', $member_code);
@@ -563,56 +611,42 @@ class Common_Util {
 			return array();
 		}
 
-		foreach($dates as $key => $date){
-			if (empty($key)) {
-				continue;
-			}
-			$week = date('w', strtotime($key));
-			switch ($week) {
-				case 0:
-					$delivery_flg = Arr::get($result, 'delivery_flg_sun', true);
-					break;
-				case 1:
-					$delivery_flg = Arr::get($result, 'delivery_flg_mon', true);
-					break;
-				case 2:
-					$delivery_flg = Arr::get($result, 'delivery_flg_tue', true);
-					break;
-				case 3:
-					$delivery_flg = Arr::get($result, 'delivery_flg_wed', true);
-					break;
-				case 4:
-					$delivery_flg = Arr::get($result, 'delivery_flg_thu', true);
-					break;
-				case 5:
-					$delivery_flg = Arr::get($result, 'delivery_flg_fri', true);
-					break;
-				case 6:
-					$delivery_flg = Arr::get($result, 'delivery_flg_sat', true);
-					break;
-			}
-
-			if (!$delivery_flg) {
-				unset($dates[$key]);
-			}
+		$delivery_week_code = Arr::get($result, 'delivery_week_code');
+		if (empty($delivery_week_code)) {
+			return array();
 		}
 
-		return $dates;
-	}
+		$query = DB::select('delivery_flg_sun', 'delivery_flg_mon', 'delivery_flg_tue',
+							'delivery_flg_wed', 'delivery_flg_thu', 'delivery_flg_fri', 'delivery_flg_sat')
+					->where('del_flg', '=', UNDELETED)
+					->where('code', '=', $delivery_week_code)
+					->from('delivery_weeks');
 
-	/**
-	 * 直近の指定曜日の日付を取得する
-	 *
-	 * @param string $date 日付
-	 * @param int $week 曜日
-	 */
-	public static function previous_date($date, $week) {
-		for ($i = 0; $i < 7; $i++) {
-			if (date('w', strtotime($date)) == $week) {
-				return $date;
-			}
-			$date = date('Y-m-d', strtotime($date . ' -1 day'));
+		$delivery_week = $query->execute()->current();
+
+		$list_week = array();
+		if (Arr::get($delivery_week, 'delivery_flg_sun') == 1) {
+			$list_week[0] = true;
 		}
-		return $date;
+		if (Arr::get($delivery_week, 'delivery_flg_mon') == 1) {
+			$list_week[1] = true;
+		}
+		if (Arr::get($delivery_week, 'delivery_flg_tue') == 1) {
+			$list_week[2] = true;
+		}
+		if (Arr::get($delivery_week, 'delivery_flg_wed') == 1) {
+			$list_week[3] = true;
+		}
+		if (Arr::get($delivery_week, 'delivery_flg_thu') == 1) {
+			$list_week[4] = true;
+		}
+		if (Arr::get($delivery_week, 'delivery_flg_fri') == 1) {
+			$list_week[5] = true;
+		}
+		if (Arr::get($delivery_week, 'delivery_flg_sat') == 1) {
+			$list_week[6] = true;
+		}
+
+		return $list_week;
 	}
 }

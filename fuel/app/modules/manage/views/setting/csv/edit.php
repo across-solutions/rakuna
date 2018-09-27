@@ -73,6 +73,12 @@
 					<span class="icon-angle-right mr"></span>営業担当者CSV設定
 				</a>
 			</li>
+			<li>
+				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.delivery_week'); ?>" title="配達曜日CSV設定"
+				   <?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.delivery_week') ? 'class="selected"' : ''; ?>>
+					<span class="icon-angle-right mr"></span>配達曜日CSV設定
+				</a>
+			</li>
 		</ul>
 	</div>
 	<!--#configMenu end -->

@@ -64,12 +64,12 @@ class Controller_Ajax_Member extends Controller_Ajax_Base {
 		$result['address3'] = Arr::get($member, 'address3');
 		$result['tel'] = Arr::get($member, 'tel');
 		$result['fax'] = Arr::get($member, 'fax');
-
+/*
 		$dates = \Common_Util::get_delivery_dates('members', $member->code);
 		foreach ($dates as $key => $value) {
 			$result['dates'][] = array($key => $value);
 		}
-
+*/
 		return $this->response($result);
 	}
 }

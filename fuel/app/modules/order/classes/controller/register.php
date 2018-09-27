@@ -292,13 +292,13 @@ class Controller_Register extends Controller_Base {
 
 		$validation->add('shipping_date', '出荷予定日')
 			->add_rule('required')
-			->add_rule('valid_date', 'Ymd')
-			->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+			->add_rule('valid_date', 'Ymd');
+			//->add_rule('match_collection', array_keys($this->get_delivery_dates()));
 
 		$validation->add('delivery_date', '納期')
 			->add_rule('required')
-			->add_rule('valid_date', 'Ymd')
-			->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+			->add_rule('valid_date', 'Ymd');
+			//->add_rule('match_collection', array_keys($this->get_delivery_dates()));
 
 		$validation->add('comment', '備考')
 			->add_rule('max_length', 1000);

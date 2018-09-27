@@ -20,6 +20,11 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	private $deliveries = array();
 
 	/**
+	 * 配達曜日コードリスト
+	 */
+	private $delivery_weeks = array();
+
+	/**
 	 * ヘッダ行の有無
 	 */
 	protected $has_header = true;
@@ -53,6 +58,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 		parent::__construct($file);
 
 		$this->members = $this->list_member_code();
+		$this->delivery_weeks = $this->list_delivery_week_code();
 		$this->deliveries = $this->list_delivery_code();
 	}
 
@@ -110,6 +116,9 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 						break;
 					case 'delivery_fax':
 						$this->validate_delivery_fax($value, $num);
+						break;
+					case 'delivery_week_code':
+						$this->validate_delivery_week_code($value, $num);
 						break;
 				}
 			}
@@ -406,6 +415,24 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	}
 
 	/**
+	 * 配達曜日コードバリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_delivery_week_code($value, $num) {
+		if ($value == '') {
+			return true;
+		}
+
+		if (!array_key_exists($value, $this->delivery_weeks)) {
+			parent::set_error($num, '配達曜日コードが存在しません[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * 発注者コードリストを取得する
 	 */
 	private function list_member_code() {
@@ -422,9 +449,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	 */
 	private function list_delivery_code() {
 		$deliveries = DB::select('id', 'member_code', 'code', 'name', 'name_kana', 'receiver_name1', 'receiver_name2',
-								'zip', 'address1', 'address2', 'address3', 'tel', 'fax',
-								'delivery_flg_mon', 'delivery_flg_tue', 'delivery_flg_wed', 'delivery_flg_thu',
-								'delivery_flg_fri', 'delivery_flg_sat', 'delivery_flg_sun')
+								'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'delivery_week_code')
 				->from('deliveries')
 				->where('del_flg', UNDELETED)
 				->order_by('member_code', 'asc')
@@ -443,14 +468,6 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	 * @param array $data データ
 	 */
 	private function insert_delivery($data) {
-		$delivery_flg_mon = isset($data['delivery_delivery_flg_mon']) && $data['delivery_delivery_flg_mon'] == '1';
-		$delivery_flg_tue = isset($data['delivery_delivery_flg_tue']) && $data['delivery_delivery_flg_tue'] == '1';
-		$delivery_flg_wed = isset($data['delivery_delivery_flg_wed']) && $data['delivery_delivery_flg_wed'] == '1';
-		$delivery_flg_thu = isset($data['delivery_delivery_flg_thu']) && $data['delivery_delivery_flg_thu'] == '1';
-		$delivery_flg_fri = isset($data['delivery_delivery_flg_fri']) && $data['delivery_delivery_flg_fri'] == '1';
-		$delivery_flg_sat = isset($data['delivery_delivery_flg_sat']) && $data['delivery_delivery_flg_sat'] == '1';
-		$delivery_flg_sun = isset($data['delivery_delivery_flg_sun']) && $data['delivery_delivery_flg_sun'] == '1';
-
 		$values = array();
 		$values['member_code'] = $data['member_code'];
 		$values['code'] = $data['delivery_code'];
@@ -464,13 +481,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 		$values['address3'] = $data['delivery_address3'];
 		$values['tel'] = $data['delivery_tel'];
 		$values['fax'] = $data['delivery_fax'];
-		$values['delivery_flg_mon'] = $delivery_flg_mon;
-		$values['delivery_flg_tue'] = $delivery_flg_tue;
-		$values['delivery_flg_wed'] = $delivery_flg_wed;
-		$values['delivery_flg_thu'] = $delivery_flg_thu;
-		$values['delivery_flg_fri'] = $delivery_flg_fri;
-		$values['delivery_flg_sat'] = $delivery_flg_sat;
-		$values['delivery_flg_sun'] = $delivery_flg_sun;
+		$values['delivery_week_code'] = $data['delivery_week_code'];
 		$values['search_field'] = Common_Util::mb_converts($data, array('member_code', 'delivery_code', 'delivery_name',
 										'delivery_name_kana', 'delivery_receiver_name1', 'delivery_receiver_name2'));
 		$values['del_flg'] = UNDELETED;
@@ -488,14 +499,6 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	 * @param array $data データ
 	 */
 	private function update_delivery($delivery, $data) {
-		$delivery_flg_mon = isset($data['delivery_delivery_flg_mon']) && $data['delivery_delivery_flg_mon'] == '1';
-		$delivery_flg_tue = isset($data['delivery_delivery_flg_tue']) && $data['delivery_delivery_flg_tue'] == '1';
-		$delivery_flg_wed = isset($data['delivery_delivery_flg_wed']) && $data['delivery_delivery_flg_wed'] == '1';
-		$delivery_flg_thu = isset($data['delivery_delivery_flg_thu']) && $data['delivery_delivery_flg_thu'] == '1';
-		$delivery_flg_fri = isset($data['delivery_delivery_flg_fri']) && $data['delivery_delivery_flg_fri'] == '1';
-		$delivery_flg_sat = isset($data['delivery_delivery_flg_sat']) && $data['delivery_delivery_flg_sat'] == '1';
-		$delivery_flg_sun = isset($data['delivery_delivery_flg_sun']) && $data['delivery_delivery_flg_sun'] == '1';
-
 		if ($delivery['member_code'] == $data['member_code']
 				&& $delivery['code'] == $data['delivery_code']
 				&& $delivery['name'] == $data['delivery_name']
@@ -508,13 +511,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 				&& $delivery['address3'] == $data['delivery_address3']
 				&& $delivery['tel'] == $data['delivery_tel']
 				&& $delivery['fax'] == $data['delivery_fax']
-				&& $delivery['delivery_flg_mon'] == $delivery_flg_mon
-				&& $delivery['delivery_flg_tue'] == $delivery_flg_tue
-				&& $delivery['delivery_flg_wed'] == $delivery_flg_wed
-				&& $delivery['delivery_flg_thu'] == $delivery_flg_thu
-				&& $delivery['delivery_flg_fri'] == $delivery_flg_fri
-				&& $delivery['delivery_flg_sat'] == $delivery_flg_sat
-				&& $delivery['delivery_flg_sun'] == $delivery_flg_sun) {
+				&& $delivery['delivery_week_code'] == $data['delivery_week_code']) {
 			return true;
 		}
 
@@ -530,13 +527,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 			->value('address3', $data['delivery_address3'])
 			->value('tel', $data['delivery_tel'])
 			->value('fax', $data['delivery_fax'])
-			->value('delivery_flg_mon', $delivery_flg_mon)
-			->value('delivery_flg_tue', $delivery_flg_tue)
-			->value('delivery_flg_wed', $delivery_flg_wed)
-			->value('delivery_flg_thu', $delivery_flg_thu)
-			->value('delivery_flg_fri', $delivery_flg_fri)
-			->value('delivery_flg_sat', $delivery_flg_sat)
-			->value('delivery_flg_sun', $delivery_flg_sun)
+			->value('delivery_week_code', $data['delivery_week_code'])
 			->value('search_field', Common_Util::mb_converts($data, array('member_code', 'delivery_code', 'delivery_name',
 										'delivery_name_kana', 'delivery_receiver_name1', 'delivery_receiver_name2')))
 			->value('update_user_id', Auth::get_user_id()[1])

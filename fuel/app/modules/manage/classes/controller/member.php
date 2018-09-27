@@ -420,6 +420,8 @@ class Controller_Member extends Controller_Base {
 		$validation->add('fax', 'FAX')
 			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
+		$validation->add('delivery_week_code', '配達曜日コード')
+			->add_rule('exist', 'delivery_weeks', 'code');
 		$validation->add('username', 'ログインID')
 			->add_rule('alphanum')
 			->add_rule('min_length', 5)
@@ -491,6 +493,8 @@ class Controller_Member extends Controller_Base {
 		$validation->add('fax', 'FAX')
 			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
+		$validation->add('delivery_week_code', '配達曜日コード')
+			->add_rule('exist', 'delivery_weeks', 'code');
 		$validation->add('username', 'ログインID')
 			->add_rule('required')
 			->add_rule('alphanum')
@@ -565,15 +569,8 @@ class Controller_Member extends Controller_Base {
 	 */
 	private function insert_member($data, $qr_key, $username, $password) {
 		$fields = array('member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store',
-						'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'email');
+						'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'delivery_week_code', 'email');
 		$values = \Common_Util::filter($data, $fields);
-		$values['delivery_flg_mon'] = isset($data['delivery_flg_mon']) && $data['delivery_flg_mon'] == '1';
-		$values['delivery_flg_tue'] = isset($data['delivery_flg_tue']) && $data['delivery_flg_tue'] == '1';
-		$values['delivery_flg_wed'] = isset($data['delivery_flg_wed']) && $data['delivery_flg_wed'] == '1';
-		$values['delivery_flg_thu'] = isset($data['delivery_flg_thu']) && $data['delivery_flg_thu'] == '1';
-		$values['delivery_flg_fri'] = isset($data['delivery_flg_fri']) && $data['delivery_flg_fri'] == '1';
-		$values['delivery_flg_sat'] = isset($data['delivery_flg_sat']) && $data['delivery_flg_sat'] == '1';
-		$values['delivery_flg_sun'] = isset($data['delivery_flg_sun']) && $data['delivery_flg_sun'] == '1';
 		$values['sub_email'] = implode(',', $data['sub_email']);
 		$values['username'] = $username;
 		$values['password'] = $password;
@@ -594,16 +591,10 @@ class Controller_Member extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function update_member($member, $data) {
-		$fields = array('member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store',
-						'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'email', 'username', 'password');
+		$fields = array('member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store', 'zip',
+						'address1', 'address2', 'address3', 'tel', 'fax', 'delivery_week_code',
+						'email', 'username', 'password');
 		\Common_Util::copy($member, $data, $fields);
-		$member['delivery_flg_mon'] = isset($data['delivery_flg_mon']) && $data['delivery_flg_mon'] == '1';
-		$member['delivery_flg_tue'] = isset($data['delivery_flg_tue']) && $data['delivery_flg_tue'] == '1';
-		$member['delivery_flg_wed'] = isset($data['delivery_flg_wed']) && $data['delivery_flg_wed'] == '1';
-		$member['delivery_flg_thu'] = isset($data['delivery_flg_thu']) && $data['delivery_flg_thu'] == '1';
-		$member['delivery_flg_fri'] = isset($data['delivery_flg_fri']) && $data['delivery_flg_fri'] == '1';
-		$member['delivery_flg_sat'] = isset($data['delivery_flg_sat']) && $data['delivery_flg_sat'] == '1';
-		$member['delivery_flg_sun'] = isset($data['delivery_flg_sun']) && $data['delivery_flg_sun'] == '1';
 		$member->sub_email = implode(',', $data['sub_email']);
 
 		return $member->save() !== false;

@@ -315,7 +315,11 @@ $(function() {
 
 	$("select#delivery_select").on("change",function() {
 		clear_delivery();
-		//clear_delivery_date();
+		$("#order_type_select").val("");
+		$("#shipping_div_select").val("");
+		$("#warehouse_div_select").val("");
+		$("#shipping_date_select").val("");
+		$("#delivery_date_select").val("");
 
 		if ($(this).val() == "") {
 			return false;
@@ -337,14 +341,7 @@ $(function() {
 				$("#delivery_address3").val(data.address3);
 				$("#delivery_tel").val(data.tel);
 				$("#delivery_fax").val(data.fax);
-/*
-				$("#delivery_date_select").children("option").remove();
-				$.each(data.dates, function(k, val) {
-					$.map(val, function(name, date) {
-						$("#delivery_date_select").append($("<option>").val(date).text(name));
-					});
-				});
-*/
+
 			},
 			error : function(data) {
 				$(location).attr("href", "/order/login/logout");
@@ -360,56 +357,43 @@ $(function() {
 	});
 
 	$("input[name='delivery_kind']:radio").on("change",function() {
-		//clear_delivery_date();
-
-		var val = $(this).val();
-		if (val == 1) {
-			clear_delivery();
-			$("select#delivery_select option").attr("selected", false)
-
-			$.ajax({
-				type : "GET",
-				url : "/order/ajax/member/data.json",
-				cache : false,
-				context : this,
-				async: false,
-				success : function(data) {
-					if (!check_error(data)) {
-						return;
-					}
-
-					$("#delivery_date_select").children("option").remove();
-					$.each(data.dates, function(k, val) {
-						$.map(val, function(name, date) {
-							$("#delivery_date_select").append($("<option>").val(date).text(name));
-						});
-					});
-
-				},
-				error : function(data) {
-					$(location).attr("href", "/order/login/logout");
-				}
-			});
-		}
+		clear_delivery();
+		$("#delivery_select").val("");
+		$("#order_type_select").val("");
+		$("#shipping_div_select").val("");
+		$("#warehouse_div_select").val("");
+		$("#shipping_date_select").val("");
+		$("#delivery_date_select").val("");
 	});
 
 	$("select#order_type_select").on("change",function() {
 		if ($(this).val() == "") {
 			$("#shipping_div_select").val("");
 			$("#warehouse_div_select").val("");
+			$("#shipping_date_select").val("");
+			$("#delivery_date_select").val("");
 			return false;
 		}
+
+		shipping_data = get_shipping_data();
 
 		$.ajax({
 			type : "GET",
 			cache : false,
 			url : "/order/ajax/type/data/" + $(this).val() + ".json",
+			data: {
+					'delivery_kind': shipping_data.delivery_kind,
+					'member_code': shipping_data.member_code,
+					'delivery_code': shipping_data.delivery_code
+					},
 			success : function(data) {
 				if (!check_error(data)) {
 					return;
 				}
 				$("#shipping_div_select").val(data.code);
 				$("#warehouse_div_select").val(data.warehouse_code);
+				$("#shipping_date_select").val(data.shipping_date);
+				$("#delivery_date_select").val(data.delivery_date);
 			},
 			error : function(data) {
 				$(location).attr("href", "/order/login/logout");
@@ -417,9 +401,47 @@ $(function() {
 		});
 	});
 
+/*
+	$("select#shipping_date_select").on("change",function() {
+		var shipping_div = $("#shipping_div_select").val();
+
+		if (shipping_div == "80") {
+			$("#delivery_date_select").val($(this).val());
+		} else if (shipping_div == "90") {
+			var str = $(this).val();
+			var year = str.substr(0, 4);
+			var month = str.substr(4, 2);
+			var day = str.substr(6, 2);
+
+			var ship_date = year + "/" + month + "/" + day;
+
+			var dt = new Date(ship_date);
+			dt.setDate(dt.getDate() + 1);
+
+			var y = dt.getFullYear();
+			var m = ("00" + (dt.getMonth() + 1)).slice(-2);
+			var d = ("00" + dt.getDate()).slice(-2);
+			var next_dt = y + m +  d;
+
+			$("#delivery_date_select").val(next_dt);
+		}
+
+		return false;
+	});
+*/
+
 	setAccordion();
 
 });
+
+function get_shipping_data() {
+	var data = {};
+	data.delivery_kind = $("input:radio[name='delivery_kind']:checked").val();
+	data.member_code = $("#member_code").val();
+	data.delivery_code = $("#delivery_select").val();
+
+	return data;
+}
 
 function clear_delivery() {
 	$("#delivery_name").val("");
@@ -431,10 +453,6 @@ function clear_delivery() {
 	$("#delivery_address3").val("");
 	$("#delivery_tel").val("");
 	$("#delivery_fax").val("");
-}
-
-function clear_delivery_date() {
-	$("#delivery_date_select").children("option").not(":first-child").remove();
 }
 
 function setAccordion() {

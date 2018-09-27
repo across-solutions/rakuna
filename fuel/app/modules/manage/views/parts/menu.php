@@ -150,6 +150,11 @@
 					</a>
 				</li>
 				<li>
+					<a href="/manage/setting/shipping/week" title="配達曜日設定">
+						<span class="icon-angle-right mr"></span>配達曜日設定
+					</a>
+				</li>
+				<li>
 					<a href="/manage/setting/user/account" title="ユーザ設定">
 						<span class="icon-angle-right mr"></span>ユーザ設定
 					</a>

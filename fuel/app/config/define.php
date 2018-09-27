@@ -131,6 +131,9 @@ define('FILE_NAME_DOWNLOAD_MEMBER', 'member.csv');
 // 納品先CSVダウンロードファイル名
 define('FILE_NAME_DOWNLOAD_DELIVERY', 'delivery.csv');
 
+// 配達曜日CSVダウンロードファイル名
+define('FILE_NAME_DOWNLOAD_DELIVERY_WEEK', 'shipping_week.csv');
+
 // 営業担当者CSVダウンロードファイル名
 define('FILE_NAME_DOWNLOAD_SALES_REPRESENTATIVE', 'sales_representative.csv');
 
@@ -233,7 +236,8 @@ return array(
 		'recommended_item' => 7,			// いつもの商品CSV
 		'recommended_group_assign' => 8,	// いつものグループ割当CSV
 		'delivery' => 9,					// 納品先CSV
-		'sales_representative' => 10		// 営業担当者CSV
+		'sales_representative' => 10,		// 営業担当者CSV
+		'delivery_week' => 11				// 配達曜日CSV
 	),
 
 	// 管理側ユーザグループ種類

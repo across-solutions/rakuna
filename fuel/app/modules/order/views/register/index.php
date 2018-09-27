@@ -419,46 +419,6 @@
 		<!--#ship date start -->
 		<div class="shipDate">
 			<strong>
-				出荷予定日
-			</strong>
-
-			<ul>
-				<li>
-					<div class="deliveryWrap">
-						<?php echo Form::select('shipping_date', $data->get_shipping_date(), $dates, array('id' => 'shipping_date_select')); ?>
-						<?php echo $validate_error_message('shipping_date'); ?>
-					</div>
-				</li>
-			</ul>
-		</div>
-		<!--#ship date end -->
-
-		<!--#ship date start -->
-		<div class="shipDate">
-			<strong>
-				納期
-			</strong>
-
-			<ul>
-				<li>
-					<div class="deliveryWrap">
-						<?php echo Form::select('delivery_date', $data->get_delivery_date(), $dates, array('id' => 'delivery_date_select')); ?>
-					</div>
-					<p>
-						納期がある場合はご指定ください。
-					</p>
-					<em>
-						※ご希望に添えない場合もございます。ご了承ください。
-					</em>
-					<?php echo $validate_error_message('delivery_date'); ?>
-				</li>
-			</ul>
-		</div>
-		<!--#ship date end -->
-
-		<!--#ship date start -->
-		<div class="shipDate">
-			<strong>
 				出荷区分
 			</strong>
 
@@ -485,6 +445,46 @@
 						<?php echo Form::select('warehouse_div', $data->get_warehouse_div(), $warehouse_div, array('id' => 'warehouse_div_select')); ?>
 						<?php echo $validate_error_message('warehouse_div'); ?>
 					</div>
+				</li>
+			</ul>
+		</div>
+		<!--#ship date end -->
+
+		<!--#ship date start -->
+		<div class="shipDate">
+			<strong>
+				出荷予定日
+			</strong>
+
+			<ul>
+				<li>
+					<div class="deliveryWrap">
+						<?php echo Form::select('shipping_date', $data->get_shipping_date(), $shipping_dates, array('id' => 'shipping_date_select')); ?>
+						<?php echo $validate_error_message('shipping_date'); ?>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<!--#ship date end -->
+
+		<!--#ship date start -->
+		<div class="shipDate">
+			<strong>
+				納期
+			</strong>
+
+			<ul>
+				<li>
+					<div class="deliveryWrap">
+						<?php echo Form::select('delivery_date', $data->get_delivery_date(), $delivery_dates, array('id' => 'delivery_date_select')); ?>
+					</div>
+					<p>
+						納期がある場合はご指定ください。
+					</p>
+					<em>
+						※ご希望に添えない場合もございます。ご了承ください。
+					</em>
+					<?php echo $validate_error_message('delivery_date'); ?>
 				</li>
 			</ul>
 		</div>

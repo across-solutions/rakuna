@@ -208,25 +208,16 @@
 
 			<dl class="clearfix">
 				<dt>
-					<label for="deliveryFlg">
-					納品可能曜日
+					<label for="deliveryWeekCode">
+						配達曜日コード
 					</label>
 				</dt>
 				<dd>
-					<?php echo Form::checkbox('delivery_flg_mon', '1', Arr::get($data, 'delivery_flg_mon'), array('id' => 'deliveryFlgMon')); ?>
-					<label for="deliveryFlgMon">月</label>
-					<?php echo Form::checkbox('delivery_flg_tue', '1', Arr::get($data, 'delivery_flg_tue'), array('id' => 'deliveryFlgTue')); ?>
-					<label for="deliveryFlgTue">火</label>
-					<?php echo Form::checkbox('delivery_flg_wed', '1', Arr::get($data, 'delivery_flg_wed'), array('id' => 'deliveryFlgWed')); ?>
-					<label for="deliveryFlgWed">水</label>
-					<?php echo Form::checkbox('delivery_flg_thu', '1', Arr::get($data, 'delivery_flg_thu'), array('id' => 'deliveryFlgThu')); ?>
-					<label for="deliveryFlgThu">木</label>
-					<?php echo Form::checkbox('delivery_flg_fri', '1', Arr::get($data, 'delivery_flg_fri'), array('id' => 'deliveryFlgFri')); ?>
-					<label for="deliveryFlgFri">金</label>
-					<?php echo Form::checkbox('delivery_flg_sat', '1', Arr::get($data, 'delivery_flg_sat'), array('id' => 'deliveryFlgSat')); ?>
-					<label for="deliveryFlgSat">土</label>
-					<?php echo Form::checkbox('delivery_flg_sun', '1', Arr::get($data, 'delivery_flg_sun'), array('id' => 'deliveryFlgSun')); ?>
-					<label for="deliveryFlgSun">日</label>
+					<?php echo Form::input('delivery_week_code', Arr::get($data, 'delivery_week_code'), array('id' => 'deliveryWeekCode', 'placeholder' => '0000000000')); ?>
+					<a class="tooltip" rel="tooltip" title="半角英数字で入力してください。<br/>10文字以内で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('delivery_week_code'); ?>
 				</dd>
 			</dl>
 
