@@ -116,26 +116,35 @@ class Controller_Register extends Controller_Base {
 		Response::redirect('/order/register/complete');
 	}
 
-	private function get_delivery_dates() {
+	/**
+	 * 出荷日取得
+	 *
+	 * @return array $dates 出荷日
+	 */
+	private function get_shipping_dates() {
 		$limit = 10;
 		$start = date('Y-m-d', strtotime('+1 day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, false);
 
-		$holidays = \Model_Holiday::query()
-				  ->where('date', '>=', $start)
-				  ->where('date', '<=', $end)
-				  ->get();
-
-		foreach($holidays as $holiday){
-			$key = date('Ymd', strtotime($holiday->date));
-			unset($dates[$key]);
-		}
-
 		return $dates;
 	}
 
+	/**
+	 * 納期取得
+	 *
+	 * @return array $dates 納期
+	 */
+	private function get_delivery_dates() {
+		$limit = 12;
+		$start = date('Y-m-d', strtotime('+1 day'));
+		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
+
+		$dates = \Common_Util::range_date($start, $limit, false);
+
+		return $dates;
+	}
 
 	/**
 	 * 完了
@@ -229,8 +238,6 @@ class Controller_Register extends Controller_Base {
 			$validation->add('member_fax', '納品先FAX')
 				->add_rule('numhyphen')
 				->add_rule('max_length', 14);
-
-			$delivery_dates = \Common_Util::get_delivery_dates('members', \Common_Member::get_member_code());
 		} else if ($delivery_kind == 2) {
 			$validation->add('delivery_code', '納品先コード')
 				->add_rule('required')
@@ -270,8 +277,6 @@ class Controller_Register extends Controller_Base {
 			$validation->add('delivery_fax', '納品先FAX')
 				->add_rule('numhyphen')
 				->add_rule('max_length', 14);
-
-			$delivery_dates = \Common_Util::get_delivery_dates('deliveries', \Common_Member::get_member_code(), $data['delivery_code']);
 		}
 
 		$validation->add('order_type', '発注タイプ')
@@ -292,13 +297,13 @@ class Controller_Register extends Controller_Base {
 
 		$validation->add('shipping_date', '出荷予定日')
 			->add_rule('required')
-			->add_rule('valid_date', 'Ymd');
-			//->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+			->add_rule('valid_date', 'Ymd')
+			->add_rule('match_collection', array_keys($this->get_shipping_dates()));
 
 		$validation->add('delivery_date', '納期')
 			->add_rule('required')
-			->add_rule('valid_date', 'Ymd');
-			//->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+			->add_rule('valid_date', 'Ymd')
+			->add_rule('match_collection', array_keys($this->get_delivery_dates()));
 
 		$validation->add('comment', '備考')
 			->add_rule('max_length', 1000);
