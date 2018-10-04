@@ -623,6 +623,9 @@ class Common_Util {
 					->from('delivery_weeks');
 
 		$delivery_week = $query->execute()->current();
+		if (empty($delivery_week)) {
+			return array();
+		}
 
 		$list_week = array();
 		if (Arr::get($delivery_week, 'delivery_flg_sun') == 1) {
