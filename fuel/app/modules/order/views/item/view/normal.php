@@ -59,7 +59,8 @@
 										</dt>
 										<dd>
 											<?php $hidden_flg_case = Arr::get($row, 'hidden_flg_case'); ?>
-											<?php if ($hidden_flg_case == UNDELETED) : ?>
+											<?php $unit_name_case = Arr::get($row, 'unit_name_case'); ?>
+											<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 												<?php if (Common_Setting::is_case()) : ?>
 													<p>
 														<span><?php echo Arr::get($row, 'unit_name_case'); ?></span>
@@ -84,7 +85,7 @@
 												価格
 											</dt>
 											<dd>
-												<?php if ($hidden_flg_case == UNDELETED) : ?>
+												<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 													<?php if (Common_Setting::is_case()) : ?>
 														<p>
 															<span><?php echo Arr::get($row, 'unit_name_case'); ?></span>
@@ -117,10 +118,10 @@
 						</div>
 						<div class="counts">
 							<div class="buttonWrap">
-								<?php if ($hidden_flg_case == UNDELETED) : ?>
+								<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 									<?php if (Common_Setting::is_case()) : ?>
 										<div class="buttons">
-											<strong><?php echo Arr::get($row, 'unit_name_case'); ?></strong>
+											<strong><?php echo $unit_name_case; ?></strong>
 											<ul>
 												<li>
 													<input id="amount_case<?php echo Arr::get($row, 'id'); ?>" class="amount" type="text" size="2" value="<?php echo Arr::get($row, 'amount_case', 0); ?>" href="/order/ajax/cart/update_case/<?php echo Arr::get($row, 'id'); ?>.json">

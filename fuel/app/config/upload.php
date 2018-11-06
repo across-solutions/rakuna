@@ -101,7 +101,7 @@ return array(
 			'ext_whitelist' => array('csv'),
 			'type_whitelist' => array('text'),
 			'extension' => 'csv',
-			'max_size' => 20971520
+			'max_size' => 31457280
 		),
 		'item_image_zip' => array(
 			'ext_whitelist' => array('zip'),

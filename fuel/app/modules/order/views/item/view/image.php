@@ -21,9 +21,9 @@
 								<?php echo Image_Item::img(Arr::get($row, 'code'), array('class' => 'lineupimage')); ?>
 							</a>
 						</div>
-
+						<?php $unit_name_case = Arr::get($row, 'unit_name_case'); ?>
 						<?php $hidden_flg_case = Arr::get($row, 'hidden_flg_case'); ?>
-						<?php if ($hidden_flg_case == UNDELETED) : ?>
+						<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 							<?php if (Common_Setting::is_case()) : ?>
 								<div class="buttons">
 									<strong><?php echo Arr::get($row, 'unit_name_case'); ?></strong>

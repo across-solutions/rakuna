@@ -71,10 +71,11 @@ abstract  class Upload_Csv_Base {
 		}
 
 		$str = file_get_contents($this->file);
-		mb_convert_variables('UTF-8', 'sjis-win', $str);
+		mb_convert_variables('UTF-8', 'UTF-16', $str);
 		file_put_contents($this->file, $str);
 
 		$file = new SplFileObject($this->file);
+		$file->setCsvControl(',', '"', '^');
 		$file->setFlags(SplFileObject::READ_CSV);
 		foreach($file as $num => $values) {
 			if ($this->has_header && $num == 0) {
@@ -108,6 +109,7 @@ abstract  class Upload_Csv_Base {
 		}
 
 		if (!empty($this->errors)) {
+			$this->add_error('上記のエラー以外を取り込みました');
 			Session::set_flash('validate_upload_errors', $this->errors);
 		}
 	}

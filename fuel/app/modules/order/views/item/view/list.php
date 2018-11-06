@@ -38,6 +38,7 @@
 					<?php foreach($rows as $key => $row) : ?>
 						<?php $hidden_flg_single = Arr::get($row, 'hidden_flg_single'); ?>
 						<?php $hidden_flg_case = Arr::get($row, 'hidden_flg_case'); ?>
+						<?php $unit_name_case = Arr::get($row, 'unit_name_case'); ?>
 
 						<tr id="item_<?php echo Arr::get($row, 'code'); ?>">
 							<td class="left">
@@ -53,7 +54,7 @@
 							</td>
 
 							<td class="right spOnly">
-								<?php if ($hidden_flg_case == UNDELETED) : ?>
+								<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 									<?php if (Common_Setting::is_case()) : ?>
 										<p class="hun">
 											<span class="histUnit"><i><?php echo Arr::get($row, 'unit_name_case'); ?></i></span>
@@ -74,7 +75,7 @@
 
 							<?php if (Common_Setting::is_price()) : ?>
 								<td class="right spOnly">
-									<?php if ($hidden_flg_case == UNDELETED) : ?>
+									<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 										<?php if (Common_Setting::is_case()) : ?>
 											<p class="hun">
 												<span class="histUnit"><i><?php echo Arr::get($row, 'unit_name_case'); ?></i></span>
@@ -111,7 +112,7 @@
 							</td>
 
 							<td class="center">
-								<?php if ($hidden_flg_case == UNDELETED) : ?>
+								<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 									<?php if (Common_Setting::is_case()) : ?>
 										<div class="buttons buttonsLatent">
 											<strong><?php echo Arr::get($row, 'unit_name_case'); ?></strong>

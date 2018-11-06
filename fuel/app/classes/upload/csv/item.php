@@ -70,59 +70,80 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::validate()
 	 */
 	protected function validate(&$data, $num) {
-		$control_code = $data['control_code'];
-		if (!$this->validate_control_code($control_code, $num)) {
-			return false;
+		$result = true;
+
+		foreach ($data as $key => $value) {
+			switch ($key) {
+				case 'category_code':
+					//$this->validate_category_code($value, $num);
+					break;
+				case 'item_code':
+					if (!$this->validate_item_code($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_name':
+					if (!$this->validate_item_name($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_yomigana':
+					if (!$this->validate_item_yomigana($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_unit_name':
+					if (!$this->validate_item_unit_name($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_unit_name_case':
+					if (!$this->validate_item_unit_name_case($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_size':
+					//$this->validate_item_size($value, $num);
+					break;
+				case 'item_size_case':
+					if (!$this->validate_item_size_case($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_type':
+					//$this->validate_item_type($value, $num);
+					break;
+				case 'item_comment':
+					//$this->validate_item_comment($value, $num);
+					break;
+				case 'item_price':
+					if (!$this->validate_price($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_price_case':
+					//$this->validate_price_case($value, $num);
+					break;
+				case 'jan_code':
+					//$this->validate_jan_code($value, $num, $data['item_code']);
+					break;
+			}
 		}
 
-		if ($control_code == '0') {
-			foreach ($data as $key => $value) {
-				switch ($key) {
-					case 'category_code':
-						$this->validate_category_code($value, $num);
-						break;
-					case 'item_code':
-						$this->validate_item_code($value, $num);
-						break;
-					case 'item_name':
-						$this->validate_item_name($value, $num);
-						break;
-					case 'item_yomigana':
-						$this->validate_item_yomigana($value, $num);
-						break;
-					case 'item_unit_name':
-						$this->validate_item_unit_name($value, $num);
-						break;
-					case 'item_unit_name_case':
-						$this->validate_item_unit_name_case($value, $num);
-						break;
-					case 'item_size':
-						$this->validate_item_size($value, $num);
-						break;
-					case 'item_size_case':
-						$this->validate_item_size_case($value, $num);
-						break;
-					case 'item_type':
-						$this->validate_item_type($value, $num);
-						break;
-					case 'item_comment':
-						$this->validate_item_comment($value, $num);
-						break;
-					case 'item_price':
-						$this->validate_price($value, $num);
-						break;
-					case 'item_price_case':
-						$this->validate_price_case($value, $num);
-						break;
-					case 'jan_code':
-						$this->validate_jan_code($value, $num, $data['item_code']);
-						break;
-				}
+		return $result;
+	}
+
+	/**
+	 * @see Upload_Csv_Base::save_line()
+	 */
+	protected function save_line($data) {
+		if (array_key_exists($data['item_code'], $this->items)) {
+			if (!$this->update_item($this->items[$data['item_code']], $data)) {
+				return false;
 			}
-		} elseif ($control_code == '1') {
-			// 削除
-			if (!array_key_exists($data['item_code'], $this->items)) {
-				// 商品コードが存在しない場合は無視する
+			unset($this->items[$data['item_code']]);
+		} else {
+			if (!$this->insert_item($data)) {
 				return false;
 			}
 		}
@@ -131,25 +152,15 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	}
 
 	/**
-	 * @see Upload_Csv_Base::save_line()
+	 * @see Upload_Csv_Base::save_after()
 	 */
-	protected function save_line($data) {
-		$control_code = $data['control_code'];
-		if ($control_code == '0') {
-			if (array_key_exists($data['item_code'], $this->items)) {
-				if (!$this->update_item($data)) {
-					return false;
-				}
-			} else {
-				if (!$this->insert_item($data)) {
-					return false;
-				}
-			}
-		} elseif ($control_code == '1') {
-			if (!$this->remove_item($data['item_code'])) {
+	protected function save_after() {
+		foreach ($this->items as $item) {
+			if (!$this->delete_item($item)) {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -158,24 +169,6 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 */
 	protected function get_unique_key($data) {
 		return $data['item_code'];
-	}
-
-	/**
-	 * 制御フラグバリデート
-	 *
-	 * @param string $value 値
-	 * @param int $num 行番号
-	 */
-	private function validate_control_code($value, $num) {
-		if ($value == '') {
-			parent::set_error($num, '制御コードを入力してください');
-			return false;
-		}
-		if ($value != '0' && $value != '1') {
-			parent::set_error($num, '制御コードは0、または、1で入力してください[' .$value .']');
-			return false;
-		}
-		return true;
 	}
 
 	/**
@@ -272,8 +265,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 */
 	private function validate_item_unit_name_case($value, $num) {
 		if ($value == '') {
-			parent::set_error($num, '単位名(ケース)を入力してください');
-			return false;
+			return true;
 		}
 		if (Str::length($value) > 10) {
 			parent::set_error($num, '単位名(ケース)は10文字以下で入力してください[' . $value . ']');
@@ -290,7 +282,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 */
 	private function validate_item_size($value, $num) {
 		if ($value == '') {
-			return true;
+			return false;
 		}
 		if (!is_numeric($value)) {
 			parent::set_error($num, '入数は数値で入力してください[' . $value . ']');
@@ -311,7 +303,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 */
 	private function validate_item_size_case($value, $num) {
 		if ($value == '') {
-			return true;
+			return false;
 		}
 		if (!is_numeric($value)) {
 			parent::set_error($num, '入数(ケース)は数値で入力してください[' . $value . ']');
@@ -417,7 +409,6 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			parent::set_error($num, 'JANコードは13桁以下で入力してください[' . $value . ']');
 			return false;
 		}
-
 		if (array_key_exists($value, $this->jan_codes_check)) {
 			parent::set_error($num, 'JANコードが重複しています[' . $value . ']');
 			return false;
@@ -485,29 +476,31 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 */
 	private function insert_item($data) {
 		parent::set_norequire_columns($data);
+		/*
 		if (isset($data['category_code'])) {
 			$category_id = $data['category_code'] == '' ? null : $this->categories[$data['category_code']];
 		} else {
 			$category_id = null;
 		}
+		*/
 
 		$values = array();
-		$values['item_category_id'] = $category_id;
+		$values['item_category_id'] = null;
 		$values['code'] = $data['item_code'];
 		$values['name'] = $data['item_name'];
 		$values['yomigana'] = $data['item_yomigana'];
 		$values['unit_name'] = $data['item_unit_name'];
 		$values['unit_name_case'] = $data['item_unit_name_case'];
-		$values['size'] = $data['item_size'];
+		$values['size'] = 1;
 		$values['size_case'] = $data['item_size_case'];
-		$values['type'] = $data['item_type'];
-		$values['comment'] = $data['item_comment'];
+		$values['type'] = null;
+		$values['comment'] = null;
 		$values['price'] = $data['item_price'];
-		$values['price_case'] = $data['item_price_case'];
-		$values['jan_code'] = $data['jan_code'];
+		$values['price_case'] = null;
+		$values['jan_code'] = null;
 		$values['pr_flg'] = false;
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
-		$values['search_field'] =  Common_Util::mb_converts($data, array('item_code', 'item_name', 'item_yomigana', 'item_comment'));
+		$values['search_field'] =  Common_Util::mb_converts($data, array('item_code', 'item_name', 'item_yomigana'));
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
 		$values['created'] = date('Y-m-d H:i:s');
@@ -516,9 +509,6 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		if ($data['item_price'] == '') {
 			$values['price'] = null;
 		}
-		if ($data['item_price_case'] == '') {
-			$values['price_case'] = null;
-		}
 
 		return DB::insert('items')->set($values)->execute();
 	}
@@ -526,60 +516,68 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	/**
 	 * 商品を更新する
 	 *
+	 * @param array $item 元データ
 	 * @param array $data データ
 	 */
-	private function update_item($data) {
-		$item = $this->items[$data['item_code']];
+	private function update_item($item, $data) {
 		parent::set_norequire_columns($data, $item);
+
+		/*
 		if (isset($data['category_code'])) {
-		$category_id = $data['category_code'] == '' ? null : $this->categories[$data['category_code']];
+			$category_id = $data['category_code'] == '' ? null : $this->categories[$data['category_code']];
 		} else {
 			$category_id = $item['item_category_id'];
-		}
-
-		if ($data['item_price'] == '') {
-			$data['item_price'] = null;
 		}
 		if ($data['item_price_case'] == '') {
 			$data['item_price_case'] = null;
 		}
+		*/
 
-		if ($item['item_category_id'] == $category_id
-				&& $item['code'] == $data['item_code']
-				&& $item['name'] == $data['item_name']
+		if ($data['item_price'] == '') {
+			$data['item_price'] = null;
+		}
+
+		if (//$item['item_category_id'] == $category_id
+				$item['name'] == $data['item_name']
 				&& $item['yomigana'] == $data['item_yomigana']
 				&& $item['unit_name'] == $data['item_unit_name']
 				&& $item['unit_name_case'] == $data['item_unit_name_case']
-				&& $item['size'] == $data['item_size']
-				&& $item['size_case'] == $data['item_size_case']
-				&& $item['type'] == $data['item_type']
-				&& $item['comment'] == $data['item_comment']
+				//&& $item['size'] == $data['item_size']
+				//&& $item['size_case'] == $data['item_size_case']
+				//&& $item['type'] == $data['item_type']
+				//&& $item['comment'] == $data['item_comment']
 				&& $item['price'] == $data['item_price']
-				&& $item['price_case'] == $data['item_price_case']
-				&& $item['jan_code'] == $data['jan_code']) {
+				//&& $item['price_case'] == $data['item_price_case']
+				//&& $item['jan_code'] == $data['jan_code']) {
+				) {
 			return true;
 		}
 
 		$query = DB::update('items')
-			->value('item_category_id', $category_id)
+			//->value('item_category_id', $category_id)
 			->value('name', $data['item_name'])
 			->value('yomigana', $data['item_yomigana'])
 			->value('unit_name', $data['item_unit_name'])
 			->value('unit_name_case', $data['item_unit_name_case'])
-			->value('size', $data['item_size'])
+			//->value('size', $data['item_size'])
 			->value('size_case', $data['item_size_case'])
-			->value('type', $data['item_type'])
-			->value('comment', $data['item_comment'])
+			//->value('type', $data['item_type'])
+			//->value('comment', $data['item_comment'])
 			->value('price', $data['item_price'])
-			->value('price_case', $data['item_price_case'])
-			->value('jan_code', $data['jan_code'])
-			->value('search_field', Common_Util::mb_converts($data, array('item_code', 'item_name', 'item_yomigana', 'item_comment')))
+			//->value('price_case', $data['item_price_case'])
+			//->value('jan_code', $data['jan_code'])
+			->value('search_field', Common_Util::mb_converts($data, array('item_code', 'item_name', 'item_yomigana')))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('id', '=', $item['id']);
 
+		/*
 		if ($item['price'] != $data['item_price'] || $item['price_case'] != $data['item_price_case']
 				 || $item['size'] != $data['item_size'] || $item['size_case'] != $data['item_size_case']) {
+			$query->value('renewal_datetime', date('Y-m-d H:i:s'));
+		}
+		*/
+		if ($item['price'] != $data['item_price'] || $item['size_case'] != $data['item_size_case']) {
 			$query->value('renewal_datetime', date('Y-m-d H:i:s'));
 		}
 
@@ -589,15 +587,16 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	/**
 	 * 商品を削除する
 	 *
-	 * @param string $code 商品コード
+	 * @param array $item 元データ
 	 */
-	private function remove_item($code) {
-		return DB::update('items')
+	private function delete_item($item) {
+		$query = DB::update('items')
 			->value('del_flg', DELETED)
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
-			->where('code', $code)
-			->where('del_flg', UNDELETED)
-			->execute();
+			->where('code', '=', $item['code'])
+			->where('del_flg', '=', UNDELETED);
+
+		return $query->execute() !== false;
 	}
 }

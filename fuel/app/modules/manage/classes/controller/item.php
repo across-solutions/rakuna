@@ -151,17 +151,22 @@ class Controller_Item extends Controller_Base {
 
 		$csv = new \Upload_Csv_Item($this->get_upload_file('item_csv'));
 		$csv->parse();
-		if ($csv->has_error()) {
-			$this->render(null, 'item/upload_csv');
-			return;
-		}
+		//if ($csv->has_error()) {
+		//	$this->render(null, 'item/upload_csv');
+		//	return;
+		//}
 
 		if (!$csv->save()) {
 			throw new \HttpServerErrorException();
 		}
 
-		$this->set_info_message('登録しました');
-		Response::redirect('/manage/dialog/complete');
+		if ($csv->has_error()) {
+			$this->render(null, 'item/upload_csv');
+			return;
+		} else {
+			$this->set_info_message('登録しました');
+			Response::redirect('/manage/dialog/complete');
+		}
 	}
 
 	/**
@@ -380,14 +385,12 @@ class Controller_Item extends Controller_Base {
 			->add_rule('required')
 			->add_rule('max_length', 10);
 		$validation->add('unit_name_case', 'ケース単位')
-			->add_rule('required')
 			->add_rule('max_length', 10);
 		$validation->add('size', 'バラ入数')
 			->add_rule('required')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999);
 		$validation->add('size_case', 'ケース入数')
-			->add_rule('required')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999);
 		$validation->add('type', '商品タイプ')
@@ -437,14 +440,12 @@ class Controller_Item extends Controller_Base {
 			->add_rule('required')
 			->add_rule('max_length', 10);
 		$validation->add('unit_name_case', 'ケース単位')
-			->add_rule('required')
 			->add_rule('max_length', 10);
 		$validation->add('size', 'バラ入数')
 			->add_rule('required')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999);
 		$validation->add('size_case', 'ケース入数')
-			->add_rule('required')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999);
 		$validation->add('type', '商品タイプ')
