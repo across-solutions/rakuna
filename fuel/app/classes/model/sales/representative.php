@@ -8,6 +8,7 @@ class Model_Sales_Representative extends Model_Base {
 		'id',
 		'sales_person_code',
 		'sales_person_name',
+		'department_code',
 		'username',
 		'password',
 		'auto_login_key',
@@ -23,7 +24,7 @@ class Model_Sales_Representative extends Model_Base {
 	);
 
 	protected static $_search_fields = array(
-		'search_field' => array('sales_section_code', 'sales_person_code', 'sales_person_name', 'username')
+		'search_field' => array('sales_person_code', 'sales_person_name', 'department_code', 'username')
 	);
 
 	protected static $_has_one = array(
@@ -31,8 +32,8 @@ class Model_Sales_Representative extends Model_Base {
 			'model_to' => 'Model_Member',
 			'cascade_save' => false,
 			'cascade_delete' => false,
-			'key_from' => 'member_code',
-			'key_to' => 'code',
+			'key_from' => 'sales_person_code',
+			'key_to' => 'sales_person_code',
 			'conditions' => array(
 				'where' => array(array('del_flg', '=', '0'))
 			)

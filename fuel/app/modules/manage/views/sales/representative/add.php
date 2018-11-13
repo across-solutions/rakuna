@@ -62,6 +62,21 @@
 
 				<dl class="clearfix">
 					<dt>
+						<label for="catDepartmentCode">
+							部門コード<span class="red">*</span>
+						</label>
+					</dt>
+					<dd>
+						<?php echo Form::input('department_code', Arr::get($data, 'department_code'), array('id' => 'catDepartmentCode', 'placeholder' => '0000000000000')); ?>
+						<a class="tooltip" rel="tooltip" title="必須項目です。<br/>半角英数字で入力してください。<br/>20文字以内で入力してください。">
+							<span class="icon-question decEdit"></span>
+						</a>
+						<?php echo $validate_error_message('department_code'); ?>
+					</dd>
+				</dl>
+
+				<dl class="clearfix">
+					<dt>
 						<label for="catUsername">
 							ログインID
 						</label>

@@ -107,6 +107,38 @@ class Common_Validation {
 	}
 
 	/**
+	 * コード存在チェック
+	 *
+	 * @param $value チェック対象文字列
+	 * @param $key コードキー
+	 */
+	public static function _validation_exist_code($value, $key) {
+		if (is_null($value) || $value == '') {
+			return true;
+		}
+
+		$config = Config::get($key);
+
+		return array_search($value, $config) !== false;
+	}
+
+	/**
+	 * コードキー存在チェック
+	 *
+	 * @param $value チェック対象文字列
+	 * @param $key コードキー
+	 */
+	public static function _validation_exist_code_key($value, $key) {
+		if (is_null($value) || $value == '') {
+			return true;
+		}
+
+		$config = Config::get($key);
+
+		return array_key_exists($value, $config) !== false;
+	}
+
+	/**
 	 * ユニークチェック
 	 *
 	 * @param string $value チェック対象文字列

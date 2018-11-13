@@ -64,6 +64,9 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 					case 'sales_person_name':
 						$this->validate_sales_person_name($value, $num);
 						break;
+					case 'department_code':
+						$this->validate_department_code($value, $num);
+						break;
 					case 'username':
 						$this->validate_username($value, $num, $data['sales_person_code']);
 						break;
@@ -177,6 +180,28 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	}
 
 	/**
+	 * 部門コードバリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_department_code($value, $num) {
+		if ($value == '') {
+			parent::set_error($num, '部門コードを入力してください');
+			return false;
+		}
+		if (!Common_Validation::_validation_alphanum($value)) {
+			parent::set_error($num, '部門コードは半角英数字で入力してください[' . $value . ']');
+			return false;
+		}
+		if (Str::length($value) > 20) {
+			parent::set_error($num, '部門コードは20文字以下で入力してください[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * ログインIDバリデート
 	 *
 	 * @param string $value 値
@@ -257,7 +282,7 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	 * 営業担当アカウントコードドリストを取得する
 	 */
 	private function list_sales_person_code() {
-		$results = DB::select('id', 'sales_person_code', 'sales_person_name', 'username', 'password')
+		$results = DB::select('id', 'sales_person_code', 'sales_person_name', 'department_code', 'username', 'password')
 			->from('sales_representatives')
 			->where('del_flg', '=', UNDELETED)
 			->order_by(DB::expr('Cast(sales_representatives.sales_person_code AS SIGNED)'), 'ASC')
@@ -329,10 +354,11 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 		$values = array();
 		$values['sales_person_code'] = $data['sales_person_code'];
 		$values['sales_person_name'] = $data['sales_person_name'];
+		$values['department_code'] = $data['department_code'];
 		$values['username'] = $username;
 		$values['password'] = $password;
 		$values['status'] = Config::get('define.sales_status.enable');
-		$values['search_field'] = Common_Util::mb_converts($data, array('sales_person_code', 'sales_person_name', 'username'));
+		$values['search_field'] = Common_Util::mb_converts($data, array('sales_person_code', 'sales_person_name', 'department_code', 'username'));
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
 		$values['created'] = date('Y-m-d H:i:s');
@@ -350,6 +376,7 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	private function update_sales_representative($sales_representative, $data) {
 		if ($sales_representative['sales_person_code'] == $data['sales_person_code'] &&
 			$sales_representative['sales_person_name'] == $data['sales_person_name'] &&
+			$sales_representative['department_code'] == $data['department_code'] &&
 			$sales_representative['username'] == $data['username'] &&
 			$sales_representative['password'] == $data['password']) {
 			return true;
@@ -358,9 +385,10 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 		$query = DB::update('sales_representatives')
 			->value('sales_person_code', $data['sales_person_code'])
 			->value('sales_person_name', $data['sales_person_name'])
+			->value('department_code', $data['department_code'])
 			->value('username', $data['username'])
 			->value('password', $data['password'])
-			->value('search_field', Common_Util::mb_converts($data, array('sales_person_code', 'sales_person_name', 'username')))
+			->value('search_field', Common_Util::mb_converts($data, array('sales_person_code', 'sales_person_name', 'department_code', 'username')))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('sales_person_code', '=', $data['sales_person_code'])

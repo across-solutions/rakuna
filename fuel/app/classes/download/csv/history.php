@@ -27,6 +27,9 @@ class Download_Csv_History extends Download_Csv_Base {
 			array('orders.member_name', 'member_name'),
 			array('orders.sales_person_code', 'sales_person_code'),
 			array('orders.sales_person_name', 'sales_person_name'),
+			array('orders.department_code', 'department_code'),
+			array('orders.tax_rate', 'tax_rate'),
+			array('orders.delivery_kind', 'delivery_kind'),
 			array('orders.delivery_code', 'delivery_code'),
 			array('orders.delivery_name', 'delivery_name'),
 			array('orders.delivery_receiver_name1', 'delivery_receiver_name1'),
@@ -51,13 +54,17 @@ class Download_Csv_History extends Download_Csv_Base {
 			array('order_details.item_code', 'item_code'),
 			array('order_details.item_name', 'item_name'),
 			array('order_details.item_size_case', 'item_size_case'),
+			array('order_details.item_type', 'item_type'),
 			array('order_details.item_unit_name_case', 'item_unit_name_case'),
 			array('order_details.price_case_tax', 'price_case'),
 			array('order_details.amount_case', 'amount_case'),
 			array('order_details.item_size', 'item_size'),
 			array('order_details.item_unit_name', 'item_unit_name'),
 			array('order_details.price_tax', 'price'),
-			array('order_details.amount', 'amount')
+			array('order_details.amount', 'amount'),
+			array('order_details.total', 'total'),
+			array('order_details.cost', 'cost'),
+			array('order_details.total_cost', 'total_cost')
 		)
 		->from('orders')
 		->join('order_details', 'INNER')
@@ -75,6 +82,10 @@ class Download_Csv_History extends Download_Csv_Base {
 	 * @see Download_Csv_Base::modifier()
 	 */
 	protected function modifier($counter, $data, $key) {
+		if ($key == 'order_datetime1') {
+			return date('Ymd', strtotime($data['order_datetime']));
+		}
+
 		if ($data['order_id'] != $this->tmp_id) {
 			$this->tmp_id = $data['order_id'];
 			$this->line_num = 0;
@@ -85,9 +96,55 @@ class Download_Csv_History extends Download_Csv_Base {
 			return $this->line_num;
 		}
 
+		if ($key == 'sales_person_code1') {
+			return $data['sales_person_code'];
+		}
+
+		if ($key == 'sales_person_code2') {
+			return $data['sales_person_code'];
+		}
+
+		if ($key == 'sales_person_code3') {
+			return $data['sales_person_code'];
+		}
+
+		if ($key == 'delivery_code') {
+			if ($data['delivery_kind'] == '1') {
+				return '';
+			}
+		}
+
+		if ($key == 'shipping_attribute') {
+			return '1';
+		}
+
+		if ($key == 'delivery_date') {
+			return date('Ymd', strtotime($data[$key]));
+		}
+
 		if ($key == 'total_amount') {
 			$total_amount = $data['item_size'] * $data['amount'] + $data['item_size_case'] * $data['amount_case'];
 			return $total_amount;
+		}
+
+		if ($key == 'total1') {
+			return $data['total'];
+		}
+
+		if ($key == 'profit') {
+			return $data['total'] - $data['total_cost'];
+		}
+
+		if ($key == 'order_datetime2') {
+			return date('Ymd', strtotime($data['order_datetime']));
+		}
+
+		if ($key == 'total2') {
+			return $data['total'];
+		}
+
+		if ($key == 'shipping_date') {
+			return date('Ymd', strtotime($data[$key]));
 		}
 
 		return parent::modifier($counter, $data, $key);

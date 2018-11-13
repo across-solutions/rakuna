@@ -19,6 +19,7 @@ class Download_Csv_Sales_Representative extends Download_Csv_Base {
 		$query = DB::select(
 				array('sales_representatives.sales_person_code' , 'sales_person_code'),
 				array('sales_representatives.sales_person_name' , 'sales_person_name'),
+				array('sales_representatives.department_code' , 'department_code'),
 				array('sales_representatives.username' , 'username'),
 				array('sales_representatives.password' , 'password')
 			)

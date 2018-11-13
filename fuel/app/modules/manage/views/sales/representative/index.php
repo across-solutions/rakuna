@@ -107,6 +107,7 @@
 				<tr>
 					<th class="w15">営業担当者コード</th>
 					<th>営業担当者名</th>
+					<th class="w15">部門コード</th>
 					<th class="w8">編集</th>
 				</tr>
 			</thead>
@@ -120,6 +121,9 @@
 						</td>
 						<td class="left">
 							<?php echo Arr::get($row, 'sales_person_name'); ?>
+						</td>
+						<td class="center">
+							<?php echo Arr::get($row, 'department_code'); ?>
 						</td>
 						<td class="center">
 							<a href="/manage/sales/representative/edit/<?php echo Arr::get($row, 'id'); ?>" class="dialog">

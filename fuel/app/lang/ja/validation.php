@@ -11,6 +11,8 @@ return array(
 	'numeric' => ':labelは数値で入力してください',
 	'simple_email' => ':labelが不正です',
 	'exist' => ':labelが存在しません',
+	'exist_code' => ':labelの値が不正です',
+	'exist_code_key' => ':labelの値が不正です',
 	'unique' => ':labelはすでに登録されています',
 	'unique_ignore_del_flg' => ':labelはすでに登録されています',
 	'valid_date'  => ':labelが不正です',

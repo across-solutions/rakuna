@@ -29,6 +29,7 @@ class Download_Csv_Item extends Download_Csv_Base {
 			array('items.comment' , 'item_comment'),
 			array('items.price' , 'item_price'),
 			array('items.price_case' , 'item_price_case'),
+			array('items.cost' , 'item_cost'),
 			array('items.jan_code', 'jan_code')
 		)
 		->from('items')

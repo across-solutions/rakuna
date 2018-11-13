@@ -12,6 +12,7 @@ class Model_Order extends Model_Base {
 		'member_email',
 		'sales_person_code',
 		'sales_person_name',
+		'department_code',
 		'order_datetime',
 		'amount',
 		'amount_case',

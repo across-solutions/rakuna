@@ -224,6 +224,10 @@ class Controller_Sales_Representative extends Controller_Base {
 		$validation->add('sales_person_name', '営業担当者名')
 			->add_rule('required')
 			->add_rule('max_length', 40);
+		$validation->add('department_code', '部門コード')
+			->add_rule('required')
+			->add_rule('alphanum')
+			->add_rule('max_length', 20);
 		$validation->add('username', 'ログインID')
 			->add_rule('alphanum')
 			->add_rule('min_length', 5)
@@ -253,6 +257,10 @@ class Controller_Sales_Representative extends Controller_Base {
 		$validation->add('sales_person_name', '営業担当者名')
 			->add_rule('required')
 			->add_rule('max_length', 40);
+		$validation->add('department_code', '部門コード')
+			->add_rule('required')
+			->add_rule('alphanum')
+			->add_rule('max_length', 20);
 		$validation->add('username', 'ログインID')
 			->add_rule('required')
 			->add_rule('alphanum')
@@ -281,7 +289,7 @@ class Controller_Sales_Representative extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function insert_sales_representative($data) {
-		$fields = array('sales_person_code', 'sales_person_name', 'username', 'password');
+		$fields = array('sales_person_code', 'sales_person_name', 'department_code', 'username', 'password');
 		$values = \Common_Util::filter($data, $fields);
 		$values['status'] = Config::get('define.sales_status.enable');
 
@@ -297,7 +305,7 @@ class Controller_Sales_Representative extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function update_sales_representative($sales_representative, $data) {
-		$fields = array('sales_person_code', 'sales_person_name', 'username', 'password');
+		$fields = array('sales_person_code', 'sales_person_name', 'department_code', 'username', 'password');
 		\Common_Util::copy($sales_representative, $data, $fields);
 
 		return $sales_representative->save() !== false;

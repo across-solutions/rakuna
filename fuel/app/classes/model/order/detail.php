@@ -26,6 +26,8 @@ class Model_Order_Detail extends Model_Base {
 		'amount_case',
 		'total',
 		'total_tax',
+		'cost',
+		'total_cost',
 		'search_field',
 		'del_flg',
 		'update_user_id',

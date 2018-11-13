@@ -185,7 +185,8 @@ class Controller_Register extends Controller_Base {
 		$member = DB::select('members.id', 'members.code', 'members.name', 'members.zip',
 				'members.address1', 'members.address2', 'members.address3', 'members.tel', 'members.fax', 'members.email',
 				array('sales_representatives.sales_person_code', 'member_sales_person_code'),
-				array('sales_representatives.sales_person_name', 'member_sales_person_name'))
+				array('sales_representatives.sales_person_name', 'member_sales_person_name'),
+				array('sales_representatives.department_code', 'department_code'))
 			->from('members')
 			->join('sales_representatives', 'LEFT')
 				->on('sales_representatives.sales_person_code', '=', 'members.sales_person_code')
@@ -403,6 +404,7 @@ class Controller_Register extends Controller_Base {
 				array('item_categories.name', 'category_name'),
 				array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
 				array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
+				'items.cost',
 				array('items.renewal_datetime', 'item_renewal_datetime'))
 			->from('items')
 			->join('item_categories', 'LEFT')
@@ -513,10 +515,12 @@ class Controller_Register extends Controller_Base {
 		if (\Common_Member::is_agency()) {
 			$values['sales_person_code'] = \Common_Member::get_agency_code();
 			$values['sales_person_name'] = \Common_Member::get_agency_name();
+			$values['department_code'] = \Common_Member::get_agency('department_code');
 			$values['agency_order_flg'] = true;
 		} else {
 			$values['sales_person_code'] = Arr::get($member, 'member_sales_person_code');
 			$values['sales_person_name'] = Arr::get($member, 'member_sales_person_name');
+			$values['department_code'] = Arr::get($member, 'department_code');
 			$values['agency_order_flg'] = false;
 		}
 
@@ -558,6 +562,9 @@ class Controller_Register extends Controller_Base {
 		$values['amount_case'] = $cart['amount_case'];
 		$values['total'] = $values['price'] * $values['item_size'] * $values['amount'] + $values['price_case'] * $values['item_size_case'] * $values['amount_case'];
 		$values['total_tax'] = \Common_Util::add_tax($values['price'] * $values['item_size'] * $values['amount']) + \Common_Util::add_tax($values['price_case'] * $values['item_size_case'] * $values['amount_case']);
+		$values['cost'] = $item['cost'];
+		$total_amount = $values['item_size'] * $values['amount'] + $values['item_size_case'] * $values['amount_case'];
+		$values['total_cost'] = $item['cost'] * $total_amount;
 
 		$model = \Model_Order_Detail::forge($values);
 

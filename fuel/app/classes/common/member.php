@@ -10,7 +10,7 @@ class Common_Member {
 	/**
 	 * 代理発注セッション用キーリスト
 	 */
-	private static $SESSION_SALES_REPRESENTATIVE_FIELDS = array('id', 'sales_person_code', 'sales_person_name');
+	private static $SESSION_SALES_REPRESENTATIVE_FIELDS = array('id', 'sales_person_code', 'sales_person_name', 'department_code');
 
 	/**
 	 * ログインユーザIDを取得する

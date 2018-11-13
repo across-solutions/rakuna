@@ -392,15 +392,19 @@ class Controller_Item extends Controller_Base {
 			->add_rule('numeric_between', 0, 9999);
 		$validation->add('size_case', 'ケース入数')
 			->add_rule('numeric')
-			->add_rule('numeric_between', 0, 9999);
+			->add_rule('numeric_between', 0, 999999);
 		$validation->add('type', '商品タイプ')
-			->add_rule('required');
+			->add_rule('required')
+			->add_rule('exist_code', 'define.item_type');
 		$validation->add('comment', '商品説明文')
 			->add_rule('max_length', 500);
 		$validation->add('price', \Common_Setting::is_case() ? 'バラ単価' : '単価')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999999);
 		$validation->add('price_case', 'ケース単価')
+			->add_rule('numeric')
+			->add_rule('numeric_between', 0, 9999999);
+		$validation->add('cost', '原価')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999999);
 		$validation->add('jan_code', 'JANコード')
@@ -447,15 +451,19 @@ class Controller_Item extends Controller_Base {
 			->add_rule('numeric_between', 0, 9999);
 		$validation->add('size_case', 'ケース入数')
 			->add_rule('numeric')
-			->add_rule('numeric_between', 0, 9999);
+			->add_rule('numeric_between', 0, 999999);
 		$validation->add('type', '商品タイプ')
-			->add_rule('required');
+			->add_rule('required')
+			->add_rule('exist_code', 'define.item_type');
 		$validation->add('comment')
 			->add_rule('max_length', 500);
 		$validation->add('price', \Common_Setting::is_case() ? 'バラ単価' : '単価')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999999);
 		$validation->add('price_case', 'ケース単価')
+			->add_rule('numeric')
+			->add_rule('numeric_between', 0, 9999999);
+		$validation->add('cost', '原価')
 			->add_rule('numeric')
 			->add_rule('numeric_between', 0, 9999999);
 		$validation->add('jan_code', 'JANコード')
@@ -520,7 +528,7 @@ class Controller_Item extends Controller_Base {
 	 */
 	private function insert_item($data) {
 		$fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
-						'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'jan_code', 'pr_flg');
+						'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'cost', 'jan_code', 'pr_flg');
 		$values = \Common_Util::filter($data, $fields);
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
 
@@ -529,6 +537,9 @@ class Controller_Item extends Controller_Base {
 		}
 		if (is_null($values['price_case'])) {
 			$values['price_case'] = null;
+		}
+		if (is_null($values['cost'])) {
+			$values['cost'] = null;
 		}
 
 		$model = \Model_Item::forge($values);
@@ -545,7 +556,7 @@ class Controller_Item extends Controller_Base {
 	private function update_item($item, $data) {
 		$update_fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
 								'size', 'size_case', 'type', 'comment', 'jan_code', 'pr_flg');
-		$renewal_fields = array('code', 'size', 'size_case');
+		$renewal_fields = array('size_case');
 
 		if (isset($data['price'])) {
 			$update_fields[] = 'price';
@@ -556,9 +567,14 @@ class Controller_Item extends Controller_Base {
 		}
 		if (isset($data['price_case'])) {
 			$update_fields[] = 'price_case';
-			$renewal_fields[] = 'price_case';
 			if ($data['price_case'] == '') {
 				$data['price_case'] = null;
+			}
+		}
+		if (isset($data['cost'])) {
+			$update_fields[] = 'cost';
+			if ($data['cost'] == '') {
+				$data['cost'] = null;
 			}
 		}
 

@@ -19,6 +19,7 @@ class Model_Item extends \Model_Base {
 		'jan_code',
 		'price',
 		'price_case',
+		'cost',
 		'pr_flg',
 		'renewal_datetime',
 		'search_field',

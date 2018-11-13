@@ -139,7 +139,7 @@
 				</dt>
 				<dd>
 					<?php echo Form::input('size_case', Arr::get($data, 'size_case'), array('id' => 'quantityCase', 'placeholder' => '12')); ?>
-					<a class="tooltip" rel="tooltip" title="数字で入力してください。<br/>10,000未満で入力してください。">
+					<a class="tooltip" rel="tooltip" title="数字で入力してください。<br/>1,000,000未満で入力してください。">
 						<span class="icon-question decEdit"></span>
 					</a>
 					<?php echo $validate_error_message('size_case'); ?>
@@ -153,10 +153,16 @@
 					</label>
 				</dt>
 				<dd>
-					<?php echo Form::radio('type', 1, Arr::get($data, 'type', 1), array('id' => 'form_type_1')); ?>
-					<?php echo Form::label('在庫品', 'type_1'); ?>
-					<?php echo Form::radio('type', 2, Arr::get($data, 'type', 1), array('id' => 'form_type_2')); ?>
-					<?php echo Form::label('取り寄せ品', 'type_2'); ?>
+					<?php echo Form::radio('type', Config::get('define.item_type.material'), Arr::get($data, 'type', '000000'), array('id' => 'form_type_0')); ?>
+					<?php echo Form::label('原料', 'type_0'); ?>
+					<?php echo Form::radio('type', Config::get('define.item_type.stock'), Arr::get($data, 'type', '000000'), array('id' => 'form_type_1')); ?>
+					<?php echo Form::label('ﾛｼﾞｽ在庫', 'type_1'); ?>
+					<?php echo Form::radio('type', Config::get('define.item_type.order'), Arr::get($data, 'type', '000000'), array('id' => 'form_type_2')); ?>
+					<?php echo Form::label('取寄品', 'type_2'); ?>
+					<?php echo Form::radio('type', Config::get('define.item_type.special'), Arr::get($data, 'type', '000000'), array('id' => 'form_type_3')); ?>
+					<?php echo Form::label('取置・別製', 'type_3'); ?>
+					<?php echo Form::radio('type', Config::get('define.item_type.other'), Arr::get($data, 'type', '000000'), array('id' => 'form_type_4')); ?>
+					<?php echo Form::label('その他', 'type_4'); ?>
 					<?php echo $validate_error_message('type'); ?>
 				</dd>
 			</dl>
@@ -208,6 +214,21 @@
 					</dl>
 				<?php endif; ?>
 			<?php endif; ?>
+
+			<dl class="clearfix">
+				<dt>
+					<label for="cost">
+						原価
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('cost', Arr::get($data, 'cost'), array('id' => 'cost', 'placeholder' => '0000')); ?>
+					<a class="tooltip" rel="tooltip" title="数字で入力してください。<br/>10,000,000円未満で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('cost'); ?>
+				</dd>
+			</dl>
 
 			<dl class="clearfix">
 				<dt>
