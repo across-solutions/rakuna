@@ -203,6 +203,10 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			parent::set_error($num, '商品コードを入力してください');
 			return false;
 		}
+		if ((int)$value < 30000000 || (int)$value > 899999999) {
+			parent::set_error($num, '商品コードは30000000以上、900000000未満で入力してください[' . $value . ']');
+			return false;
+		}
 		if (!Common_Validation::_validation_alphanum($value)) {
 			parent::set_error($num, '商品コードは半角英数字で入力してください[' . $value . ']');
 			return false;
