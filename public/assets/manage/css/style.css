@@ -708,6 +708,14 @@ span.deliverTime{
 	color:#ff0000;
 }
 
+span.memberCode{
+	display:block;
+}
+
+span.memberName{
+	display:block;
+}
+
 tr.odd{
 	background:#fff;
 }

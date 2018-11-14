@@ -83,7 +83,7 @@
 								<li>
 									<a href="/sales/member/select/<?php echo $member_code; ?>" data-tor-smoothScroll="noSmooth">
 										<p>
-											<?php echo $member_name; ?>
+											<?php echo $member_code; ?>:<?php echo $member_name; ?>
 										</p>
 										<span class="icon-chevron-right"></span>
 									</a>

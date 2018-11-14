@@ -164,9 +164,9 @@
 		<table class="resultList stripe">
 			<thead>
 				<tr>
-					<th class="w10">受注番号</th>
+					<th class="w8">受注番号</th>
 					<th class="w15">発注日時/納品希望日</th>
-					<th class="w12">発注者名</th>
+					<th class="w15">発注者コード/発注者名</th>
 					<?php if (Common_Setting::is_case()) : ?>
 						<th class="w8">ケース</th>
 						<th class="w8">バラ</th>
@@ -203,7 +203,12 @@
 							</span>
 						</td>
 						<td class="left">
-							<?php echo Arr::get($row, 'member_name'); ?>
+							<span class="memberCode">
+								<?php echo Arr::get($row, 'member_code'); ?>
+							</span>
+							<span class="memberName">
+								<?php echo Arr::get($row, 'member_name'); ?>
+							</span>
 						</td>
 						<?php if (Common_Setting::is_case()) : ?>
 							<td class="right amount_case">

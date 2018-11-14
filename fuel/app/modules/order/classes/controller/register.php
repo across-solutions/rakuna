@@ -38,6 +38,16 @@ class Controller_Register extends Controller_Base {
 		$cart->set_member_tel(Arr::get($member, 'tel'));
 		$cart->set_member_fax(Arr::get($member, 'fax'));
 
+		$cart->set_order_type('1');
+		$cart->set_shipping_div('80');
+		$cart->set_warehouse_div('000900');
+
+		$nearest_shipping_date = \Common_Util::get_nearest_shipping_date('members', Arr::get($member, 'code'));
+		if (!empty($nearest_shipping_date)) {
+			$cart->set_shipping_date($nearest_shipping_date);
+			$cart->set_delivery_date($nearest_shipping_date);
+		}
+
 		Session::set(SESSION_KEY_CART, $cart);
 
 		$this->render($cart);
@@ -123,7 +133,7 @@ class Controller_Register extends Controller_Base {
 	 */
 	private function get_shipping_dates() {
 		$limit = 10;
-		$start = date('Y-m-d', strtotime('+1 day'));
+		$start = date('Y-m-d', strtotime('+2 day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, false);
@@ -138,7 +148,7 @@ class Controller_Register extends Controller_Base {
 	 */
 	private function get_delivery_dates() {
 		$limit = 12;
-		$start = date('Y-m-d', strtotime('+1 day'));
+		$start = date('Y-m-d', strtotime('+2 day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, false);

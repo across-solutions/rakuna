@@ -35,7 +35,7 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 	 */
 	private function get_shipping_dates() {
 		$limit = 10;
-		$start = date('Y-m-d', strtotime('+1 day'));
+		$start = date('Y-m-d', strtotime('+2 day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, '');
@@ -50,7 +50,7 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 	 */
 	private function get_delivery_dates() {
 		$limit = 12;
-		$start = date('Y-m-d', strtotime('+1 day'));
+		$start = date('Y-m-d', strtotime('+2 day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, '');

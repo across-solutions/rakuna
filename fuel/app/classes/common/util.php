@@ -545,7 +545,7 @@ class Common_Util {
 	 */
 	public static function get_nearest_shipping_date($table, $member_code, $delivery_code = null) {
 		$limit = 10;
-		$start = date('Ymd', strtotime('+1 day'));
+		$start = date('Ymd', strtotime('+2 day'));
 		$end = date('Ymd', strtotime($limit . ' day', strtotime($start)));
 		$date = $start;
 
