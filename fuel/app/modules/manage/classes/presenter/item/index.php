@@ -85,8 +85,8 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 		$empty_unit_name_case = Arr::get($data, 'empty_unit_name_case');
 		if (!is_null($empty_unit_name_case) && trim($empty_unit_name_case) == '1') {
 			$query->where_open();
-			$query->where('unit_name_case', '!=', NULL);
-			$query->or_where('unit_name_case', '!=', '');
+			$query->where('unit_name_case', '=', NULL);
+			$query->or_where('unit_name_case', '=', '');
 			$query->where_close();
 		}
 	}
