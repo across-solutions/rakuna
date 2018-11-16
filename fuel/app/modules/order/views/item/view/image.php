@@ -21,6 +21,7 @@
 								<?php echo Image_Item::img(Arr::get($row, 'code'), array('class' => 'lineupimage')); ?>
 							</a>
 						</div>
+
 						<?php $unit_name_case = Arr::get($row, 'unit_name_case'); ?>
 						<?php $hidden_flg_case = Arr::get($row, 'hidden_flg_case'); ?>
 						<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
@@ -50,8 +51,9 @@
 							<?php endif; ?>
 						<?php endif; ?>
 
+						<?php $unit_name = Arr::get($row, 'unit_name'); ?>
 						<?php $hidden_flg_single = Arr::get($row, 'hidden_flg_single'); ?>
-						<?php if ($hidden_flg_single == UNDELETED) : ?>
+						<?php if ($hidden_flg_single == UNDELETED && !empty($unit_name)) : ?>
 							<div class="buttons">
 								<strong><?php if (Common_Setting::is_case()) : ?><?php echo Arr::get($row, 'unit_name'); ?><?php endif; ?></strong>
 								<ul>

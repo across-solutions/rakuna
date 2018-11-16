@@ -69,7 +69,8 @@
 												<?php endif; ?>
 											<?php endif; ?>
 											<?php $hidden_flg_single = Arr::get($row, 'hidden_flg_single'); ?>
-											<?php if ($hidden_flg_single == UNDELETED) : ?>
+											<?php $unit_name = Arr::get($row, 'unit_name'); ?>
+											<?php if ($hidden_flg_single == UNDELETED && !empty($unit_name)) : ?>
 												<p>
 													<?php if (Common_Setting::is_case()) : ?>
 														<span><?php echo Arr::get($row, 'unit_name'); ?></span>
@@ -93,7 +94,7 @@
 														</p>
 													<?php endif; ?>
 												<?php endif; ?>
-												<?php if ($hidden_flg_single == UNDELETED) : ?>
+												<?php if ($hidden_flg_single == UNDELETED && !empty($unit_name)) : ?>
 													<p>
 														<?php if (Common_Setting::is_case()) : ?>
 															<span><?php echo Arr::get($row, 'unit_name'); ?></span>
@@ -152,7 +153,7 @@
 									<?php endif; ?>
 								<?php endif; ?>
 
-								<?php if ($hidden_flg_single == UNDELETED) : ?>
+								<?php if ($hidden_flg_single == UNDELETED && !empty($unit_name)) : ?>
 									<div class="buttons">
 										<?php if (Common_Setting::is_case()) : ?>
 											<strong><?php echo Arr::get($row, 'unit_name'); ?></strong>

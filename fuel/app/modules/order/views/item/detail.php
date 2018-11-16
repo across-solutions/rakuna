@@ -29,8 +29,9 @@
 			<div class="counts">
 				<div class="buttonWrap">
 
+					<?php $unit_name_case = Arr::get($data, 'unit_name_case'); ?>
 					<?php $hidden_flg_case = Arr::get($data, 'hidden_flg_case'); ?>
-					<?php if ($hidden_flg_case == UNDELETED) : ?>
+					<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 						<?php if (Common_Setting::is_case()) : ?>
 							<div class="buttons">
 							<input class="main_set" type="hidden" value="amount_case<?php echo Arr::get($data, 'id'); ?>">
@@ -65,8 +66,9 @@
 						<?php endif; ?>
 					<?php endif; ?>
 
+					<?php $unit_name = Arr::get($data, 'unit_name'); ?>
 					<?php $hidden_flg_single = Arr::get($data, 'hidden_flg_single'); ?>
-					<?php if ($hidden_flg_single == UNDELETED) : ?>
+					<?php if ($hidden_flg_single == UNDELETED && !empty($unit_name)) : ?>
 						<div class="buttons">
 						<input class="main_set" type="hidden" value="amount<?php echo Arr::get($data, 'id'); ?>">
 							<?php if (Common_Setting::is_case()) : ?>
@@ -140,7 +142,7 @@
 						入数
 					</dt>
 					<dd>
-						<?php if ($hidden_flg_case == UNDELETED) : ?>
+						<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 							<?php if (Common_Setting::is_case()) : ?>
 								<p>
 									<span><?php echo Arr::get($data, 'unit_name_case'); ?></span>
@@ -148,7 +150,7 @@
 								</p>
 							<?php endif; ?>
 						<?php endif; ?>
-						<?php if ($hidden_flg_single == UNDELETED) : ?>
+						<?php if ($hidden_flg_single == UNDELETED && !empty($unit_name)) : ?>
 							<p>
 								<?php if (Common_Setting::is_case()) : ?>
 									<span><?php echo Arr::get($data, 'unit_name'); ?></span>
@@ -169,7 +171,7 @@
 							価格
 						</dt>
 						<dd>
-							<?php if ($hidden_flg_case == UNDELETED) : ?>
+							<?php if ($hidden_flg_case == UNDELETED && !empty($unit_name_case)) : ?>
 								<?php if (Common_Setting::is_case()) : ?>
 									<p>
 										<span><?php echo Arr::get($data, 'unit_name_case'); ?></span>
@@ -177,7 +179,7 @@
 									</p>
 								<?php endif; ?>
 							<?php endif; ?>
-							<?php if ($hidden_flg_single == UNDELETED) : ?>
+							<?php if ($hidden_flg_single == UNDELETED && !empty($unit_name)) : ?>
 								<p>
 									<?php if (Common_Setting::is_case()) : ?>
 										<span><?php echo Arr::get($data, 'unit_name'); ?></span>
