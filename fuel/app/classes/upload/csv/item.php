@@ -102,9 +102,6 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 						$result = false;
 					}
 					break;
-				case 'item_size':
-					//$this->validate_item_size($value, $num);
-					break;
 				case 'item_size_case':
 					if (!$this->validate_item_size_case($value, $num)) {
 						$result = false;
@@ -133,6 +130,16 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 					break;
 				case 'jan_code':
 					//$this->validate_jan_code($value, $num, $data['item_code']);
+					break;
+				case 'item_size':
+					if (!$this->validate_item_size($value, $num)) {
+						$result = false;
+					}
+					break;
+				case 'item_unit_name2':
+					if (!$this->validate_item_unit_name2($value, $num)) {
+						$result = false;
+					}
 					break;
 			}
 		}
@@ -279,27 +286,6 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		}
 		if (Str::length($value) > 10) {
 			parent::set_error($num, '単位名(ケース)は10文字以下で入力してください[' . $value . ']');
-			return false;
-		}
-		return true;
-	}
-
-	/**
-	 * 入数バリデート
-	 *
-	 * @param string $value 値
-	 * @param int $num 行番号
-	 */
-	private function validate_item_size($value, $num) {
-		if ($value == '') {
-			return false;
-		}
-		if (!is_numeric($value)) {
-			parent::set_error($num, '入数は数値で入力してください[' . $value . ']');
-			return false;
-		}
-		if ($value < 0 || $value > 9999) {
-			parent::set_error($num, '入数は0以上、9999以下で入力してください[' . $value . ']');
 			return false;
 		}
 		return true;
@@ -457,6 +443,44 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	}
 
 	/**
+	 * 出荷数バリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_item_size($value, $num) {
+		if ($value == '') {
+			return true;
+		}
+		if (!is_numeric($value)) {
+			parent::set_error($num, '出荷数は数値で入力してください[' . $value . ']');
+			return false;
+		}
+		if ($value < 0 || $value > 999999) {
+			parent::set_error($num, '出荷数は0以上、999999以下で入力してください[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * 最少出荷単位バリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_item_unit_name2($value, $num) {
+		if ($value == '') {
+			return true;
+		}
+		if (Str::length($value) > 10) {
+			parent::set_error($num, '最少出荷単位は10文字以下で入力してください[' . $value . ']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * カテゴリコードリストを取得する
 	 */
 	private function list_item_category_code() {
@@ -539,6 +563,13 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			$values['cost'] = null;
 		}
 
+		if ($data['item_unit_name2'] != '') {
+			$values['unit_name'] = $data['item_unit_name2'];
+		}
+		if ($data['item_size'] != '') {
+			$values['size'] = $data['item_size'];
+		}
+
 		return DB::insert('items')->set($values)->execute();
 	}
 
@@ -559,10 +590,21 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			$data['item_cost'] = null;
 		}
 
+		$item_unit_name = $data['item_unit_name'];
+		if ($data['item_unit_name2'] != '') {
+			$item_unit_name = $data['item_unit_name2'];
+		}
+		$item_size = $item['size'];
+		if ($data['item_size'] != '') {
+			$item_size = $data['item_size'];
+		}
+
 		if ($item['name'] == $data['item_name']
 				&& $item['yomigana'] == $data['item_yomigana']
-				&& $item['unit_name'] == $data['item_unit_name']
+				&& $item['unit_name'] == $item_unit_name
 				&& $item['unit_name_case'] == $data['item_unit_name_case']
+				&& $item['size'] == $item_size
+				&& $item['size_case'] == $data['item_size_case']
 				&& $item['type'] == $data['item_type']
 				&& $item['price'] == $data['item_price']
 				&& $item['price_case'] == $data['item_price_case']
@@ -574,8 +616,9 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		$query = DB::update('items')
 			->value('name', $data['item_name'])
 			->value('yomigana', $data['item_yomigana'])
-			->value('unit_name', $data['item_unit_name'])
+			->value('unit_name', $item_unit_name)
 			->value('unit_name_case', $data['item_unit_name_case'])
+			->value('size', $item_size)
 			->value('size_case', $data['item_size_case'])
 			->value('type', $data['item_type'])
 			->value('price', $data['item_price'])
@@ -586,7 +629,8 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('id', '=', $item['id']);
 
-		if ($item['price'] != $data['item_price'] || $item['size_case'] != $data['item_size_case']) {
+		if ($item['price'] != $data['item_price'] || $item['size'] != $item_size ||
+				$item['size_case'] != $data['item_size_case']) {
 			$query->value('renewal_datetime', date('Y-m-d H:i:s'));
 		}
 

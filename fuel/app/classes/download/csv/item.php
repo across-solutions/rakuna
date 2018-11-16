@@ -50,6 +50,14 @@ class Download_Csv_Item extends Download_Csv_Base {
 		if ($key == 'control_code') {
 			return '0';
 		}
+
+		if ($key == 'item_size') {
+			return '';
+		}
+
+		if ($key == 'item_unit_name2') {
+			return '';
+		}
 		return parent::modifier($counter, $data, $key);
 	}
 
