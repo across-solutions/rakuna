@@ -4,14 +4,14 @@ use Fuel\Core\DB;
  * 割当CSVダウンロードクラス
  */
 class Download_Csv_Recommended_Group_Assign extends Download_Csv_Base {
-	
+
 	/**
 	 * @see Download_Csv_Base::get_format_div()
 	 */
 	protected function get_format_div() {
 		return Config::get('define.csv_format_div.recommended_group_assign');
 	}
-	
+
 	/**
 	 * @see Download_Csv_Base::get_data()
 	 */
@@ -27,10 +27,10 @@ class Download_Csv_Recommended_Group_Assign extends Download_Csv_Base {
 		->join('members', 'INNER')
 			->on('members.id', '=', 'recommended_group_assigns.member_id')
 			->and_on('members.del_flg', '=', DB::expr(UNDELETED));
-		
+
 		$this->add_condition($query, $params);
 		$query->order_by('members.code', 'recommended_group_assigns.item_code');
-		
+
 		return $query->execute();
 	}
 
@@ -56,10 +56,10 @@ class Download_Csv_Recommended_Group_Assign extends Download_Csv_Base {
 		if (!is_null($member_code) && trim($member_code) != '') {
 			$query->where('members.code', '=', $member_code);
 		}
-		
+
 		$recommended_group_code = Arr::get($params, 'recommended_group_code');
 		if (!is_null($recommended_group_code) && trim($recommended_group_code) != '') {
-			$query->where('recommended_group_assigns.code', '=', $recommended_group_code);
+			$query->where('recommended_groups.code', '=', $recommended_group_code);
 		}
 	}
 }
