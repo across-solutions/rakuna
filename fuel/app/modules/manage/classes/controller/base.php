@@ -123,15 +123,18 @@ class Controller_Base extends Controller_Template {
 	 *
 	 * @param string $filename ファイル名
 	 * @param array $data データ配列
+	 * @param   mixed   $delimiter
+	 * @param   mixed   $enclose_numbers
+	 * @param   array   $headings  Custom headings to use
 	 */
-	protected function csv_download($filename, $data) {
+	protected function csv_download($filename, $data, $delimiter = null, $enclose_numbers = null, array $headings = array()) {
 		$response = Response::forge();
 		$response->set_header('Content-Type', 'application/csv');
 		$response->set_header('Content-Disposition', 'attachment; filename="'. $filename .'"');
 		$response->set_header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
 		$response->set_header('Expires', 'Thu, 01 Dec 1994 16:00:00 GMT');
 		$response->set_header('Pragma', 'no-cache');
-		$response->body(chr(255) . chr(254). mb_convert_encoding(Format::forge($data)->to_csv(), 'UTF-16LE', 'UTF-8'));
+		$response->body(chr(255) . chr(254). mb_convert_encoding(Format::forge($data)->to_csv(null, $delimiter, $enclose_numbers, $headings), 'UTF-16LE', 'UTF-8'));
 		return $response;
 	}
 

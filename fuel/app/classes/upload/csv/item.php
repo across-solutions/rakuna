@@ -563,11 +563,17 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			$values['cost'] = null;
 		}
 
-		if ($data['item_unit_name2'] != '') {
-			$values['unit_name'] = $data['item_unit_name2'];
-		}
-		if ($data['item_size'] != '') {
+		// 必ずMOS用最少出荷単位を単位とする
+		$values['unit_name'] = $data['item_unit_name2'];
+
+		// 空と0以外場合はMOS用最少出荷数を設定する
+		if (!empty($data['item_size'])) {
 			$values['size'] = $data['item_size'];
+		}
+
+		// 個数単位が空ではない且つ、入数が0の場合はケース入数を1とする
+		if (!empty($data['item_unit_name_case']) && empty($data['item_size_case'])) {
+			$values['size_case'] = 1;
 		}
 
 		return DB::insert('items')->set($values)->execute();
@@ -590,13 +596,19 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			$data['item_cost'] = null;
 		}
 
-		$item_unit_name = $data['item_unit_name'];
-		if ($data['item_unit_name2'] != '') {
-			$item_unit_name = $data['item_unit_name2'];
-		}
+		// 必ずMOS用最少出荷単位を単位とする
+		$item_unit_name = $data['item_unit_name2'];
+
 		$item_size = $item['size'];
-		if ($data['item_size'] != '') {
+		// 空と0以外場合はMOS用最少出荷数を設定する
+		if (!empty($data['item_size'])) {
 			$item_size = $data['item_size'];
+		}
+
+		$item_size_case = $data['item_size_case'];
+		// 個数単位が空ではない且つ、入数が0の場合はケース入数を1とする
+		if (!empty($data['item_unit_name_case']) && empty($data['item_size_case'])) {
+			$item_size_case = 1;
 		}
 
 		if ($item['name'] == $data['item_name']
@@ -604,7 +616,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 				&& $item['unit_name'] == $item_unit_name
 				&& $item['unit_name_case'] == $data['item_unit_name_case']
 				&& $item['size'] == $item_size
-				&& $item['size_case'] == $data['item_size_case']
+				&& $item['size_case'] == $item_size_case
 				&& $item['type'] == $data['item_type']
 				&& $item['price'] == $data['item_price']
 				&& $item['price_case'] == $data['item_price_case']
@@ -619,7 +631,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			->value('unit_name', $item_unit_name)
 			->value('unit_name_case', $data['item_unit_name_case'])
 			->value('size', $item_size)
-			->value('size_case', $data['item_size_case'])
+			->value('size_case', $item_size_case)
 			->value('type', $data['item_type'])
 			->value('price', $data['item_price'])
 			->value('price_case', $data['item_price'])
@@ -630,7 +642,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			->where('id', '=', $item['id']);
 
 		if ($item['price'] != $data['item_price'] || $item['size'] != $item_size ||
-				$item['size_case'] != $data['item_size_case']) {
+				$item['size_case'] != $item_size_case) {
 			$query->value('renewal_datetime', date('Y-m-d H:i:s'));
 		}
 
