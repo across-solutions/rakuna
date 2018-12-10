@@ -145,17 +145,22 @@ class Controller_Item_Assign extends Controller_Base {
 
 		$csv = new \Upload_Csv_Assign($this->get_upload_file('assign_csv'));
 		$csv->parse();
-		if ($csv->has_error()) {
-			$this->render(null, 'item/assign/upload_csv');
-			return;
-		}
+		//if ($csv->has_error()) {
+		//	$this->render(null, 'item/assign/upload_csv');
+		//	return;
+		//}
 
 		if (!$csv->save()) {
 			throw new \HttpServerErrorException();
 		}
 
-		$this->set_info_message('登録しました');
-		Response::redirect('/manage/dialog/complete');
+		if ($csv->has_error()) {
+			$this->render(null, 'item/assign/upload_csv');
+			return;
+		} else {
+			$this->set_info_message('登録しました');
+			Response::redirect('/manage/dialog/complete');
+		}
 	}
 
 	/**

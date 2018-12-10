@@ -21,11 +21,6 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	private $items = array();
 
 	/**
-	 * 割当リスト
-	 */
-	private $assigns = array();
-
-	/**
 	 * コンストラクタ
 	 *
 	 * @param array $file CSVファイル
@@ -35,7 +30,6 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 
 		$this->members = $this->list_member_code();
 		$this->items = $this->list_item_code();
-		$this->assigns = $this->list_assign();
 	}
 
 	/**
@@ -49,30 +43,37 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::validate()
 	 */
 	protected function validate(&$data, $num) {
+		$result = true;
+
 		foreach ($data as $key => $value) {
 			switch ($key) {
 				case 'member_code':
-					$this->validate_member_code($value, $num);
+					if (!$this->validate_member_code($value, $num)) {
+						$result = false;
+					}
 					break;
 				case 'item_code':
-					$this->validate_item_code($value, $num);
+					if (!$this->validate_item_code($value, $num)) {
+						$result = false;
+					}
 					break;
 				case 'item_price':
-					$this->validate_price($value, $num);
-					break;
-				case 'item_price_case':
-					$this->validate_price_case($value, $num);
-					break;
-				case 'hidden_flg_single':
-					$this->validate_hidden_flg_single($value, $num);
-					break;
-				case 'hidden_flg_case':
-					$this->validate_hidden_flg_case($value, $num);
-					break;
-				case 'control_code':
-					$this->validate_control_code($value, $num);
+					if (!$this->validate_price($value, $num)) {
+						$result = false;
+					}
 					break;
 			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @see Upload_Csv_Base::save_before()
+	 */
+	protected function save_before() {
+		if (!$this->delete_item_assign()) {
+			return false;
 		}
 
 		return true;
@@ -82,26 +83,12 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::save_line()
 	 */
 	protected function save_line($data) {
-		$control_code = $data['control_code'];
+		//$control_code = $data['control_code'];
 		$member_id = $this->members[$data['member_code']];
 		$item_code = $data['item_code'];
 
-		if ($control_code == '0') {
-			if (isset($this->assigns[$item_code][$member_id])) {
-				if (!$this->update_item_assign($data, $this->assigns[$item_code][$member_id])) {
-					return false;
-				}
-			} else {
-				if (!$this->insert_item_assign($data, $member_id)) {
-					return false;
-				}
-			}
-		} else {
-			if (isset($this->assigns[$item_code][$member_id])) {
-				if (!$this->delete_item_assign($this->assigns[$item_code][$member_id])) {
-					return false;
-				}
-			}
+		if (!$this->insert_item_assign($data, $member_id)) {
+			return false;
 		}
 
 		return true;
@@ -304,9 +291,9 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 		$values['item_code'] = $data['item_code'];
 		$values['member_id'] = $member_id;
 		$values['price'] = $data['item_price'] === '' ? null : $data['item_price'];
-		$values['price_case'] = $data['item_price_case'] === '' ? null : $data['item_price_case'];
-		$values['hidden_flg_single'] = $data['hidden_flg_single'];
-		$values['hidden_flg_case'] = $data['hidden_flg_case'];
+		$values['price_case'] = $data['item_price'] === '' ? null : $data['item_price'];
+		$values['hidden_flg_single'] = 0;
+		$values['hidden_flg_case'] = 0;
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
@@ -347,15 +334,10 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 
 	/**
 	 * 割当商品を削除する
-	 *
-	 * @param array $assign 元データ
 	 */
-	private function delete_item_assign($assign) {
-		return DB::update('item_assigns')
-			->value('del_flg', DELETED)
-			->value('update_user_id', Auth::get_user_id()[1])
-			->value('updated', date('Y-m-d H:i:s'))
-			->where('id', $assign['id'])
+	private function delete_item_assign() {
+		return DB::delete('item_assigns')
+			->where('del_flg', '=', UNDELETED)
 			->execute();
 	}
 }

@@ -119,6 +119,12 @@ abstract  class Upload_Csv_Base {
 	 */
 	public function save() {
 		DB::start_transaction();
+
+		if (!$this->save_before()) {
+			DB::rollback_transaction();
+			return false;
+		}
+
 		foreach ($this->data as $data) {
 			if (!$this->save_line($data)) {
 				DB::rollback_transaction();
@@ -164,6 +170,13 @@ abstract  class Upload_Csv_Base {
 	 */
 	public function has_error() {
 		return count($this->errors) > 0;
+	}
+
+	/**
+	 * 保存前処理
+	 */
+	protected function save_before() {
+		return true;
 	}
 
 	/**
