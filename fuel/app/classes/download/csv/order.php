@@ -23,7 +23,7 @@ class Download_Csv_Order extends Download_Csv_Base {
 		$data = $this->get_csv_data($params, $header);
 
 		return File::create(ORDER_CSV_PATH, $order_download_id . '.csv',
-			mb_convert_encoding(Format::forge($data)->to_csv(null, "\t", null, array()), 'SJIS-win', 'UTF-8'));
+			mb_convert_encoding(Format::forge($data)->to_csv(null, "\t", null, array()), 'UTF-8', 'UTF-8'));
 	}
 
 	/**

@@ -71,7 +71,8 @@ abstract  class Upload_Csv_Base {
 		}
 
 		$str = file_get_contents($this->file);
-		mb_convert_variables('UTF-8', 'UTF-16LE', $str);
+		//mb_convert_variables('UTF-8', 'UTF-16LE', $str);
+		mb_convert_variables('UTF-8', 'UTF-8', $str);
 		file_put_contents($this->file, $str);
 
 		$file = new SplFileObject($this->file);
