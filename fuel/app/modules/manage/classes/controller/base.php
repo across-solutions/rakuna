@@ -134,8 +134,12 @@ class Controller_Base extends Controller_Template {
 		$response->set_header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate');
 		$response->set_header('Expires', 'Thu, 01 Dec 1994 16:00:00 GMT');
 		$response->set_header('Pragma', 'no-cache');
-		//$response->body(chr(255) . chr(254). mb_convert_encoding(Format::forge($data)->to_csv(null, $delimiter, $enclose_numbers, $headings), 'UTF-16LE', 'UTF-8'));
-		$response->body(mb_convert_encoding(Format::forge($data)->to_csv(null, $delimiter, $enclose_numbers, $headings), 'UTF-8', 'UTF-8'));
+		if (is_null($delimiter)) {
+			$response->body(mb_convert_encoding(Format::forge($data)->to_csv(null, $delimiter, $enclose_numbers, $headings), 'UTF-8', 'UTF-8'));
+		} else {
+			$response->body(chr(255) . chr(254). mb_convert_encoding(Format::forge($data)->to_csv(null, $delimiter, $enclose_numbers, $headings), 'UTF-16LE', 'UTF-8'));
+		}
+
 		return $response;
 	}
 

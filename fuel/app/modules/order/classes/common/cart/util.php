@@ -67,6 +67,10 @@ class Common_Cart_Util {
 				self::delete_cart($member_id, $item_id);
 				return null;
 			}
+		} else {
+			if ($amount == 0) {
+				return null;
+			}
 		}
 
 		$item = self::get_item($item_id, $member_id);
@@ -100,6 +104,10 @@ class Common_Cart_Util {
 		if (!empty($cart)) {
 			if ($amount == 0 && $cart['amount'] == 0) {
 				self::delete_cart($member_id, $item_id);
+				return null;
+			}
+		} else {
+			if ($amount == 0) {
 				return null;
 			}
 		}

@@ -23,7 +23,7 @@ class Download_Csv_Order extends Download_Csv_Base {
 		$data = $this->get_csv_data($params, $header);
 
 		return File::create(ORDER_CSV_PATH, $order_download_id . '.csv',
-			mb_convert_encoding(Format::forge($data)->to_csv(null, "\t", null, array()), 'UTF-8', 'UTF-8'));
+			chr(255) . chr(254). mb_convert_encoding(Format::forge($data)->to_csv(null, "\t", null, array()), 'UTF-16LE', 'UTF-8'));
 	}
 
 	/**
@@ -136,6 +136,14 @@ class Download_Csv_Order extends Download_Csv_Base {
 
 		if ($key == 'delivery_date') {
 			return date('Ymd', strtotime($data[$key]));
+		}
+
+		if ($key == 'item_size') {
+			return '';
+		}
+
+		if ($key == 'item_size_case') {
+			return '';
 		}
 
 		if ($key == 'total_amount') {

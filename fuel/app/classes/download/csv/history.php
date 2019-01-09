@@ -122,6 +122,14 @@ class Download_Csv_History extends Download_Csv_Base {
 			return date('Ymd', strtotime($data[$key]));
 		}
 
+		if ($key == 'item_size') {
+			return '';
+		}
+
+		if ($key == 'item_size_case') {
+			return '';
+		}
+
 		if ($key == 'total_amount') {
 			$total_amount = $data['item_size'] * $data['amount'] + $data['item_size_case'] * $data['amount_case'];
 			return $total_amount;
