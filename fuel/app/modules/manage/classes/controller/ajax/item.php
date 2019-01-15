@@ -26,6 +26,7 @@ class Controller_Ajax_Item extends Controller_Ajax_Base {
 		$row_html = \Presenter::forge('base', 'view', null,
 									  \View::forge("order/edit_row", array(
 										  'row' => $detail,
+										  'order' => $order,
 									  )));
 
 		return $this->response(array(
@@ -68,10 +69,10 @@ class Controller_Ajax_Item extends Controller_Ajax_Base {
 		$values['item_id'] = $item['id'];
 		$values['item_code'] = $item['code'];
 		$values['item_name'] = $item['name'];
-		$values['unit_name_case'] = $item['unit_name_case'];
-		$values['unit_name'] = $item['unit_name'];
-		$values['size_case'] = $item['size_case'];
-		$values['size'] = $item['size'];
+		$values['item_unit_name_case'] = $item['unit_name_case'];
+		$values['item_unit_name'] = $item['unit_name'];
+		$values['item_size_case'] = $item['size_case'];
+		$values['item_size'] = $item['size'];
 		$values['category_code'] = $item['category_code'];
 		$values['category_name'] = $item['category_name'];
 		$price = $this->value($item, 'price', 'assign_price', 'group_price');

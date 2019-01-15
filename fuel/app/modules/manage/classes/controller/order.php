@@ -131,7 +131,7 @@ class Controller_Order extends Controller_Base {
 			return;
 		}
 
-		$new_order_details = $this->get_new_order_details($data);
+		$new_order_details = $this->get_new_order_details($data, $order->member_id);
 
 		if (!$this->validate_edit($data)) {
 			$this->marge_order($order, $data);
@@ -626,7 +626,7 @@ class Controller_Order extends Controller_Base {
 		return $detail->save() !== false;
 	}
 
-	private function get_new_order_details($data){
+	private function get_new_order_details($data, $member_id){
 
 		$new_order_details = array();
 
