@@ -2,6 +2,7 @@
 namespace Order;
 use Fuel\Core\Input;
 use Fuel\Core\DB;
+use Fuel\Core\Arr;
 /**
  * お知らせ詳細プレゼンタクラス
  */
@@ -75,9 +76,19 @@ class Presenter_Notice_Detail extends \Presenter_Base {
 
 		$member_id = $this->get_member_id();
 
-		$query = DB::select('items.code', 'items.name', 'items.comment', 'items.size', 'items.price_case',
-				'items.id', 'items.price', array('item_categories.name', 'category_name'), 'carts.amount',
-				'carts.amount_case', array('favorites.id', 'favorite_id'))
+		$member = \Model_Member::find($member_id);
+		$member_group_code = Arr::get($member, 'member_groups.code');
+
+		$query = DB::select('items.id', 'items.code', 'items.name', 'items.comment',
+				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size', 'items.type',
+				array('item_categories.name', 'category_name'), 'carts.amount',
+				'carts.amount_case', array('favorites.id', 'favorite_id'),
+				'items.price', 'items.price_case',
+				array('item_assigns.price_case', 'assign_price_case'),
+				array('item_assigns.price', 'assign_price'),
+				array('group_assigns.price_case', 'group_price_case'),
+				array('group_assigns.price', 'group_price'),
+				'item_assigns.hidden_flg_single', 'item_assigns.hidden_flg_case')
 			->from('items')
 			->join('item_categories', 'LEFT')
 				->on('item_categories.id', '=', 'items.item_category_id')
@@ -96,16 +107,54 @@ class Presenter_Notice_Detail extends \Presenter_Base {
 			->where('items.code', '=', $this->data->item_code)
 			->where('items.del_flg', '=', DB::expr(UNDELETED));
 
+		//if (Common_Assign::has_assign($member_id)) {
+			$query->join('item_assigns', 'LEFT')
+				->on('item_assigns.item_code', '=', 'items.code')
+				->on('item_assigns.member_id', '=', DB::escape($member_id))
+				->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
+		//}
+
+		$query->join('group_assigns', 'LEFT')
+			->on('group_assigns.item_code', '=', 'items.code')
+			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
+
 		$rows = $query->execute()->as_array();
 
 		$tax_rate = \Common_Setting::get('tax_rate');
 		$tax_rounding = \Common_Setting::get('tax_rounding');
 		foreach ($rows as &$row) {
+			$price = $this->value($row, 'price', 'assign_price', 'group_price');
+			$price_case = $this->value($row, 'price_case', 'assign_price_case', 'group_price_case');
+			$row['price'] = $price * $row['size'];
+			$row['price_case'] = $price_case * $row['size_case'];
 			$row['price_tax'] = \Common_Util::add_tax($row['price']);
 			$row['price_case_tax'] = \Common_Util::add_tax($row['price_case']);
 			$row['amount'] = is_null($row['amount']) ? 0 : $row['amount'];
 			$row['amount_case'] = is_null($row['amount_case']) ? 0 : $row['amount_case'];
 		}
 		return $rows;
+	}
+
+	/**
+	 * 値を取得する(後のキーが優先される)
+	 *
+	 * @param array $data データ
+	 * @param string $key1 キー1
+	 * @param string $key2 キー2
+	 * @param string $key3 キー3
+	 */
+	private function value($data, $key1, $key2 = null, $key3 = null) {
+		$value = $data[$key1];
+
+		if (!is_null($key2) && !is_null($data[$key2])) {
+			$value = $data[$key2];
+		}
+
+		if (!is_null($key3) && !is_null($data[$key3])) {
+			$value = $data[$key3];
+		}
+
+		return $value;
 	}
 }

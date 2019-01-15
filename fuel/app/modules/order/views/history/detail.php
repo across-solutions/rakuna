@@ -147,15 +147,21 @@
 							<td class="right">
 								<?php if (Common_Setting::is_case()) : ?>
 									<p class="hun">
-										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name_case'); ?></i></span>
-										<span class="histNums"><?php echo Arr::get($row, 'item_size_case'); ?></span>
+										<?php $item_unit_name_case = Arr::get($row, 'item_unit_name_case'); ?>
+										<?php if (!empty($item_unit_name_case)) : ?>
+											<span class="histUnit"><i><?php echo $item_unit_name_case; ?></i></span>
+											<span class="histNums"><?php echo Arr::get($row, 'item_size_case'); ?></span>
+										<?php endif; ?>
 									</p>
 								<?php endif; ?>
 								<p class="hun">
-									<?php if (Common_Setting::is_case()) : ?>
-										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name'); ?></i></span>
+									<?php $item_unit_name = Arr::get($row, 'item_unit_name'); ?>
+									<?php if (!empty($item_unit_name)) : ?>
+										<?php if (Common_Setting::is_case()) : ?>
+											<span class="histUnit"><i><?php echo $item_unit_name; ?></i></span>
+										<?php endif; ?>
+										<span class="histNums"><?php echo Arr::get($row, 'item_size'); ?></span>
 									<?php endif; ?>
-									<span class="histNums"><?php echo Arr::get($row, 'item_size'); ?></span>
 								</p>
 							</td>
 
@@ -163,15 +169,19 @@
 								<td class="right">
 									<?php if (Common_Setting::is_case()) : ?>
 										<p class="hun">
-											<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name_case'); ?></i></span>
-											<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price_case'] * $row['item_size_case'], $data['tax_rate'], 1)); ?>円</span>
+											<?php if (!empty($item_unit_name_case)) : ?>
+												<span class="histUnit"><i><?php echo $item_unit_name_case; ?></i></span>
+												<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price_case'] * $row['item_size_case'], $data['tax_rate'], 1)); ?>円</span>
+											<?php endif; ?>
 										</p>
 									<?php endif; ?>
 									<p class="hun">
-										<?php if (Common_Setting::is_case()) : ?>
-											<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name'); ?></i></span>
+										<?php if (!empty($item_unit_name)) : ?>
+											<?php if (Common_Setting::is_case()) : ?>
+												<span class="histUnit"><i><?php echo $item_unit_name; ?></i></span>
+											<?php endif; ?>
+											<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price'] * $row['item_size'], $data['tax_rate'], 1)); ?>円</span>
 										<?php endif; ?>
-										<span class="histNums"><?php echo Common_Util::format_number(\Common_Util::add_tax($row['price'] * $row['item_size'], $data['tax_rate'], 1)); ?>円</span>
 									</p>
 								</td>
 							<?php endif; ?>
@@ -180,15 +190,19 @@
 							<td class="right">
 								<?php if (Common_Setting::is_case()) : ?>
 									<p class="hun">
-										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name_case'); ?></i></span>
-										<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'amount_case')); ?></span>
+										<?php if (!empty($item_unit_name_case)) : ?>
+											<span class="histUnit"><i><?php echo $item_unit_name_case; ?></i></span>
+											<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'amount_case')); ?></span>
+										<?php endif; ?>
 									</p>
 								<?php endif; ?>
 								<p class="hun">
-									<?php if (Common_Setting::is_case()) : ?>
-										<span class="histUnit"><i><?php echo Arr::get($row, 'item_unit_name'); ?></i></span>
+									<?php if (!empty($item_unit_name)) : ?>
+										<?php if (Common_Setting::is_case()) : ?>
+											<span class="histUnit"><i><?php echo $item_unit_name; ?></i></span>
+										<?php endif; ?>
+										<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'amount')); ?></span>
 									<?php endif; ?>
-									<span class="histNums"><?php echo Common_Util::format_number(Arr::get($row, 'amount')); ?></span>
 								</p>
 							</td>
 

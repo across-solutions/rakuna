@@ -17,8 +17,17 @@ class Common_Cart_Util {
 	 * @param bool $check_renewal 商品更新チェック
 	 */
 	public static function gets($member_id, $check_renewal = true) {
+		$member = \Model_Member::find($member_id);
+		$member_group_code = Arr::get($member, 'member_groups.code');
+
 		$query = DB::select('items.id', 'items.code', 'items.name', 'items.size', 'items.comment',
 				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size',
+				'items.price', 'items.price_case',
+				array('item_assigns.price_case', 'assign_price_case'),
+				array('item_assigns.price', 'assign_price'),
+				array('group_assigns.price_case', 'group_price_case'),
+				array('group_assigns.price', 'group_price'),
+				array('item_assigns.renewal_datetime', 'assign_renewal_datetime'),
 				array('items.renewal_datetime', 'item_renewal_datetime'), 'carts.amount', 'carts.amount_case',
 				array('carts.item_renewal_datetime', 'cart_item_renewal_datetime'),
 				array('carts.item_assign_renewal_datetime', 'cart_assign_renewal_datetime'), 'carts.updated')
@@ -29,14 +38,16 @@ class Common_Cart_Util {
 			->where('carts.member_id', '=', $member_id);
 
 			//if (Common_Assign::has_assign($member_id)) {
-				$query->select(array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
-								array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
-								array('item_assigns.renewal_datetime', 'assign_renewal_datetime'));
 				$query->join('item_assigns', 'LEFT')
 					->on('carts.member_id', '=', 'item_assigns.member_id')
 					->on('items.code', '=', 'item_assigns.item_code')
 					->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
 			//}
+
+		$query->join('group_assigns', 'LEFT')
+			->on('group_assigns.item_code', '=', 'items.code')
+			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
 
 		$carts = $query->execute();
 

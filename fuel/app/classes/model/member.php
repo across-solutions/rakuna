@@ -19,6 +19,7 @@ class Model_Member extends Model_Base {
 		'tel',
 		'fax',
 		'delivery_week_code',
+		'lead_time',
 		'email',
 		'sub_email',
 		'username',

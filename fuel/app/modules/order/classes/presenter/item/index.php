@@ -82,6 +82,9 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 	protected function get_count($data) {
 		$member_id = $this->get_member_id();
 
+		$member = \Model_Member::find($member_id);
+		$member_group_code = Arr::get($member, 'member_groups.code');
+
 		$query = DB::select(DB::expr('COUNT(*) as count'))
 			->from('items')
 			->join('item_categories', 'LEFT')
@@ -101,10 +104,15 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 
 		//if (Common_Assign::has_assign($member_id)) {
 			$query->join('item_assigns', 'LEFT')
-			->on('item_assigns.item_code', '=', 'items.code')
-			->on('item_assigns.member_id', '=', DB::escape($member_id))
-			->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
+				->on('item_assigns.item_code', '=', 'items.code')
+				->on('item_assigns.member_id', '=', DB::escape($member_id))
+				->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
 		//}
+
+		$query->join('group_assigns', 'LEFT')
+			->on('group_assigns.item_code', '=', 'items.code')
+			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
 
 		$this->add_condition($query, $data);
 
@@ -119,12 +127,18 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 	protected function get_rows($data, $limit, $offset) {
 		$member_id = $this->get_member_id();
 
+		$member = \Model_Member::find($member_id);
+		$member_group_code = Arr::get($member, 'member_groups.code');
+
 		$query = DB::select('items.id', 'items.code', 'items.name', 'items.comment',
 				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size', 'items.type',
 				array('item_categories.name', 'category_name'), 'carts.amount',
 				'carts.amount_case', array('favorites.id', 'favorite_id'),
-				array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
-				array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
+				'items.price', 'items.price_case',
+				array('item_assigns.price_case', 'assign_price_case'),
+				array('item_assigns.price', 'assign_price'),
+				array('group_assigns.price_case', 'group_price_case'),
+				array('group_assigns.price', 'group_price'),
 				'item_assigns.hidden_flg_single', 'item_assigns.hidden_flg_case')
 			->from('items')
 			->join('item_categories', 'LEFT')
@@ -151,6 +165,11 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 				->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
 		//}
 
+		$query->join('group_assigns', 'LEFT')
+			->on('group_assigns.item_code', '=', 'items.code')
+			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
+
 		$this->add_condition($query, $data);
 		$this->add_sort($query, Input::get());
 
@@ -163,8 +182,10 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 	protected function modifier(&$row) {
 		$tax_rate = \Common_Setting::get('tax_rate');
 		$tax_rounding = \Common_Setting::get('tax_rounding');
-		$row['price'] = $row['price'] * $row['size'];
-		$row['price_case'] = $row['price_case'] * $row['size_case'];
+		$price = $this->value($row, 'price', 'assign_price', 'group_price');
+		$price_case = $this->value($row, 'price_case', 'assign_price_case', 'group_price_case');
+		$row['price'] = $price * $row['size'];
+		$row['price_case'] = $price_case * $row['size_case'];
 		$row['price_tax'] = \Common_Util::add_tax($row['price']);
 		$row['price_case_tax'] = \Common_Util::add_tax($row['price_case']);
 		$row['amount'] = is_null($row['amount']) ? 0 : $row['amount'];
@@ -251,6 +272,28 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 		}
 		Cookie::set(COOKIE_KEY_ITEM_MODE, $mode, COOKIE_EXPIRATION_ITEM_MODE);
 		return $mode;
+	}
+
+	/**
+	 * 値を取得する(後のキーが優先される)
+	 *
+	 * @param array $data データ
+	 * @param string $key1 キー1
+	 * @param string $key2 キー2
+	 * @param string $key3 キー3
+	 */
+	private function value($data, $key1, $key2 = null, $key3 = null) {
+		$value = $data[$key1];
+
+		if (!is_null($key2) && !is_null($data[$key2])) {
+			$value = $data[$key2];
+		}
+
+		if (!is_null($key3) && !is_null($data[$key3])) {
+			$value = $data[$key3];
+		}
+
+		return $value;
 	}
 
 }

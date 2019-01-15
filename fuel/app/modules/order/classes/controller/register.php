@@ -132,8 +132,19 @@ class Controller_Register extends Controller_Base {
 	 * @return array $dates 出荷日
 	 */
 	private function get_shipping_dates() {
+		$member_id = $this->get_member_id();
+
+		$member = \Model_Member::find($member_id);
+		$lead_time = Arr::get($member, 'lead_time');
+
 		$limit = 10;
-		$start = date('Y-m-d', strtotime('+2 day'));
+		$day = 2;
+
+		if (!is_null($lead_time)) {
+			$day += intval($lead_time);
+		}
+
+		$start = date('Y-m-d', strtotime('+' . $day . ' day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, false);
@@ -147,8 +158,19 @@ class Controller_Register extends Controller_Base {
 	 * @return array $dates 納期
 	 */
 	private function get_delivery_dates() {
+		$member_id = $this->get_member_id();
+
+		$member = \Model_Member::find($member_id);
+		$lead_time = Arr::get($member, 'lead_time');
+
 		$limit = 12;
-		$start = date('Y-m-d', strtotime('+2 day'));
+		$day = 2;
+
+		if (!is_null($lead_time)) {
+			$day += intval($lead_time);
+		}
+
+		$start = date('Y-m-d', strtotime('+' . $day . ' day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, false);
@@ -385,8 +407,22 @@ class Controller_Register extends Controller_Base {
 					continue;
 				}
 
+				$amount = 0;
+				if ($item['hidden_flg_single'] == UNDELETED && !empty($item['unit_name'])) {
+					$amount = $detail->amount;
+				}
+
+				$amount_case = 0;
+				if ($item['hidden_flg_case'] == UNDELETED && !empty($item['unit_name_case'])) {
+					$amount_case = $detail->amount_case;
+				}
+
+				if ($amount < 1 && $amount_case < 1) {
+					continue;
+				}
+
 				if (!$this->insert_cart($member_id, $item['id'], $item['item_renewal_datetime'], Arr::get($item, 'assign_renewal_datetime'),
-						$detail->amount, $detail->amount_case)) {
+						$amount, $amount_case)) {
 					DB::rollback_transaction();
 					return false;
 				}
@@ -408,14 +444,22 @@ class Controller_Register extends Controller_Base {
 	 * @param int $member_id 発注者ID
 	 */
 	private function get_item($code, $member_id) {
+		$member = \Model_Member::find($member_id);
+		$member_group_code = Arr::get($member, 'member_groups.code');
+
 		$query = DB::select('items.id', 'items.code', 'items.jan_code', 'items.name',
 				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size', 'items.type',
 				array('item_categories.code', 'category_code'),
 				array('item_categories.name', 'category_name'),
-				array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
-				array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
+				'items.price', 'items.price_case',
+				array('item_assigns.price_case', 'assign_price_case'),
+				array('item_assigns.price', 'assign_price'),
+				array('group_assigns.price_case', 'group_price_case'),
+				array('group_assigns.price', 'group_price'),
+				'item_assigns.hidden_flg_single', 'item_assigns.hidden_flg_case',
 				'items.cost',
-				array('items.renewal_datetime', 'item_renewal_datetime'))
+				array('items.renewal_datetime', 'item_renewal_datetime'),
+				array('item_assigns.renewal_datetime', 'assign_renewal_datetime'))
 			->from('items')
 			->join('item_categories', 'LEFT')
 				->on('item_categories.id', '=', 'items.item_category_id')
@@ -424,14 +468,16 @@ class Controller_Register extends Controller_Base {
 			->where('items.del_flg', '=', UNDELETED);
 
 		//if (Common_Assign::has_assign($member_id)) {
-			$query->select(array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
-							array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
-							array('item_assigns.renewal_datetime', 'assign_renewal_datetime'));
 			$query->join('item_assigns', 'LEFT')
 				->on('item_assigns.item_code', '=', 'items.code')
 				->on('item_assigns.member_id', '=', DB::escape($member_id))
 				->on('item_assigns.del_flg', '=', DB::escape(UNDELETED));
 		//}
+
+		$query->join('group_assigns', 'LEFT')
+			->on('group_assigns.item_code', '=', 'items.code')
+			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
 
 		return $query->execute()->current();
 	}
@@ -564,10 +610,12 @@ class Controller_Register extends Controller_Base {
 		$values['item_size'] = $item['size'];
 		$values['item_type'] = $item['type'];
 		$values['jan_code'] = $item['jan_code'];
-		$values['price'] = $item['price'];
+		$price = $this->value($item, 'price', 'assign_price', 'group_price');
+		$price_case = $this->value($item, 'price_case', 'assign_price_case', 'group_price_case');
+		$values['price'] = $price;
 		$values['price_tax'] = \Common_Util::add_tax($values['price']);
 		$values['amount'] = $cart['amount'];
-		$values['price_case'] = $item['price_case'];
+		$values['price_case'] = $price_case;
 		$values['price_case_tax'] = \Common_Util::add_tax($values['price_case']);
 		$values['amount_case'] = $cart['amount_case'];
 		$values['total'] = $values['price'] * $values['item_size'] * $values['amount'] + $values['price_case'] * $values['item_size_case'] * $values['amount_case'];
@@ -633,5 +681,27 @@ class Controller_Register extends Controller_Base {
 		return DB::delete('carts')
 			->where('member_id', '=', $member_id)
 			->execute() !== false;
+	}
+
+	/**
+	 * 値を取得する(後のキーが優先される)
+	 *
+	 * @param array $data データ
+	 * @param string $key1 キー1
+	 * @param string $key2 キー2
+	 * @param string $key3 キー3
+	 */
+	private function value($data, $key1, $key2 = null, $key3 = null) {
+		$value = $data[$key1];
+
+		if (!is_null($key2) && !is_null($data[$key2])) {
+			$value = $data[$key2];
+		}
+
+		if (!is_null($key3) && !is_null($data[$key3])) {
+			$value = $data[$key3];
+		}
+
+		return $value;
 	}
 }

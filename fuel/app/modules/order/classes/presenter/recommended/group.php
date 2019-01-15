@@ -32,8 +32,10 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 	 * @see \Order\Presenter_Item_Index::get_count()
 	 */
 	protected function get_count($data) {
-
 		$member_id = $this->get_member_id();
+
+		$member = \Model_Member::find($member_id);
+		$member_group_code = Arr::get($member, 'member_groups.code');
 
 		$query = DB::select(DB::expr('COUNT(*) as count'))
 			->from('items')
@@ -63,6 +65,11 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 			->and_on('item_assigns.del_flg', '=', DB::expr(UNDELETED));
 		//}
 
+		$query->join('group_assigns', 'LEFT')
+			->on('group_assigns.item_code', '=', 'items.code')
+			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
+
 		$this->add_condition($query, $data);
 
 		$result = $query->execute()->current();
@@ -76,12 +83,19 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 	protected function get_rows($data, $limit, $offset) {
 		$member_id = $this->get_member_id();
 
+		$member = \Model_Member::find($member_id);
+		$member_group_code = Arr::get($member, 'member_groups.code');
+
 		$query = DB::select('items.id', 'items.code', 'items.name', 'items.comment',
 				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size',
 				 array('item_categories.code', 'category_code'), array('item_categories.name', 'category_name'), 'carts.amount',
 				'carts.amount_case', array('favorites.id', 'favorite_id'), array('recommended_items.recommended_group_id', 'recommended_group_id'),
-				array(DB::expr('IFNULL(item_assigns.price_case, items.price_case)'), 'price_case'),
-				array(DB::expr('IFNULL(item_assigns.price, items.price)'), 'price'),
+				'items.price', 'items.price_case',
+				array('item_assigns.price_case', 'assign_price_case'),
+				array('item_assigns.price', 'assign_price'),
+				array('group_assigns.price_case', 'group_price_case'),
+				array('group_assigns.price', 'group_price'),
+				'item_assigns.hidden_flg_single', 'item_assigns.hidden_flg_case',
 				array('recommended_items.sort_num', 'sort_num')
 				 )
 				->from('items')
@@ -110,6 +124,11 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 			->and_on('item_assigns.member_id', '=', DB::expr($member_id))
 			->and_on('item_assigns.del_flg', '=', DB::expr(UNDELETED));
 		//}
+
+		$query->join('group_assigns', 'LEFT')
+			->on('group_assigns.item_code', '=', 'items.code')
+			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
 
 		$this->add_condition($query, $data);
 		$query->order_by('sort_num', 'desc');

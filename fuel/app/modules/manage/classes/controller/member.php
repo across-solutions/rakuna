@@ -422,6 +422,9 @@ class Controller_Member extends Controller_Base {
 			->add_rule('max_length', 14);
 		$validation->add('delivery_week_code', '配達曜日コード')
 			->add_rule('exist', 'delivery_weeks', 'code');
+		$validation->add('lead_time', 'リードタイム(日数)')
+			->add_rule('numeric')
+			->add_rule('numeric_between', 0, 99);
 		$validation->add('username', 'ログインID')
 			->add_rule('alphanum')
 			->add_rule('min_length', 5)
@@ -495,6 +498,9 @@ class Controller_Member extends Controller_Base {
 			->add_rule('max_length', 14);
 		$validation->add('delivery_week_code', '配達曜日コード')
 			->add_rule('exist', 'delivery_weeks', 'code');
+		$validation->add('lead_time', 'リードタイム(日数)')
+			->add_rule('numeric')
+			->add_rule('numeric_between', 0, 99);
 		$validation->add('username', 'ログインID')
 			->add_rule('required')
 			->add_rule('alphanum')
@@ -569,13 +575,17 @@ class Controller_Member extends Controller_Base {
 	 */
 	private function insert_member($data, $qr_key, $username, $password) {
 		$fields = array('member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store',
-						'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'delivery_week_code', 'email');
+						'zip', 'address1', 'address2', 'address3', 'tel', 'fax', 'delivery_week_code', 'lead_time', 'email');
 		$values = \Common_Util::filter($data, $fields);
 		$values['sub_email'] = implode(',', $data['sub_email']);
 		$values['username'] = $username;
 		$values['password'] = $password;
 		$values['qr_key'] = $qr_key;
 		$values['status'] = Config::get('define.member_status.enable');
+
+		if (is_null($values['lead_time'])) {
+			$values['lead_time'] = null;
+		}
 
 		$model = \Model_Member::forge($values);
 		if ($model->save() === false) {
@@ -594,6 +604,14 @@ class Controller_Member extends Controller_Base {
 		$fields = array('member_group_id', 'sales_person_code', 'code', 'name', 'corporation', 'store', 'zip',
 						'address1', 'address2', 'address3', 'tel', 'fax', 'delivery_week_code',
 						'email', 'username', 'password');
+
+		if (isset($data['lead_time'])) {
+			$fields[] = 'lead_time';
+			if ($data['lead_time'] == '') {
+				$data['lead_time'] = null;
+			}
+		}
+
 		\Common_Util::copy($member, $data, $fields);
 		$member->sub_email = implode(',', $data['sub_email']);
 

@@ -223,6 +223,21 @@
 
 			<dl class="clearfix">
 				<dt>
+					<label for="leadTime">
+						リードタイム(日数)
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('lead_time', Arr::get($data, 'lead_time'), array('id' => 'leadTime', 'placeholder' => '1')); ?>
+					<a class="tooltip" rel="tooltip" title="数字で入力してください。<br/>100未満で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('lead_time'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
 					<label for="catUsername">
 					ログインID
 					</label>

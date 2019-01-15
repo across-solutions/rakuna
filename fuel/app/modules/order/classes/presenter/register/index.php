@@ -2,6 +2,7 @@
 namespace Order;
 use Fuel\Core\DB;
 use Fuel\Core\Config;
+use Fuel\Core\Arr;
 /**
  * レジプレゼンタクラス
  */
@@ -34,8 +35,19 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 	 * @return array $dates 出荷日
 	 */
 	private function get_shipping_dates() {
+		$member_id = $this->get_member_id();
+
+		$member = \Model_Member::find($member_id);
+		$lead_time = Arr::get($member, 'lead_time');
+
 		$limit = 10;
-		$start = date('Y-m-d', strtotime('+2 day'));
+		$day = 2;
+
+		if (!is_null($lead_time)) {
+			$day += intval($lead_time);
+		}
+
+		$start = date('Y-m-d', strtotime('+' . $day . ' day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, '');
@@ -49,8 +61,19 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 	 * @return array $dates 納期
 	 */
 	private function get_delivery_dates() {
+		$member_id = $this->get_member_id();
+
+		$member = \Model_Member::find($member_id);
+		$lead_time = Arr::get($member, 'lead_time');
+
 		$limit = 12;
-		$start = date('Y-m-d', strtotime('+2 day'));
+		$day = 2;
+
+		if (!is_null($lead_time)) {
+			$day += intval($lead_time);
+		}
+
+		$start = date('Y-m-d', strtotime('+' . $day . ' day'));
 		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, '');

@@ -22,9 +22,9 @@ class Controller_Ajax_Base extends Controller_Rest {
 	public function before() {
 		parent::before();
 
-		 if (!Input::is_ajax()) {
-		 	throw new \Exception_403();
-		 }
+		 //if (!Input::is_ajax()) {
+		 //	throw new \Exception_403();
+		 //}
 
 		if ($this->check_auth && !Auth::check()) {
 			return $this->response_error_auth();

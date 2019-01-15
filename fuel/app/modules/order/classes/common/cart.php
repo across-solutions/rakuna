@@ -88,10 +88,12 @@ class Common_Cart {
 		$tax_rounding = $this->get_tax_rounding();
 
 		foreach ($this->carts as $cart) {
-			$tax_price = \Common_Util::add_tax($cart['price'] * $cart['size'], $tax_rate, $tax_rounding);
-			$tax_price_case = \Common_Util::add_tax($cart['price_case'] * $cart['size_case'], $tax_rate, $tax_rounding);
+			$price = $this->value($cart, 'price', 'assign_price', 'group_price');
+			$price_case = $this->value($cart, 'price_case', 'assign_price_case', 'group_price_case');
+			$tax_price = \Common_Util::add_tax($price * $cart['size'], $tax_rate, $tax_rounding);
+			$tax_price_case = \Common_Util::add_tax($price_case * $cart['size_case'], $tax_rate, $tax_rounding);
 
-			$this->payment += $cart['price'] * $cart['size'] * $cart['amount'] + $cart['price_case'] * $cart['size_case'] * $cart['amount_case'];
+			$this->payment += $price * $cart['size'] * $cart['amount'] + $price_case * $cart['size_case'] * $cart['amount_case'];
 			$this->payment_tax += $tax_price * $cart['amount'] + $tax_price_case * $cart['amount_case'];
 			$this->amount += $cart['amount'];
 			$this->amount_case += $cart['amount_case'];
@@ -129,6 +131,28 @@ class Common_Cart {
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * 値を取得する(後のキーが優先される)
+	 *
+	 * @param array $data データ
+	 * @param string $key1 キー1
+	 * @param string $key2 キー2
+	 * @param string $key3 キー3
+	 */
+	private function value($data, $key1, $key2 = null, $key3 = null) {
+		$value = $data[$key1];
+
+		if (!is_null($key2) && !is_null($data[$key2])) {
+			$value = $data[$key2];
+		}
+
+		if (!is_null($key3) && !is_null($data[$key3])) {
+			$value = $data[$key3];
+		}
+
+		return $value;
 	}
 
 	/**

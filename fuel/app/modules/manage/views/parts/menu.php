@@ -61,6 +61,11 @@
 				</li>
 				<?php endif; ?>
 				<li>
+					<a href="/manage/group/assign" title="グループ割当管理">
+						<span class="icon-angle-right mr"></span>グループ割当管理
+					</a>
+				</li>
+				<li>
 					<a href="/manage/item/assign" title="割当管理">
 						<span class="icon-angle-right mr"></span>割当管理
 					</a>

@@ -122,6 +122,9 @@ define('FILE_NAME_DOWNLOAD_ORDER_HISTORY', 'order_history.csv');
 // 商品CSVダウンロードファイル名
 define('FILE_NAME_DOWNLOAD_ITEM', 'items.csv');
 
+// グループ割当CSVダウンロードファイル名
+define('FILE_NAME_DOWNLOAD_GROUP_ASSIGN', 'group_assign.csv');
+
 // 割当CSVダウンロードファイル名
 define('FILE_NAME_DOWNLOAD_ASSIGN', 'assign.csv');
 
@@ -237,7 +240,8 @@ return array(
 		'recommended_group_assign' => 8,	// いつものグループ割当CSV
 		'delivery' => 9,					// 納品先CSV
 		'sales_representative' => 10,		// 営業担当者CSV
-		'delivery_week' => 11				// 配達曜日CSV
+		'delivery_week' => 11,				// 配達曜日CSV
+		'group_assign' => 12				// グループ割当商品CSV
 	),
 
 	// 管理側ユーザグループ種類
