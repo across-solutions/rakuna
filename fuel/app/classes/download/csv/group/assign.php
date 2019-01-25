@@ -40,6 +40,11 @@ class Download_Csv_Group_Assign extends Download_Csv_Base {
 		if ($key == 'control_code') {
 			return '0';
 		}
+
+		if ($key == 'member_code') {
+			return '';
+		}
+
 		return parent::modifier($counter, $data, $key);
 	}
 

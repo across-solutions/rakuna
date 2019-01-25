@@ -8,22 +8,22 @@ use Fuel\Core\Input;
  * CSV設定コントロールクラス
  */
 class Controller_Setting_Csv extends Controller_Base {
-	
+
 	/**
 	 * ページタイトル
 	 */
 	protected $title = 'CSV設定';
-	
+
 	/**
 	 * CSV設定画面-初期表示
 	 */
 	public function action_index() {
-		Response::redirect('/manage/setting/csv/edit/' . Config::get('define.csv_format_div.item'));
+		Response::redirect('/manage/setting/csv/edit/' . Config::get('define.csv_format_div.order'));
 	}
-	
+
 	/**
 	 * CSV設定画面-編集初期表示
-	 * 
+	 *
 	 * @param int $div CSVフォーマット区分
 	 */
 	public function action_edit($div) {
@@ -31,7 +31,7 @@ class Controller_Setting_Csv extends Controller_Base {
 		if (empty($formats)) {
 			throw new \Exception_403();
 		}
-		
+
 		$templates = $this->get_csv_format_templates_diff($div);
 		if (empty($formats)) {
 			throw new \HttpServerErrorException();
@@ -44,7 +44,7 @@ class Controller_Setting_Csv extends Controller_Base {
 
 		$this->render($data);
 	}
-	
+
 	/**
 	 * CSV設定画面-保存処理
 	 */
@@ -65,11 +65,11 @@ class Controller_Setting_Csv extends Controller_Base {
 		if (empty($templates)) {
 			throw new \HttpServerErrorException();
 		}
-		
+
 		if (!$this->validate_edit($data, $templates)) {
 			Response::redirect('/manage/setting/csv/edit/' . $div);
 		}
-		
+
 		if (!$this->edit_format($div, $data, $templates)) {
 			throw new \HttpServerErrorException();
 		}
@@ -77,7 +77,7 @@ class Controller_Setting_Csv extends Controller_Base {
 		$this->set_info_message('更新しました');
 		Response::redirect('/manage/setting/csv/edit/' . $div);
 	}
-	
+
 	/**
 	 * CSV設定画面-MOS標準フォーマットに戻す処理
 	 */
@@ -92,7 +92,7 @@ class Controller_Setting_Csv extends Controller_Base {
 		if (empty($templates)) {
 			throw new \HttpServerErrorException();
 		}
-		
+
 		if(!$this->default_format($div, $templates)) {
 			throw new \HttpServerErrorException();
 		}
@@ -100,22 +100,22 @@ class Controller_Setting_Csv extends Controller_Base {
 		$this->set_info_message('MOS標準フォーマットに更新しました');
 		Response::redirect('/manage/setting/csv/edit/' . $div);
 	}
-	
+
 	/**
 	 * 更新バリデート
-	 * 
+	 *
 	 * @param array $data フォームデータ
 	 * @param array $templates テンプレートリスト
 	 */
 	private function validate_edit($data, $templates) {
 		$sorts = $data['sort'];
 		$columns = $data['column'];
-		
+
 		if (count($sorts) != count($columns)) {
 			$this->set_error_message('項目数が一致しません');
 			return false;
 		}
-		
+
 		foreach ($templates as $template) {
 			$pos = array_search($template->key, $sorts);
 			if ($pos !== false) {
@@ -135,7 +135,7 @@ class Controller_Setting_Csv extends Controller_Base {
 				}
 			}
 		}
-		
+
 		$error = false;
 		foreach ($columns as $column) {
 			if (mb_strlen($column) > 20) {
@@ -146,10 +146,10 @@ class Controller_Setting_Csv extends Controller_Base {
 		if ($error) {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * 更新処理
 	 *
@@ -164,7 +164,7 @@ class Controller_Setting_Csv extends Controller_Base {
 				DB::rollback_transaction();
 				return false;
 			}
-			
+
 			$columns = $data['column'];
 			foreach ($data['sort'] as $sort => $key) {
 				if ($key == 'empty') {
@@ -174,13 +174,13 @@ class Controller_Setting_Csv extends Controller_Base {
 					}
 					continue;
 				}
-				
+
 				if (!$this->insert_csv_format($sort + 1, $templates[$key], $columns[$sort])) {
 					DB::rollback_transaction();
 					return false;
 				}
 			}
-			
+
 			DB::commit_transaction();
 		} catch (\Exception $e) {
 			DB::rollback_transaction();
@@ -188,7 +188,7 @@ class Controller_Setting_Csv extends Controller_Base {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * MOS標準フォーマットに戻す処理
 	 *
@@ -202,14 +202,14 @@ class Controller_Setting_Csv extends Controller_Base {
 				DB::rollback_transaction();
 				return false;
 			}
-			
+
 			foreach ($templates as $sort => $template) {
 				if (!$this->insert_csv_format($sort, $template, $template->name)) {
 					DB::rollback_transaction();
 					return false;
 				}
 			}
-			
+
 			DB::commit_transaction();
 		} catch (\Exception $e) {
 			DB::rollback_transaction();
@@ -217,10 +217,10 @@ class Controller_Setting_Csv extends Controller_Base {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * CSVフォーマットを取得する
-	 * 
+	 *
 	 * @param int $div CSVフォーマット区分
 	 */
 	private function get_csv_formats($div) {
@@ -229,10 +229,10 @@ class Controller_Setting_Csv extends Controller_Base {
 			->order_by('sort', 'asc')
 			->get();
 	}
-	
+
 	/**
 	 * CSVフォーマットテンプレートを取得する
-	 * 
+	 *
 	 * @param int $div CSVフォーマット区分
 	 */
 	private function get_csv_format_templates($div) {
@@ -240,36 +240,36 @@ class Controller_Setting_Csv extends Controller_Base {
 			->where('div', '=', $div)
 			->order_by('sort', 'asc')
 			->get();
-		
+
 		$results = array();
 		foreach ($templates as $template) {
 			$results[$template->key] = $template;
 		}
 		return $results;
 	}
-	
+
 	/**
-	 * sortをキーにしたCSVフォーマットテンプレートを取得する 
-	 * 
+	 * sortをキーにしたCSVフォーマットテンプレートを取得する
+	 *
 	 * @param int $div CSVフォーマット区分
 	 */
 	private function get_csv_format_templates_array_by_sort($div) {
-		
+
 		$templates = \Model_Csv_Format_Template::query()
 			->where('div', '=', $div)
 			->order_by('sort', 'asc')
 			->get();
-		
+
 		$results = array();
 		foreach ($templates as $template) {
 			$results[$template->sort] = $template;
 		}
 		return $results;
 	}
-	
+
 	/**
 	 * CSVフォーマットに存在しないCSVフォーマットテンプレートを取得する
-	 * 
+	 *
 	 * @param int $div CSVフォーマット区分
 	 */
 	private function get_csv_format_templates_diff($div) {
@@ -282,7 +282,7 @@ class Controller_Setting_Csv extends Controller_Base {
 			->order_by('sort', 'asc')
 			->execute()->as_array();
 	}
-	
+
 	/**
 	 * CSVフォーマットを登録する
 	 *
@@ -293,16 +293,16 @@ class Controller_Setting_Csv extends Controller_Base {
 	private function insert_csv_format($sort, $template, $name) {
 		$fields = array('div', 'key', 'required');
 		$values = \Common_Util::filter($template, $fields);
-		
+
 		$values['name'] = $name;
 		$values['sort'] = $sort;
 		$values['empty_flg'] = false;
-		
+
 		$model = \Model_Csv_Format::forge($values);
-		
+
 		return $model->save() !== false;
 	}
-	
+
 	/**
 	 * 空行のCSVフォーマットを登録する
 	 *
@@ -318,12 +318,12 @@ class Controller_Setting_Csv extends Controller_Base {
 		$values['required'] = false;
 		$values['sort'] = $sort;
 		$values['empty_flg'] = true;
-		
+
 		$model = \Model_Csv_Format::forge($values);
-		
+
 		return $model->save() !== false;
 	}
-	
+
 	/**
 	 * CSVフォーマットを削除する
 	 *

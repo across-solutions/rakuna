@@ -120,18 +120,18 @@ class Upload_Csv_Sales_Representative extends Upload_Csv_Base {
 	}
 
 	/**
-	 * 状態フラグバリデート
+	 * 制御コードバリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
 	private function validate_control_code($value, $num) {
 		if ($value == '') {
-			parent::set_error($num, '状態フラグを入力してください');
+			parent::set_error($num, '制御コードを入力してください');
 			return false;
 		}
 		if ($value != '0' && $value != '1') {
-			parent::set_error($num, '状態フラグは0、または、1で入力してください[' .$value .']');
+			parent::set_error($num, '制御コードは0、または、1で入力してください[' .$value .']');
 			return false;
 		}
 		return true;

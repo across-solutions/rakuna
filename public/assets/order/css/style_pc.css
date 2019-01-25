@@ -3990,6 +3990,9 @@ p.info{
 
 .content p.error{
 	color:#ff0000;
+	font-size:1.2rem;
+	font-weight:bold;
+	letter-spacing:-0.025em;
 }
 
 .error_field{

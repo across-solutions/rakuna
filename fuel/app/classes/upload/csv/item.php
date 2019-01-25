@@ -70,94 +70,65 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::validate()
 	 */
 	protected function validate(&$data, $num) {
-		$result = true;
-
-		foreach ($data as $key => $value) {
-			switch ($key) {
-				case 'category_code':
-					//$this->validate_category_code($value, $num);
-					break;
-				case 'item_code':
-					if (!$this->validate_item_code($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_name':
-					if (!$this->validate_item_name($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_yomigana':
-					if (!$this->validate_item_yomigana($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_unit_name':
-					if (!$this->validate_item_unit_name($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_unit_name_case':
-					if (!$this->validate_item_unit_name_case($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_size_case':
-					if (!$this->validate_item_size_case($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_type':
-					if (!$this->validate_item_type($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_comment':
-					//$this->validate_item_comment($value, $num);
-					break;
-				case 'item_price':
-					if (!$this->validate_price($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_price_case':
-					//$this->validate_price_case($value, $num);
-					break;
-				case 'item_cost':
-					if (!$this->validate_cost($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'jan_code':
-					//$this->validate_jan_code($value, $num, $data['item_code']);
-					break;
-				case 'item_size':
-					if (!$this->validate_item_size($value, $num)) {
-						$result = false;
-					}
-					break;
-				case 'item_unit_name2':
-					if (!$this->validate_item_unit_name2($value, $num)) {
-						$result = false;
-					}
-					break;
-			}
+		$control_code = $data['control_code'];
+		if (!$this->validate_control_code($control_code, $num)) {
+			return false;
 		}
 
-		return $result;
-	}
-
-	/**
-	 * @see Upload_Csv_Base::save_line()
-	 */
-	protected function save_line($data) {
-		if (array_key_exists($data['item_code'], $this->items)) {
-			if (!$this->update_item($this->items[$data['item_code']], $data)) {
-				return false;
+		if ($control_code == '0') {
+			foreach ($data as $key => $value) {
+				switch ($key) {
+					case 'category_code':
+						//$this->validate_category_code($value, $num);
+						break;
+					case 'item_code':
+						$this->validate_item_code($value, $num);
+						break;
+					case 'item_name':
+						$this->validate_item_name($value, $num);
+						break;
+					case 'item_yomigana':
+						$this->validate_item_yomigana($value, $num);
+						break;
+					case 'item_unit_name':
+						$this->validate_item_unit_name($value, $num);
+						break;
+					case 'item_unit_name_case':
+						$this->validate_item_unit_name_case($value, $num);
+						break;
+					case 'item_size_case':
+						$this->validate_item_size_case($value, $num);
+						break;
+					case 'item_type':
+						$this->validate_item_type($value, $num);
+						break;
+					case 'item_comment':
+						//$this->validate_item_comment($value, $num);
+						break;
+					case 'item_price':
+						$this->validate_price($value, $num);
+						break;
+					case 'item_price_case':
+						//$this->validate_price_case($value, $num);
+						break;
+					case 'item_cost':
+						$this->validate_cost($value, $num);
+						break;
+					case 'jan_code':
+						//$this->validate_jan_code($value, $num, $data['item_code']);
+						break;
+					case 'item_size':
+						$this->validate_item_size($value, $num);
+						break;
+					case 'item_unit_name2':
+						$this->validate_item_unit_name2($value, $num);
+						break;
+				}
 			}
-			unset($this->items[$data['item_code']]);
-		} else {
-			if (!$this->insert_item($data)) {
+		} elseif ($control_code == '1') {
+			// 削除
+			if (!array_key_exists($data['item_code'], $this->items)) {
+				// 商品コードが存在しない場合は無視する
 				return false;
 			}
 		}
@@ -166,12 +137,26 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	}
 
 	/**
-	 * @see Upload_Csv_Base::save_after()
+	 * @see Upload_Csv_Base::save_line()
 	 */
-	protected function save_after() {
-		foreach ($this->items as $item) {
-			if (!$this->delete_item($item)) {
-				return false;
+	protected function save_line($data) {
+		$control_code = $data['control_code'];
+
+		if ($control_code == '0') {
+			if (array_key_exists($data['item_code'], $this->items)) {
+				if (!$this->update_item($this->items[$data['item_code']], $data)) {
+					return false;
+				}
+			} else {
+				if (!$this->insert_item($data)) {
+					return false;
+				}
+			}
+		} elseif ($control_code == '1') {
+			if (array_key_exists($data['item_code'], $this->items)) {
+				if (!$this->delete_item($this->items[$data['item_code']])) {
+					return false;
+				}
 			}
 		}
 
@@ -183,6 +168,24 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 */
 	protected function get_unique_key($data) {
 		return $data['item_code'];
+	}
+
+	/**
+	 * 制御フラグバリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_control_code($value, $num) {
+		if ($value == '') {
+			parent::set_error($num, '制御コードを入力してください');
+			return false;
+		}
+		if ($value != '0' && $value != '1') {
+			parent::set_error($num, '制御コードは0、または、1で入力してください[' .$value .']');
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -355,11 +358,11 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			return true;
 		}
 		if (!is_numeric($value)) {
-			parent::set_error($num, '単価(バラ)は数値で入力してください[' . $value . ']');
+			parent::set_error($num, '単価は数値で入力してください[' . $value . ']');
 			return false;
 		}
 		if ($value < 0 || $value > 9999999) {
-			parent::set_error($num, '単価(バラ)は0以上、9999999以下で入力してください[' . $value . ']');
+			parent::set_error($num, '単価は0以上、9999999以下で入力してください[' . $value . ']');
 			return false;
 		}
 		return true;

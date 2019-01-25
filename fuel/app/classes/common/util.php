@@ -544,8 +544,17 @@ class Common_Util {
 	 * @param string $delivery_code 納品先コード
 	 */
 	public static function get_nearest_shipping_date($table, $member_code, $delivery_code = null) {
+		$member = \Model_Member::query()->where('code', $member_code)->get_one();
+		$lead_time = Arr::get($member, 'lead_time');
+
 		$limit = 10;
-		$start = date('Ymd', strtotime('+2 day'));
+		$day = 2;
+
+		if (!is_null($lead_time)) {
+			$day += intval($lead_time);
+		}
+
+		$start = date('Ymd', strtotime('+' . $day . ' day'));
 		$end = date('Ymd', strtotime($limit . ' day', strtotime($start)));
 		$date = $start;
 

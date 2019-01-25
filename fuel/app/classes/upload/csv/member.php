@@ -112,12 +112,12 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 					case 'sales_person_code':
 						$this->validate_sales_person_code($value, $num);
 						break;
-					case 'member_corporation':
-						$this->validate_member_corporation($value, $num);
-						break;
-					case 'member_store':
-						$this->validate_member_store($value, $num);
-						break;
+					//case 'member_corporation':
+					//	$this->validate_member_corporation($value, $num);
+					//	break;
+					//case 'member_store':
+					//	$this->validate_member_store($value, $num);
+					//	break;
 					case 'member_zip':
 						$this->validate_member_zip($value, $num);
 						break;
@@ -127,42 +127,42 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 					case 'member_address2':
 						$this->validate_member_address2($value, $num);
 						break;
-					case 'member_address3':
-						$this->validate_member_address3($value, $num);
-						break;
+					//case 'member_address3':
+					//	$this->validate_member_address3($value, $num);
+					//	break;
 					case 'member_tel':
 						$this->validate_member_tel($value, $num);
 						break;
-					case 'member_fax':
-						$this->validate_member_fax($value, $num);
-						break;
+					//case 'member_fax':
+					//	$this->validate_member_fax($value, $num);
+					//	break;
 					case 'delivery_week_code':
 						$this->validate_delivery_week_code($value, $num);
 						break;
-					case 'username':
-						$this->validate_member_username($value, $num);
-						break;
-					case 'password':
-						$this->validate_member_password($value, $num);
-						break;
-					case 'member_email':
-						$this->validate_member_email($value, $num);
-						break;
-					case 'sub_email1':
-						$this->validate_member_sub_email($value, $num);
-						break;
-					case 'sub_email2':
-						$this->validate_member_sub_email($value, $num);
-						break;
-					case 'sub_email3':
-						$this->validate_member_sub_email($value, $num);
-						break;
-					case 'sub_email4':
-						$this->validate_member_sub_email($value, $num);
-						break;
-					case 'sub_email5':
-						$this->validate_member_sub_email($value, $num);
-						break;
+					//case 'username':
+					//	$this->validate_member_username($value, $num);
+					//	break;
+					//case 'password':
+					//	$this->validate_member_password($value, $num);
+					//	break;
+					//case 'member_email':
+					//	$this->validate_member_email($value, $num);
+					//	break;
+					//case 'sub_email1':
+					//	$this->validate_member_sub_email($value, $num);
+					//	break;
+					//case 'sub_email2':
+					//	$this->validate_member_sub_email($value, $num);
+					//	break;
+					//case 'sub_email3':
+					//	$this->validate_member_sub_email($value, $num);
+					//	break;
+					//case 'sub_email4':
+					//	$this->validate_member_sub_email($value, $num);
+					//	break;
+					//case 'sub_email5':
+					//	$this->validate_member_sub_email($value, $num);
+					//	break;
 					case 'control_code':
 						$this->validate_control_code($value, $num);
 						break;
@@ -206,7 +206,6 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	 * @see Upload_Csv_Base::save_after()
 	 */
 	protected function save_after() {
-
 		if($this->check_username_unique()){
 			return true;
 		}else{
@@ -319,6 +318,10 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	 * @param int $num 行番号
 	 */
 	private function validate_group_code($value, $num) {
+		if ($value == '' || $value == '000000') {
+			return true;
+		}
+
 		if ($value != '' && !array_key_exists($value, $this->member_groups)) {
 			parent::set_error($num, 'グループが存在しません[' . $value . ']');
 			return false;
@@ -333,7 +336,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	 * @param int $num 行番号
 	 */
 	private function validate_sales_person_code($value, $num) {
-		if ($value == '') {
+		if ($value == '' || $value == '000000') {
 			return true;
 		}
 
@@ -386,7 +389,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		if (is_null($value) || $value == '') {
 			return true;
 		}
-		$max_length = 8;
+		$max_length = 10;
 		if (Str::length($value) > $max_length ) {
 			parent::set_error($num, '郵便番号は'.$max_length.'文字以下で入力してください[' . $value . ']');
 			return false;
@@ -456,7 +459,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			return true;
 		}
 
-		$max_length = 14;
+		$max_length = 15;
 		if (Str::length($value) > $max_length ) {
 			parent::set_error($num, '電話番号は'.$max_length.'文字以下で入力してください[' . $value . ']');
 			return false;
@@ -503,7 +506,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	 * @param int $num 行番号
 	 */
 	private function validate_delivery_week_code($value, $num) {
-		if ($value == '') {
+		if ($value == '' || $value == '000000') {
 			return true;
 		}
 
@@ -691,19 +694,35 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	 * @param array $data データ
 	 */
 	private function insert_member($data) {
-		parent::set_norequire_columns($data);
+		//parent::set_norequire_columns($data);
+		/*
 		if (isset($data['group_code'])) {
-		$member_group_id = $data['group_code'] == '' ? null : $this->member_groups[$data['group_code']];
+			$member_group_id = $data['group_code'] == '' ? null : $this->member_groups[$data['group_code']];
 		} else {
 			$member_group_id = null;
 		}
+		*/
 
+		if ($data['sales_person_code'] == '' || $data['sales_person_code'] == '000000') {
+			$data['sales_person_code'] = null;
+		}
+
+		if ($data['delivery_week_code'] == '' || $data['delivery_week_code'] == '000000') {
+			$data['delivery_week_code'] = null;
+		}
+
+		if ($data['group_code'] == '' || $data['group_code'] == '000000') {
+			$member_group_id = null;
+		} else {
+			$member_group_id = $this->member_groups[$data['group_code']];
+		}
+/*
 		for ($i = 1; $i <= 5; $i++) {
 			if (!isset($data['sub_email'.$i])) {
 				$data['sub_email'.$i] = '';
 			}
 		}
-
+*/
 		$qr_key = \Common_Util::random_string(RANDOM_QR_KEY_NUM);
 		$username = $this->create_username($data);
 		$password = $this->create_password($data);
@@ -716,18 +735,18 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$values['name'] = $data['member_name'];
 		$values['member_group_id'] = $member_group_id;
 		$values['sales_person_code'] = $data['sales_person_code'];
-		$values['corporation'] = $data['member_corporation'];
-		$values['store'] = $data['member_store'];
+		//$values['corporation'] = $data['member_corporation'];
+		//$values['store'] = $data['member_store'];
 		$values['zip'] = $data['member_zip'];
 		$values['address1'] = $data['member_address1'];
 		$values['address2'] = $data['member_address2'];
-		$values['address3'] = $data['member_address3'];
+		//$values['address3'] = $data['member_address3'];
 		$values['tel'] = $data['member_tel'];
-		$values['fax'] = $data['member_fax'];
+		//$values['fax'] = $data['member_fax'];
 		$values['delivery_week_code'] = $data['delivery_week_code'];
 
-		$values['email'] = $data['email'];
-		$values['sub_email'] = implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) );
+		//$values['email'] = $data['email'];
+		//$values['sub_email'] = implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) );
 
 		$values['username'] = $username;
 		$values['password'] = $password;
@@ -751,14 +770,31 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	 */
 	private function update_member($data) {
 		$member = $this->members[$data['member_code']];
-		parent::set_norequire_columns($data, $member);
+		//parent::set_norequire_columns($data, $member);
+		/*
 		if (isset($data['group_code'])) {
-		$member_group_id = $data['group_code'] == '' ? null : $this->member_groups[$data['group_code']];
+			$member_group_id = $data['group_code'] == '' ? null : $this->member_groups[$data['group_code']];
 		} else {
 			$member_group_id = $member['member_group_id'];
 		}
+		*/
+
+		if ($data['sales_person_code'] == '' || $data['sales_person_code'] == '000000') {
+			$data['sales_person_code'] = null;
+		}
+
+		if ($data['delivery_week_code'] == '' || $data['delivery_week_code'] == '000000') {
+			$data['delivery_week_code'] = null;
+		}
+
+		if ($data['group_code'] == '' || $data['group_code'] == '000000') {
+			$member_group_id = null;
+		} else {
+			$member_group_id = $this->member_groups[$data['group_code']];
+		}
 
 		//サブメールアドレス列を分割
+/*
 		$sub_email_default = array('','','','','');
 		$member_sub_email_divided = explode(',', $member['sub_email']) + $sub_email_default;
 
@@ -767,28 +803,29 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 				$data['sub_email'.$i] = $member_sub_email_divided[$i - 1];
 			}
 		}
+*/
 
 		if ( $member['code'] == $data['member_code']
 				&& $member['name'] == $data['member_name']
 			 	&& $member['member_group_id'] == $member_group_id
 				&& $member['sales_person_code'] == $data['sales_person_code']
-				&& $member['corporation'] == $data['member_corporation']
-				&& $member['store'] == $data['member_store']
+				//&& $member['corporation'] == $data['member_corporation']
+				//&& $member['store'] == $data['member_store']
 				&& $member['zip'] == $data['member_zip']
 				&& $member['address1'] == $data['member_address1']
 				&& $member['address2'] == $data['member_address2']
-				&& $member['address3'] == $data['member_address3']
+				//&& $member['address3'] == $data['member_address3']
 				&& $member['tel'] == $data['member_tel']
-				&& $member['fax'] == $data['member_fax']
-				&& $member['delivery_week_code'] == $data['delivery_week_code']
-				&& $member['email'] == $data['email']
-				&& $member_sub_email_divided[0] == $data['sub_email1']
-				&& $member_sub_email_divided[1] == $data['sub_email2']
-				&& $member_sub_email_divided[2] == $data['sub_email3']
-				&& $member_sub_email_divided[3] == $data['sub_email4']
-				&& $member_sub_email_divided[4] == $data['sub_email5']
-				&& $member['username'] == $data['username']
-				&& $member['password'] == $data['password']) {
+				//&& $member['fax'] == $data['member_fax']
+				&& $member['delivery_week_code'] == $data['delivery_week_code']) {
+				//&& $member['email'] == $data['email']
+				//&& $member_sub_email_divided[0] == $data['sub_email1']
+				//&& $member_sub_email_divided[1] == $data['sub_email2']
+				//&& $member_sub_email_divided[2] == $data['sub_email3']
+				//&& $member_sub_email_divided[3] == $data['sub_email4']
+				//&& $member_sub_email_divided[4] == $data['sub_email5']
+				//&& $member['username'] == $data['username']
+				//&& $member['password'] == $data['password']) {
 			return true;
 		}
 
@@ -796,19 +833,19 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			->value('name', $data['member_name'])
 			->value('member_group_id', $member_group_id)
 			->value('sales_person_code', $data['sales_person_code'])
-			->value('corporation', $data['member_corporation'])
-			->value('store', $data['member_store'])
+			//->value('corporation', $data['member_corporation'])
+			//->value('store', $data['member_store'])
 			->value('zip', $data['member_zip'])
 			->value('address1', $data['member_address1'])
 			->value('address2', $data['member_address2'])
-			->value('address3', $data['member_address3'])
+			//->value('address3', $data['member_address3'])
 			->value('tel', $data['member_tel'])
-			->value('fax', $data['member_fax'])
+			//->value('fax', $data['member_fax'])
 			->value('delivery_week_code', $data['delivery_week_code'])
-			->value('email', $data['email'])
-			->value('sub_email', implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) ) )
-			->value('username', $data['username'])
-			->value('password', $data['password'])
+			//->value('email', $data['email'])
+			//->value('sub_email', implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) ) )
+			//->value('username', $data['username'])
+			//->value('password', $data['password'])
 			->value('search_field', Common_Util::mb_converts($data, array('member_code', 'member_name')))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))

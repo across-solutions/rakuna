@@ -12,41 +12,27 @@
 	<div class="configMenu">
 		<ul>
 			<li>
-				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.item'); ?>" title="商品CSV設定"
-					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.item') ? 'class="selected"' : ''; ?>>
-					<span class="icon-angle-right mr"></span>商品CSV設定
-				</a>
-			</li>
-			<?php if(false) : ?>
-			<li>
-				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.pr'); ?>" title="PR商品CSV設定"
-					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.pr') ? 'class="selected"' : ''; ?>>
-					<span class="icon-angle-right mr"></span>PR商品CSV設定
-				</a>
-			</li>
-			<?php endif; ?>
-			<li>
-				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.assign'); ?>" title="割当CSV設定"
-					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.assign') ? 'class="selected"' : ''; ?>>
-					<span class="icon-angle-right mr"></span>割当CSV設定
-				</a>
-			</li>
-			<li>
 				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.order'); ?>" title="受注CSV設定"
 					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.order') ? 'class="selected"' : ''; ?>>
 					<span class="icon-angle-right mr"></span>受注CSV設定
 				</a>
 			</li>
 			<li>
-				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.member'); ?>" title="発注者CSV設定"
-				   <?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.member') ? 'class="selected"' : ''; ?>>
-					<span class="icon-angle-right mr"></span>発注者CSV設定
+				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.item'); ?>" title="商品CSV設定"
+					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.item') ? 'class="selected"' : ''; ?>>
+					<span class="icon-angle-right mr"></span>商品CSV設定
 				</a>
 			</li>
 			<li>
-				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.holiday'); ?>" title="非営業日CSV設定"
-					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.holiday') ? 'class="selected"' : ''; ?>>
-					<span class="icon-angle-right mr"></span>非営業日CSV設定
+				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.group_assign'); ?>" title="グループ割当CSV設定"
+					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.group_assign') ? 'class="selected"' : ''; ?>>
+					<span class="icon-angle-right mr"></span>グループ割当CSV設定
+				</a>
+			</li>
+			<li>
+				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.assign'); ?>" title="割当CSV設定"
+					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.assign') ? 'class="selected"' : ''; ?>>
+					<span class="icon-angle-right mr"></span>割当CSV設定
 				</a>
 			</li>
 			<li>
@@ -59,6 +45,12 @@
 				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.recommended_group_assign'); ?>" title="いつものグループ割当CSV設定"
 				   <?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.recommended_group_assign') ? 'class="selected"' : ''; ?>>
 					<span class="icon-angle-right mr"></span>いつものグループ割当CSV設定
+				</a>
+			</li>
+			<li>
+				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.member'); ?>" title="発注者CSV設定"
+				   <?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.member') ? 'class="selected"' : ''; ?>>
+					<span class="icon-angle-right mr"></span>発注者CSV設定
 				</a>
 			</li>
 			<li>
@@ -77,6 +69,12 @@
 				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.delivery_week'); ?>" title="配達曜日CSV設定"
 				   <?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.delivery_week') ? 'class="selected"' : ''; ?>>
 					<span class="icon-angle-right mr"></span>配達曜日CSV設定
+				</a>
+			</li>
+			<li>
+				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.holiday'); ?>" title="非営業日CSV設定"
+					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.holiday') ? 'class="selected"' : ''; ?>>
+					<span class="icon-angle-right mr"></span>非営業日CSV設定
 				</a>
 			</li>
 		</ul>

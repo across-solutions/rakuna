@@ -18,7 +18,8 @@ class Download_Csv_Assign extends Download_Csv_Base {
 	protected function get_data($params) {
 		$query = DB::select(array('item_assigns.item_code', 'item_code'), array('members.code', 'member_code'),
 				array('item_assigns.price', 'item_price'), array('item_assigns.price_case', 'item_price_case'),
-				'item_assigns.hidden_flg_case', 'item_assigns.hidden_flg_single')
+				'item_assigns.hidden_flg_case', 'item_assigns.hidden_flg_single',
+				array('member_groups.code', 'member_group_code'))
 			->from('item_assigns')
 			->join('items', 'INNER')
 				->on('item_assigns.item_code', '=', 'items.code')
@@ -26,6 +27,9 @@ class Download_Csv_Assign extends Download_Csv_Base {
 			->join('members', 'INNER')
 				->on('item_assigns.member_id', '=', 'members.id')
 				->on('members.del_flg', '=', DB::escape(UNDELETED))
+			->join('member_groups', 'LEFT')
+				->on('members.member_group_id', '=', 'member_groups.id')
+				->on('member_groups.del_flg', '=', DB::escape(UNDELETED))
 			->order_by('members.code', 'asc')
 			->order_by('items.code', 'asc');
 

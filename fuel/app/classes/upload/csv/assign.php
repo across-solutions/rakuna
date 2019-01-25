@@ -11,6 +11,11 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	protected $has_header = true;
 
 	/**
+	 * エラー以外の取込有無
+	 */
+	protected $other_than_error = true;
+
+	/**
 	 * 発注者コードリスト
 	 */
 	private $members = array();
@@ -149,11 +154,11 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 			return true;
 		}
 		if (!is_numeric($value)) {
-			parent::set_error($num, '単価(バラ)は数値で入力してください[' . $value . ']');
+			parent::set_error($num, '単価は数値で入力してください[' . $value . ']');
 			return false;
 		}
 		if ($value < 0 || $value > 9999999) {
-			parent::set_error($num, '単価(バラ)は0以上、9999999以下で入力してください[' . $value . ']');
+			parent::set_error($num, '単価は0以上、9999999以下で入力してください[' . $value . ']');
 			return false;
 		}
 		return true;
@@ -322,7 +327,7 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 
 		return DB::update('item_assigns')
 			->value('price', $price)
-			->value('price_case', $price_case)
+			->value('price_case', $price)
 			->value('hidden_flg_single', $data['hidden_flg_single'])
 			->value('hidden_flg_case', $data['hidden_flg_case'])
 			->value('renewal_datetime', date('Y-m-d H:i:s'))

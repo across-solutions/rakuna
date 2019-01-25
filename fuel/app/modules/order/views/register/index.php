@@ -26,6 +26,8 @@
 	</div>
 	<!--#page dec end -->
 
+	<?php echo $message(); ?>
+
 	<?php if ($data_count > 0) : ?>
 		<!--#buy now start -->
 		<div class="buyNow">

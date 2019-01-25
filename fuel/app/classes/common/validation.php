@@ -38,7 +38,7 @@ class Common_Validation {
 			return true;
 		}
 
-		if (preg_match('/^[0-9-]+$/', $value)) {
+		if (preg_match('/^[0-9-_]+$/', $value)) {
 			return true;
 		}
 

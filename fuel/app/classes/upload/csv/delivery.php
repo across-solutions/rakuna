@@ -30,8 +30,8 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	protected $has_header = true;
 
 	/**
-	 * CSV設定の状態フラグの有無
-	 * 状態フラグが未設定の場合はアップロード処理をしない
+	 * CSV設定の制御コードの有無
+	 * 制御コードが未設定の場合はアップロード処理をしない
 	 */
 	private $has_control_code = true;
 
@@ -90,9 +90,9 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 					case 'delivery_name':
 						$this->validate_delivery_name($value, $num);
 						break;
-					case 'delivery_name_kana':
-						$this->validate_delivery_name_kana($value, $num);
-						break;
+					//case 'delivery_name_kana':
+					//	$this->validate_delivery_name_kana($value, $num);
+					//	break;
 					case 'delivery_receiver_name1':
 						$this->validate_delivery_receiver_name1($value, $num);
 						break;
@@ -108,15 +108,15 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 					case 'delivery_address2':
 						$this->validate_delivery_address2($value, $num);
 						break;
-					case 'delivery_address3':
-						$this->validate_delivery_address3($value, $num);
-						break;
+					//case 'delivery_address3':
+					//	$this->validate_delivery_address3($value, $num);
+					//	break;
 					case 'delivery_tel':
 						$this->validate_delivery_tel($value, $num);
 						break;
-					case 'delivery_fax':
-						$this->validate_delivery_fax($value, $num);
-						break;
+					//case 'delivery_fax':
+					//	$this->validate_delivery_fax($value, $num);
+					//	break;
 					case 'delivery_week_code':
 						$this->validate_delivery_week_code($value, $num);
 						break;
@@ -168,18 +168,18 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	}
 
 	/**
-	 * 状態フラグバリデート
+	 * 制御コードバリデート
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
 	private function validate_control_code($value, $num) {
 		if ($value == '') {
-			parent::set_error($num, '状態フラグを入力してください');
+			parent::set_error($num, '制御コードを入力してください');
 			return false;
 		}
 		if ($value != '0' && $value != '1') {
-			parent::set_error($num, '状態フラグは0、または、1で入力してください[' .$value .']');
+			parent::set_error($num, '制御コードは0、または、1で入力してください[' .$value .']');
 			return false;
 		}
 		return true;
@@ -313,7 +313,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 		if (is_null($value) || $value == '') {
 			return true;
 		}
-		$max_length = 8;
+		$max_length = 10;
 		if (Str::length($value) > $max_length ) {
 			parent::set_error($num, '郵便番号は'.$max_length.'文字以下で入力してください[' . $value . ']');
 			return false;
@@ -380,7 +380,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 		if (is_null($value) || $value == '') {
 			return true;
 		}
-		$max_length = 14;
+		$max_length = 15;
 		if (Str::length($value) > $max_length ) {
 			parent::set_error($num, '電話番号は'.$max_length.'文字以下で入力してください[' . $value . ']');
 			return false;
@@ -421,7 +421,7 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	 * @param int $num 行番号
 	 */
 	private function validate_delivery_week_code($value, $num) {
-		if ($value == '') {
+		if ($value == '' || $value == '000000') {
 			return true;
 		}
 
@@ -440,6 +440,18 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 			->from('members')
 			->where('del_flg', '=', UNDELETED)
 			->order_by('code', 'asc')
+			->execute()
+			->as_array('code', 'id');
+	}
+
+	/**
+	 * 配達曜日コードドリストを取得する
+	 */
+	private function list_delivery_week_code() {
+		return DB::select('code', 'id')
+			->from('delivery_weeks')
+			->where('del_flg', '=', UNDELETED)
+			->order_by(DB::expr('Cast(code AS SIGNED)'), 'ASC')
 			->execute()
 			->as_array('code', 'id');
 	}
@@ -469,21 +481,26 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	 */
 	private function insert_delivery($data) {
 		$values = array();
+
+		if ($data['delivery_week_code'] == '' || $data['delivery_week_code'] == '000000') {
+			$data['delivery_week_code'] = null;
+		}
+
 		$values['member_code'] = $data['member_code'];
 		$values['code'] = $data['delivery_code'];
 		$values['name'] = $data['delivery_name'];
-		$values['name_kana'] = $data['delivery_name_kana'];
+		//$values['name_kana'] = $data['delivery_name_kana'];
 		$values['receiver_name1'] = $data['delivery_receiver_name1'];
 		$values['receiver_name2'] = $data['delivery_receiver_name2'];
 		$values['zip'] = $data['delivery_zip'];
 		$values['address1'] = $data['delivery_address1'];
 		$values['address2'] = $data['delivery_address2'];
-		$values['address3'] = $data['delivery_address3'];
+		//$values['address3'] = $data['delivery_address3'];
 		$values['tel'] = $data['delivery_tel'];
-		$values['fax'] = $data['delivery_fax'];
+		//$values['fax'] = $data['delivery_fax'];
 		$values['delivery_week_code'] = $data['delivery_week_code'];
 		$values['search_field'] = Common_Util::mb_converts($data, array('member_code', 'delivery_code', 'delivery_name',
-										'delivery_name_kana', 'delivery_receiver_name1', 'delivery_receiver_name2'));
+										'delivery_receiver_name1', 'delivery_receiver_name2'));
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
 		$values['created'] = date('Y-m-d H:i:s');
@@ -499,18 +516,22 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 	 * @param array $data データ
 	 */
 	private function update_delivery($delivery, $data) {
+		if ($data['delivery_week_code'] == '' || $data['delivery_week_code'] == '000000') {
+			$data['delivery_week_code'] = null;
+		}
+
 		if ($delivery['member_code'] == $data['member_code']
 				&& $delivery['code'] == $data['delivery_code']
 				&& $delivery['name'] == $data['delivery_name']
-				&& $delivery['name_kana'] == $data['delivery_name_kana']
+				//&& $delivery['name_kana'] == $data['delivery_name_kana']
 				&& $delivery['receiver_name1'] == $data['delivery_receiver_name1']
 				&& $delivery['receiver_name2'] == $data['delivery_receiver_name2']
 				&& $delivery['zip'] == $data['delivery_zip']
 				&& $delivery['address1'] == $data['delivery_address1']
 				&& $delivery['address2'] == $data['delivery_address2']
-				&& $delivery['address3'] == $data['delivery_address3']
+				//&& $delivery['address3'] == $data['delivery_address3']
 				&& $delivery['tel'] == $data['delivery_tel']
-				&& $delivery['fax'] == $data['delivery_fax']
+				//&& $delivery['fax'] == $data['delivery_fax']
 				&& $delivery['delivery_week_code'] == $data['delivery_week_code']) {
 			return true;
 		}
@@ -518,15 +539,15 @@ class Upload_Csv_Delivery extends Upload_Csv_Base {
 		$query = DB::update('deliveries')
 			->value('member_code', $data['member_code'])
 			->value('name', $data['delivery_name'])
-			->value('name_kana', $data['delivery_name_kana'])
+			//->value('name_kana', $data['delivery_name_kana'])
 			->value('receiver_name1', $data['delivery_receiver_name1'])
 			->value('receiver_name2', $data['delivery_receiver_name2'])
 			->value('zip', $data['delivery_zip'])
 			->value('address1', $data['delivery_address1'])
 			->value('address2', $data['delivery_address2'])
-			->value('address3', $data['delivery_address3'])
+			//->value('address3', $data['delivery_address3'])
 			->value('tel', $data['delivery_tel'])
-			->value('fax', $data['delivery_fax'])
+			//->value('fax', $data['delivery_fax'])
 			->value('delivery_week_code', $data['delivery_week_code'])
 			->value('search_field', Common_Util::mb_converts($data, array('member_code', 'delivery_code', 'delivery_name',
 										'delivery_name_kana', 'delivery_receiver_name1', 'delivery_receiver_name2')))

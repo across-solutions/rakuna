@@ -151,22 +151,17 @@ class Controller_Item extends Controller_Base {
 
 		$csv = new \Upload_Csv_Item($this->get_upload_file('item_csv'));
 		$csv->parse();
-		//if ($csv->has_error()) {
-		//	$this->render(null, 'item/upload_csv');
-		//	return;
-		//}
+		if ($csv->has_error()) {
+			$this->render(null, 'item/upload_csv');
+			return;
+		}
 
 		if (!$csv->save()) {
 			throw new \HttpServerErrorException();
 		}
 
-		if ($csv->has_error()) {
-			$this->render(null, 'item/upload_csv');
-			return;
-		} else {
-			$this->set_info_message('登録しました');
-			Response::redirect('/manage/dialog/complete');
-		}
+		$this->set_info_message('登録しました');
+		Response::redirect('/manage/dialog/complete');
 	}
 
 	/**

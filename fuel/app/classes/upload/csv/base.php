@@ -32,6 +32,11 @@ abstract  class Upload_Csv_Base {
 	protected $has_header = false;
 
 	/**
+	 * エラー以外の取込有無
+	 */
+	protected $other_than_error = false;
+
+	/**
 	 * CSVファイルパス
 	 */
 	private $file = null;
@@ -110,7 +115,9 @@ abstract  class Upload_Csv_Base {
 		}
 
 		if (!empty($this->errors)) {
-			$this->add_error('上記のエラー以外を取り込みました');
+			if ($this->other_than_error) {
+				$this->add_error('上記のエラー以外を取り込みました');
+			}
 			Session::set_flash('validate_upload_errors', $this->errors);
 		}
 	}
