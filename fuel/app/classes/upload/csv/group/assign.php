@@ -62,7 +62,7 @@ class Upload_Csv_Group_Assign extends Upload_Csv_Base {
 						$result = false;
 					}
 					break;
-				case 'item_price':
+				case 'group_price':
 					if (!$this->validate_price($value, $num)) {
 						$result = false;
 					}

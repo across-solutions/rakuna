@@ -20,6 +20,11 @@ class Controller_Group_Assign extends Controller_Base {
 	protected $title = 'グループ割当管理';
 
 	/**
+	 * エラー以外の取込有無
+	 */
+	protected $other_than_error = true;
+
+	/**
 	 * 割当一覧画面-初期表示・検索
 	 */
 	public function action_index() {
