@@ -724,8 +724,8 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		}
 */
 		$qr_key = \Common_Util::random_string(RANDOM_QR_KEY_NUM);
-		$username = $this->create_username($data);
-		$password = $this->create_password($data);
+		$username = $this->create_username();
+		$password = $this->create_password();
 
 		$qr = \Common_Qr::forge();
 		$qr->output(QR_IMAGE_PATH, $qr_key, $this->create_mail_auth_message($qr_key));
@@ -871,11 +871,9 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 
 	/**
 	 * ログインIDを生成する
-	 *
-	 * @param array $data フォームデータ
 	 */
-	private function create_username($data) {
-		$username = $data['username'];
+	private function create_username() {
+		$username = null;
 		if (!is_null($username) && $username != '') {
 			return $username;
 		}
@@ -891,11 +889,9 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 
 	/**
 	 * パスワードを生成する
-	 *
-	 * @param array $data フォームデータ
 	 */
-	private function create_password($data) {
-		$password = $data['password'];
+	private function create_password() {
+		$password = null;
 		if (!is_null($password) && $password != '') {
 			return $password;
 		}
