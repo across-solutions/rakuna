@@ -89,12 +89,12 @@
 			<dl class="clearfix">
 				<dt>
 					<label for="unitName">
-					バラ単位<span class="red">*</span>
+					バラ単位
 					</label>
 				</dt>
 				<dd>
 					<?php echo Form::input('unit_name', Arr::get($data, 'unit_name'), array('id' => 'unitName', 'placeholder' => '箱')); ?>
-					<a class="tooltip" rel="tooltip" title="必須項目です。<br/>10文字以内で入力してください。">
+					<a class="tooltip" rel="tooltip" title="10文字以内で入力してください。">
 						<span class="icon-question decEdit"></span>
 					</a>
 					<?php echo $validate_error_message('unit_name'); ?>
@@ -242,6 +242,21 @@
 						<span class="icon-question decEdit"></span>
 					</a>
 					<?php echo $validate_error_message('jan_code'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
+					<label for="itemHiddenFlg">
+						表示/非表示
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::radio('hidden_flg', 0, Arr::get($data, 'hidden_flg', 0), array('id' => 'form_hidden_flg_0')); ?>
+					<?php echo Form::label('表示', 'hidden_flg_0'); ?>
+					<?php echo Form::radio('hidden_flg', 1, Arr::get($data, 'hidden_flg', 0), array('id' => 'form_hidden_flg_1')); ?>
+					<?php echo Form::label('非表示', 'hidden_flg_1'); ?>
+					<?php echo $validate_error_message('hidden_flg'); ?>
 				</dd>
 			</dl>
 

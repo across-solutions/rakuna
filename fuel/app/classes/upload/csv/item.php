@@ -123,6 +123,9 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 					case 'item_unit_name2':
 						$this->validate_item_unit_name2($value, $num);
 						break;
+					case 'item_hidden_flg':
+						$this->validate_item_hidden_flg($value, $num);
+						break;
 				}
 			}
 		} elseif ($control_code == '1') {
@@ -484,6 +487,24 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	}
 
 	/**
+	 * 非表示フラグバリデート
+	 *
+	 * @param string $value 値
+	 * @param int $num 行番号
+	 */
+	private function validate_item_hidden_flg($value, $num) {
+		if ($value == '') {
+			parent::set_error($num, '非表示フラグを入力してください');
+			return false;
+		}
+		if ($value != '0' && $value != '1') {
+			parent::set_error($num, '非表示フラグは0、または、1で入力してください[' .$value .']');
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * カテゴリコードリストを取得する
 	 */
 	private function list_item_category_code() {
@@ -500,7 +521,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 */
 	private function list_item_code() {
 		$items = DB::select('id', 'item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
-							'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'cost', 'jan_code')
+							'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'cost', 'jan_code', 'hidden_flg')
 				->from('items')
 				->where('del_flg', UNDELETED)
 				->order_by('code', 'asc')
@@ -549,6 +570,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		$values['price'] = $data['item_price'];
 		$values['price_case'] = $data['item_price'];
 		$values['cost'] = $data['item_cost'];
+		$values['hidden_flg'] = $data['item_hidden_flg'];
 		$values['jan_code'] = null;
 		$values['pr_flg'] = false;
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
@@ -624,6 +646,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 				&& $item['price'] == $data['item_price']
 				&& $item['price_case'] == $data['item_price_case']
 				&& $item['cost'] == $data['item_cost']
+				&& $item['hidden_flg'] == $data['item_hidden_flg']
 				) {
 			return true;
 		}
@@ -639,13 +662,14 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			->value('price', $data['item_price'])
 			->value('price_case', $data['item_price'])
 			->value('cost', $data['item_cost'])
+			->value('hidden_flg', $data['item_hidden_flg'])
 			->value('search_field', Common_Util::mb_converts($data, array('item_code', 'item_name', 'item_yomigana')))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('id', '=', $item['id']);
 
 		if ($item['price'] != $data['item_price'] || $item['size'] != $item_size ||
-				$item['size_case'] != $item_size_case) {
+				$item['size_case'] != $item_size_case || $item['hidden_flg'] != $data['item_hidden_flg']) {
 			$query->value('renewal_datetime', date('Y-m-d H:i:s'));
 		}
 

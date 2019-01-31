@@ -514,6 +514,7 @@ class Controller_Register extends Controller_Base {
 				->on('item_categories.id', '=', 'items.item_category_id')
 				->on('item_categories.del_flg', '=', DB::escape(UNDELETED))
 			->where('items.code', '=', $code)
+			->where('items.hidden_flg', '=', UNDELETED)
 			->where('items.del_flg', '=', UNDELETED);
 
 		//if (Common_Assign::has_assign($member_id)) {

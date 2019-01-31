@@ -34,6 +34,7 @@ class Common_Cart_Util {
 			->from('carts')
 			->join('items', 'LEFT')
 				->on('carts.item_id', '=', 'items.id')
+				->on('items.hidden_flg', '=', DB::escape(UNDELETED))
 				->on('items.del_flg', '=', DB::escape(UNDELETED))
 			->where('carts.member_id', '=', $member_id);
 
@@ -288,6 +289,7 @@ class Common_Cart_Util {
 		$query = DB::select('items.id', array('items.renewal_datetime', 'item_renewal_datetime'))
 			->from('items')
 			->where('items.id', '=', $item_id)
+			->where('items.hidden_flg', '=', UNDELETED)
 			->where('items.del_flg', '=', UNDELETED);
 
 		//if (Common_Assign::has_assign($member_id)) {

@@ -30,7 +30,8 @@ class Download_Csv_Item extends Download_Csv_Base {
 			array('items.price' , 'item_price'),
 			array('items.price_case' , 'item_price_case'),
 			array('items.cost' , 'item_cost'),
-			array('items.jan_code', 'jan_code')
+			array('items.jan_code', 'jan_code'),
+			array('items.hidden_flg', 'item_hidden_flg')
 		)
 		->from('items')
 		->join('item_categories', 'LEFT')

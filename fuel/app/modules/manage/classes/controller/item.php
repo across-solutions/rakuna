@@ -377,7 +377,6 @@ class Controller_Item extends Controller_Base {
 		$validation->add('item_category_id', 'カテゴリ')
 			->add_rule('exist', 'item_categories', 'id');
 		$validation->add('unit_name', 'バラ単位')
-			->add_rule('required')
 			->add_rule('max_length', 10);
 		$validation->add('unit_name_case', 'ケース単位')
 			->add_rule('max_length', 10);
@@ -406,6 +405,8 @@ class Controller_Item extends Controller_Base {
 			->add_rule('numeric')
 			->add_rule('max_length', 13)
 			->add_rule('unique', 'items', 'jan_code');
+		$validation->add('hidden_flg', '表示/非表示')
+			->add_rule('required');
 // 		$validation->add('pr_flg', 'PR商品')
 // 			->add_rule('required');
 
@@ -436,7 +437,6 @@ class Controller_Item extends Controller_Base {
 		$validation->add('item_category_id', 'カテゴリ')
 			->add_rule('exist', 'item_categories', 'id');
 		$validation->add('unit_name', 'バラ単位')
-			->add_rule('required')
 			->add_rule('max_length', 10);
 		$validation->add('unit_name_case', 'ケース単位')
 			->add_rule('max_length', 10);
@@ -465,6 +465,8 @@ class Controller_Item extends Controller_Base {
 			->add_rule('numeric')
 			->add_rule('max_length', 13)
 			->add_rule('unique', 'items', 'jan_code', $data['id']);
+		$validation->add('hidden_flg', '表示/非表示')
+			->add_rule('required');
 // 		$validation->add('pr_flg', 'PR商品')
 // 			->add_rule('required');
 
@@ -523,7 +525,7 @@ class Controller_Item extends Controller_Base {
 	 */
 	private function insert_item($data) {
 		$fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
-						'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'cost', 'jan_code', 'pr_flg');
+						'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'cost', 'jan_code', 'pr_flg', 'hidden_flg');
 		$values = \Common_Util::filter($data, $fields);
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
 
@@ -550,8 +552,8 @@ class Controller_Item extends Controller_Base {
 	 */
 	private function update_item($item, $data) {
 		$update_fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
-								'size', 'size_case', 'type', 'comment', 'jan_code', 'pr_flg');
-		$renewal_fields = array('size_case');
+								'size', 'size_case', 'type', 'comment', 'jan_code', 'pr_flg', 'hidden_flg');
+		$renewal_fields = array('size_case', 'hidden_flg');
 
 		if (isset($data['price'])) {
 			$update_fields[] = 'price';

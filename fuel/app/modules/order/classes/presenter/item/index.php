@@ -206,6 +206,7 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 	 * @param array $data GETデータ
 	 */
 	protected function add_condition(&$query, $data) {
+		$query->where('items.hidden_flg', '=', UNDELETED);
 		$query->where('items.del_flg', '=', DB::expr(UNDELETED));
 
 		// カテゴリ

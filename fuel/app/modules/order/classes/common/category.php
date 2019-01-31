@@ -18,6 +18,7 @@ class Common_Category {
 			->from('item_categories')
 			->join('items', 'INNER')
 				->on('item_categories.id', '=', 'items.item_category_id')
+				->and_on('items.hidden_flg', '=', DB::expr(UNDELETED))
 				->and_on('items.del_flg', '=', DB::expr(UNDELETED));
 
 		//if (Common_Assign::has_assign($member_id)) {

@@ -82,6 +82,7 @@ class Controller_Item extends Controller_Base {
 				->on('order_frequencies.member_id', '=', DB::escape($member_id))
 				->on('order_frequencies.del_flg', '=', DB::escape(UNDELETED))
 			->where('items.id', '=', $item_id)
+			->where('items.hidden_flg', '=', UNDELETED)
 			->where('items.del_flg', '=', UNDELETED);
 
 		//if (Common_Assign::has_assign($member_id)) {

@@ -198,6 +198,7 @@ class Presenter_Recommended_Group extends Presenter_Item_Index {
 				->and_on('recommended_items.del_flg', '=', DB::expr(UNDELETED))
 			->join('items', 'LEFT')
 				->on('items.code', '=', 'recommended_items.item_code')
+				->and_on('items.hidden_flg', '=', DB::expr(UNDELETED))
 				->and_on('items.del_flg', '=', DB::expr(UNDELETED));
 /*
 		if (Common_Assign::has_assign($member_id)) {

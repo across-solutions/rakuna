@@ -175,6 +175,7 @@ class Controller_Favorite extends Controller_Base {
 			->from('favorites')
 				->join('items', 'INNER')
 				->on('favorites.item_code', '=', 'items.code')
+				->and_on('items.hidden_flg', '=', DB::expr(UNDELETED))
 				->and_on('items.del_flg', '=', DB::expr(UNDELETED));
 /*
 		if (Common_Assign::has_assign($member_id)) {

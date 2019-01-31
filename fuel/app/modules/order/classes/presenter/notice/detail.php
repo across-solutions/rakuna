@@ -105,6 +105,7 @@ class Presenter_Notice_Detail extends \Presenter_Base {
 				->and_on('order_frequencies.member_id', '=', DB::expr($member_id))
 				->and_on('order_frequencies.del_flg', '=', DB::expr(UNDELETED))
 			->where('items.code', '=', $this->data->item_code)
+			->where('items.hidden_flg', '=', DB::expr(UNDELETED))
 			->where('items.del_flg', '=', DB::expr(UNDELETED));
 
 		//if (Common_Assign::has_assign($member_id)) {

@@ -20,6 +20,7 @@ class Model_Item extends \Model_Base {
 		'price',
 		'price_case',
 		'cost',
+		'hidden_flg',
 		'pr_flg',
 		'renewal_datetime',
 		'search_field',

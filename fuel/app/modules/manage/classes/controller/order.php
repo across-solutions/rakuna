@@ -533,6 +533,7 @@ class Controller_Order extends Controller_Base {
 				->on('item_categories.id', '=', 'items.item_category_id')
 				->on('item_categories.del_flg', '=', DB::escape(UNDELETED))
 			->where('items.id', '=', $item_id)
+			->where('items.hidden_flg', '=', UNDELETED)
 			->where('items.del_flg', '=', UNDELETED);
 
 		$query->join('item_assigns', 'LEFT')
