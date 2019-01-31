@@ -192,7 +192,7 @@
 				</div>
 				<!--#dig zoom dec end -->
 
-				<?php if (Arr::get($data, 'type') == 2) : ?>
+				<?php if (Arr::get($data, 'type') == Config::get('define.item_type.order') || Arr::get($data, 'type') == Config::get('define.item_type.special')) : ?>
 					<dl class="digzDec">
 						<dd>
 							取り寄せのため、お届けに日数がかかります

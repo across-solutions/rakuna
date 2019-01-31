@@ -32,6 +32,11 @@ class Controller_Base extends Controller_Template {
 	public $visible_support_search = false;
 
 	/**
+	 * カートクリア表示
+	 */
+	public $visible_clear_carts = false;
+
+	/**
 	 * ページタイトル
 	 */
 	protected $title = '';

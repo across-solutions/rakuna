@@ -105,7 +105,7 @@
 											</dd>
 										</dl>
 									<?php endif; ?>
-									<?php if (Arr::get($row, 'type') == 2) : ?>
+									<?php if (Arr::get($row, 'type') == Config::get('define.item_type.order') || Arr::get($row, 'type') == Config::get('define.item_type.special')) : ?>
 										<dl class="clearfix">
 											<dt>
 												取り寄せのため、お届けに日数がかかります

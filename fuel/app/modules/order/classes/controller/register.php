@@ -15,6 +15,11 @@ use Fuel\Core\HttpServerErrorException;
 class Controller_Register extends Controller_Base {
 
 	/**
+	 * カートクリア表示
+	 */
+	public $visible_clear_carts = true;
+
+	/**
 	 * ページタイトル
 	 */
 	protected $title = 'レジ';
@@ -38,14 +43,21 @@ class Controller_Register extends Controller_Base {
 		$cart->set_member_tel(Arr::get($member, 'tel'));
 		$cart->set_member_fax(Arr::get($member, 'fax'));
 
-		$cart->set_order_type('1');
-		$cart->set_shipping_div('80');
-		$cart->set_warehouse_div('000900');
+		$order_type = \Model_Order_Type::find('first');
+
+		$cart->set_order_type($order_type->id);
+		$cart->set_shipping_div($order_type->code);
+		$cart->set_warehouse_div($order_type->warehouse_code);
 
 		$nearest_shipping_date = \Common_Util::get_nearest_shipping_date('members', Arr::get($member, 'code'));
 		if (!empty($nearest_shipping_date)) {
 			$cart->set_shipping_date($nearest_shipping_date);
 			$cart->set_delivery_date($nearest_shipping_date);
+		}
+
+		// カート内に商品タイプが「取寄品」「取置・別製」の商品が含まれる場合は、「order_no」に担当営業者コードを代入
+		if ($this->check_item_type_order($cart)) {
+			$cart->set_order_no(Arr::get($member, 'member_sales_person_code'));
 		}
 
 		Session::set(SESSION_KEY_CART, $cart);
@@ -133,6 +145,46 @@ class Controller_Register extends Controller_Base {
 	}
 
 	/**
+	 * 完了
+	 */
+	public function action_complete() {
+		$this->render();
+	}
+
+	/**
+	 * カートクリア
+	 */
+	public function action_clear_carts() {
+		$member_id = $this->get_member_id();
+
+		$this->clear_cart($member_id);
+
+		Response::redirect('/order/register');
+	}
+
+	/**
+	 * 発注履歴からカートに入れる処理
+	 */
+	public function action_into_cart($order_id) {
+		$member_id = $this->get_member_id();
+
+		$order = \Model_Order::find($order_id, array(
+				'where' => array(
+						'member_id' => $member_id
+				)
+		));
+		if (empty($order)) {
+			Response::redirect('/order/home');
+		}
+
+		if (!$this->replace_carts($order, $member_id)) {
+			// TODO
+		}
+
+		Response::redirect('/order/register');
+	}
+
+	/**
 	 * 出荷日取得
 	 *
 	 * @return array $dates 出荷日
@@ -183,36 +235,6 @@ class Controller_Register extends Controller_Base {
 
 		return $dates;
 	}
-
-	/**
-	 * 完了
-	 */
-	public function action_complete() {
-		$this->render();
-	}
-
-	/**
-	 * 発注履歴からカートに入れる処理
-	 */
-	public function action_into_cart($order_id) {
-		$member_id = $this->get_member_id();
-
-		$order = \Model_Order::find($order_id, array(
-				'where' => array(
-						'member_id' => $member_id
-				)
-		));
-		if (empty($order)) {
-			Response::redirect('/order/home');
-		}
-
-		if (!$this->replace_carts($order, $member_id)) {
-			// TODO
-		}
-
-		Response::redirect('/order/register');
-	}
-
 
 	/**
 	 * 発注者情報を取得する
@@ -351,6 +373,24 @@ class Controller_Register extends Controller_Base {
 	}
 
 	/**
+	 * カート内商品タイプチェック
+	 *
+	 * @param Common_Cart $cart カート情報
+	 */
+	private function check_item_type_order($cart) {
+		$result = false;
+
+		foreach ($cart->get_carts() as $detail) {
+			if ($detail['type'] == Config::get('define.item_type.order') ||
+				$detail['type'] == Config::get('define.item_type.special')) {
+					$result = true;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
 	 * 在庫バリデート
 	 *
 	 * @param Model_Member $member 発注者アカウント情報
@@ -433,6 +473,15 @@ class Controller_Register extends Controller_Base {
 		}
 
 		return $order_id;
+	}
+
+	/**
+	 * カートを削除する
+	 *
+	 * @param int $member_id 発注者アカウントID
+	 */
+	private function clear_cart($member_id) {
+		return DB::delete('carts')->where('member_id', '=', $member_id)->execute();
 	}
 
 	/**

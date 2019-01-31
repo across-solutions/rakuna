@@ -18,6 +18,18 @@
 			</div>
 		<?php endif; ?>
 
+		<?php if ($visible_clear_carts) : ?>
+			<?php if ($visible_cach) : ?>
+				<div class="cash clear_carts" style="visibility:visible;">
+			<?php else : ?>
+				<div class="cash" style="visibility:hidden;">
+			<?php endif; ?>
+					<a href="#" title="カートクリア" data-tor-smoothScroll="noSmooth">
+						<span class="icon icon-trash"></span>
+					</a>
+				</div>
+		<?php endif; ?>
+
 		<?php if ($visible_cach) : ?>
 			<div class="cash" style="visibility:visible;">
 		<?php else : ?>

@@ -16,6 +16,8 @@ class Presenter_Parts_Menu extends \Presenter_Base {
 
 		$this->visible_support_search = Request::active()->controller_instance->visible_support_search;
 
+		$this->visible_clear_carts = Request::active()->controller_instance->visible_clear_carts;
+
 		$this->visible_cach = $this->exist_cart($this->get_member_id());
 	}
 

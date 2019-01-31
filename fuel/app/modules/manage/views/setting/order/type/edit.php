@@ -86,11 +86,13 @@
 					<span class="icon-save mr"></span>保存
 				</a>
 			</li>
-			<li>
-				<a href="/manage/setting/order/type/delete_save" title="削除" class="submit_delete">
-					<span class="icon-trash mr"></span>削除
-				</a>
-			</li>
+			<?php if ($data['id'] > 4) : ?>
+				<li>
+					<a href="/manage/setting/order/type/delete_save" title="削除" class="submit_delete">
+						<span class="icon-trash mr"></span>削除
+					</a>
+				</li>
+			<?php endif ; ?>
 			<li>
 				<a href="#" title="キャンセル" class="close">
 					<span class="icon-remove mr"></span>キャンセル

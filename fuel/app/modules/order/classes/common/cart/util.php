@@ -21,7 +21,7 @@ class Common_Cart_Util {
 		$member_group_code = Arr::get($member, 'member_groups.code');
 
 		$query = DB::select('items.id', 'items.code', 'items.name', 'items.size', 'items.comment',
-				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size',
+				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size', 'items.type',
 				'items.price', 'items.price_case',
 				array('item_assigns.price_case', 'assign_price_case'),
 				array('item_assigns.price', 'assign_price'),

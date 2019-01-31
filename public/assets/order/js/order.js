@@ -401,6 +401,13 @@ $(function() {
 		});
 	});
 
+	$(".clear_carts").on(canTouch ? "touchend" : "click", function() {
+		if (confirm("カートをクリアします。よろしいですか？")) {
+			$(location).attr("href", "/order/register/clear_carts");
+		}
+		return false;
+	});
+
 /*
 	$("select#shipping_date_select").on("change",function() {
 		var shipping_div = $("#shipping_div_select").val();
