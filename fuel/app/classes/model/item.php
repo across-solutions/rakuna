@@ -31,7 +31,7 @@ class Model_Item extends \Model_Base {
 	);
 
 	protected static $_search_fields = array(
-		'search_field' => array('code', 'name', 'yomigana', 'comment')
+		'search_field' => array('name', 'yomigana', 'comment')
 	);
 
 	protected static $_belongs_to = array(

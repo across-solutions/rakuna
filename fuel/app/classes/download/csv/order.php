@@ -124,6 +124,11 @@ class Download_Csv_Order extends Download_Csv_Base {
 			return $data['sales_person_code'];
 		}
 
+		// 発注側で表示する金額は0%の税率にしたいが、出力時は8%で出力したい対応
+		if ($key == 'tax_rate') {
+			return '8';
+		}
+
 		if ($key == 'delivery_code') {
 			if ($data['delivery_kind'] == '1') {
 				return '';

@@ -348,7 +348,7 @@ class Controller_Order extends Controller_Base {
 			$validation->add('amount.' . $id, '数量')
 				->add_rule('required')
 				->add_rule('numeric')
-				->add_rule('numeric_between', 0, 100);
+				->add_rule('numeric_between', 0, 9999);
 		}
 
 		if (isset($data['amount_case'])) {
@@ -357,7 +357,7 @@ class Controller_Order extends Controller_Base {
 				$validation->add('amount_case.' . $id, '数量')
 					->add_rule('required')
 					->add_rule('numeric')
-					->add_rule('numeric_between', 0, 100);
+					->add_rule('numeric_between', 0, 9999);
 			}
 		}
 
@@ -366,7 +366,7 @@ class Controller_Order extends Controller_Base {
 			foreach ($amounts as $id => $amount) {
 				$validation->add('new_amount.' . $id, '数量')
 											   ->add_rule('numeric')
-											   ->add_rule('numeric_between', 0, 100);
+											   ->add_rule('numeric_between', 0, 9999);
 			}
 		}
 
@@ -375,7 +375,7 @@ class Controller_Order extends Controller_Base {
 			foreach ($amount_cases as $id => $amount_case) {
 				$validation->add('new_amount_case.' . $id, '数量')
 													->add_rule('numeric')
-													->add_rule('numeric_between', 0, 100);
+													->add_rule('numeric_between', 0, 9999);
 			}
 		}
 

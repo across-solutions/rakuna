@@ -524,7 +524,7 @@
 					</p>
 				</li>
 				<li>
-					<?php echo Form::textarea('comment', $data->get_comment()); ?>
+					<?php echo Form::input('comment', $data->get_comment(), array('id' => 'comment', 'placeholder' => '')); ?>
 					<?php echo $validate_error_message('comment'); ?>
 				</li>
 			</ul>

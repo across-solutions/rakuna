@@ -367,7 +367,7 @@ class Controller_Register extends Controller_Base {
 			->add_rule('match_collection', array_keys($this->get_delivery_dates()));
 
 		$validation->add('comment', '備考')
-			->add_rule('max_length', 1000);
+			->add_rule('max_length', 18);
 
 		return $this->validate($validation, $data);
 	}

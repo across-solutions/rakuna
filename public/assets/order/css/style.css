@@ -2597,6 +2597,22 @@ input.sortNum[type="text"]{
 	-webkit-appearance:none;
 }
 
+.remarks ul li input[type="text"]{
+	width:100%;
+	padding:0.6em;
+	border:1px solid #999;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+
+	box-sizing:border-box;
+
+	-webkit-appearance:none;
+}
+
 .orderDone{
 	width:auto;
 	background:#eee;

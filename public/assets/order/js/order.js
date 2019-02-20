@@ -73,10 +73,10 @@ $(function() {
 			return false;
 		}
 
-		if (newval > 99) {
+		if (newval > 9999) {
 			$(this).val(oldval);
 			$(this).attr("placeholder", "");
-			alert("99以下の数値を入力してください");
+			alert("9,999以下の数値を入力してください");
 			return false;
 		}
 
@@ -163,8 +163,8 @@ $(function() {
 			return false;
 		}
 
-		if( $(this).hasClass("plus") && $(this).closest("ul").find("input.amount").val() >= 99 ) {
-			alert("数値は99以下までしか入力できません");
+		if( $(this).hasClass("plus") && $(this).closest("ul").find("input.amount").val() >= 9999 ) {
+			alert("数値は9,999以下までしか入力できません");
 			return false;
 		}
 

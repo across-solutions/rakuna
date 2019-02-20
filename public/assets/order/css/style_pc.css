@@ -2820,6 +2820,20 @@ input.sortNum[type="text"]{
 	min-height:100px;
 }
 
+.remarks ul li input[type="text"]{
+	font-size:1.2rem;
+
+	width:94.5%;
+	padding:0.6em;
+	border:1px solid #999;
+
+	border-radius:2px;
+	-ms-border-radius:2px;
+	-o-border-radius:2px;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+}
+
 .orderDone{
 	width:auto;
 	border-bottom:1px solid #ccc;
