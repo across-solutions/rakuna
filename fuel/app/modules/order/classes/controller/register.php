@@ -124,8 +124,14 @@ class Controller_Register extends Controller_Base {
 
 		$member = $this->get_member($this->get_member_id());
 
-		if (!$this->check_order($member, $cart)) {
-			$this->set_error_message('ケースとバラが混在しているか、在庫品と在庫品以外が混在してます');
+		if (!$this->check_case_single($member, $cart)) {
+			$this->set_error_message('ケースとバラが混在しています');
+			$this->render($cart, 'register/index');
+			return;
+		}
+
+		if (!$this->check_type_stock($member, $cart)) {
+			$this->set_error_message('在庫品と在庫品以外が混在しています');
 			$this->render($cart, 'register/index');
 			return;
 		}
@@ -391,14 +397,33 @@ class Controller_Register extends Controller_Base {
 	}
 
 	/**
-	 * 在庫バリデート
+	 * ケース・バラ混在チェック
 	 *
 	 * @param Model_Member $member 発注者アカウント情報
 	 * @param Common_Cart $cart カート情報
 	 */
-	private function check_order($member, $cart) {
-		$amount_flg = false;
-		$amount_case_flg = false;
+	private function check_case_single($member, $cart) {
+		foreach ($cart->get_carts() as $detail) {
+			$item = $this->get_item($detail['code'], $member['id']);
+			if (empty($item)) {
+				throw new \Exception_Renewal();
+			}
+
+			if ($detail['amount'] > 0 && $detail['amount_case'] > 0) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * 商品タイプ在庫品チェック
+	 *
+	 * @param Model_Member $member 発注者アカウント情報
+	 * @param Common_Cart $cart カート情報
+	 */
+	private function check_type_stock($member, $cart) {
 		$type_stock_flg = false;
 		$type_not_stock_flg = false;
 		foreach ($cart->get_carts() as $detail) {
@@ -407,23 +432,11 @@ class Controller_Register extends Controller_Base {
 				throw new \Exception_Renewal();
 			}
 
-			if ($detail['amount'] > 0) {
-				$amount_flg = true;
-			}
-
-			if ($detail['amount_case'] > 0) {
-				$amount_case_flg = true;
-			}
-
 			if ($item['type'] == Config::get('define.item_type.stock')) {
 				$type_stock_flg = true;
 			} else {
 				$type_not_stock_flg = true;
 			}
-		}
-
-		if ($amount_flg && $amount_case_flg) {
-			return false;
 		}
 
 		if ($type_stock_flg && $type_not_stock_flg) {
