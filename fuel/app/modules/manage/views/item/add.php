@@ -117,6 +117,21 @@
 
 			<dl class="clearfix">
 				<dt>
+					<label for="smileUnitName">
+					SMILE単位
+					</label>
+				</dt>
+				<dd>
+					<?php echo Form::input('smile_unit_name', Arr::get($data, 'smile_unit_name'), array('id' => 'smileUnitName', 'placeholder' => '本')); ?>
+					<a class="tooltip" rel="tooltip" title="10文字以内で入力してください。">
+						<span class="icon-question decEdit"></span>
+					</a>
+					<?php echo $validate_error_message('smile_unit_name'); ?>
+				</dd>
+			</dl>
+
+			<dl class="clearfix">
+				<dt>
 					<label for="quantity">
 					バラ入数<span class="red">*</span>
 					</label>

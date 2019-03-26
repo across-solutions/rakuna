@@ -23,6 +23,7 @@ class Download_Csv_Item extends Download_Csv_Base {
 			array('items.yomigana' , 'item_yomigana'),
 			array('items.unit_name' , 'item_unit_name'),
 			array('items.unit_name_case' , 'item_unit_name_case'),
+			array('items.smile_unit_name' , 'item_smile_unit_name'),
 			array('items.size' , 'item_size'),
 			array('items.size_case' , 'item_size_case'),
 			array('items.type' , 'item_type'),
@@ -56,9 +57,9 @@ class Download_Csv_Item extends Download_Csv_Base {
 			return '';
 		}
 
-		if ($key == 'item_unit_name2') {
-			return '';
-		}
+		//if ($key == 'item_unit_name2') {
+		//	return '';
+		//}
 		return parent::modifier($counter, $data, $key);
 	}
 

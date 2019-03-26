@@ -559,7 +559,7 @@ class Controller_Register extends Controller_Base {
 		$member_group_code = Arr::get($member, 'member_groups.code');
 
 		$query = DB::select('items.id', 'items.code', 'items.jan_code', 'items.name',
-				'items.unit_name_case', 'items.unit_name', 'items.size_case', 'items.size', 'items.type',
+				'items.unit_name_case', 'items.unit_name', 'items.smile_unit_name', 'items.size_case', 'items.size', 'items.type',
 				array('item_categories.code', 'category_code'),
 				array('item_categories.name', 'category_name'),
 				'items.price', 'items.price_case',
@@ -718,6 +718,7 @@ class Controller_Register extends Controller_Base {
 		$values['item_name'] = $item['name'];
 		$values['item_unit_name_case'] = $item['unit_name_case'];
 		$values['item_unit_name'] = $item['unit_name'];
+		$values['item_smile_unit_name'] = $item['smile_unit_name'];
 		$values['item_size_case'] = $item['size_case'];
 		$values['item_size'] = $item['size'];
 		$values['item_type'] = $item['type'];

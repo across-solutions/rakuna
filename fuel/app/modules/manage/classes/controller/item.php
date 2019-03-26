@@ -380,6 +380,8 @@ class Controller_Item extends Controller_Base {
 			->add_rule('max_length', 10);
 		$validation->add('unit_name_case', 'ケース単位')
 			->add_rule('max_length', 10);
+		$validation->add('smile_unit_name', 'SMILE単位')
+			->add_rule('max_length', 10);
 		$validation->add('size', 'バラ入数')
 			->add_rule('required')
 			->add_rule('numeric')
@@ -439,6 +441,8 @@ class Controller_Item extends Controller_Base {
 		$validation->add('unit_name', 'バラ単位')
 			->add_rule('max_length', 10);
 		$validation->add('unit_name_case', 'ケース単位')
+			->add_rule('max_length', 10);
+		$validation->add('smile_unit_name', 'SMILE単位')
 			->add_rule('max_length', 10);
 		$validation->add('size', 'バラ入数')
 			->add_rule('required')
@@ -524,7 +528,7 @@ class Controller_Item extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function insert_item($data) {
-		$fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
+		$fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case', 'smile_unit_name',
 						'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'cost', 'jan_code', 'pr_flg', 'hidden_flg');
 		$values = \Common_Util::filter($data, $fields);
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
@@ -551,7 +555,7 @@ class Controller_Item extends Controller_Base {
 	 * @param array $data フォームデータ
 	 */
 	private function update_item($item, $data) {
-		$update_fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
+		$update_fields = array('item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case', 'smile_unit_name',
 								'size', 'size_case', 'type', 'comment', 'jan_code', 'pr_flg', 'hidden_flg');
 		$renewal_fields = array('size_case', 'hidden_flg');
 

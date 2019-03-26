@@ -14,6 +14,7 @@ class Model_Order_Detail extends Model_Base {
 		'item_name',
 		'item_unit_name',
 		'item_unit_name_case',
+		'item_smile_unit_name',
 		'item_size',
 		'item_size_case',
 		'item_type',

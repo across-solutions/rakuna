@@ -59,7 +59,7 @@ class Download_Csv_History extends Download_Csv_Base {
 			array('order_details.price_case_tax', 'price_case'),
 			array('order_details.amount_case', 'amount_case'),
 			array('order_details.item_size', 'item_size'),
-			array('order_details.item_unit_name', 'item_unit_name'),
+			array('order_details.item_smile_unit_name', 'item_smile_unit_name'),
 			array('order_details.price_tax', 'price'),
 			array('order_details.amount', 'amount'),
 			array('order_details.total', 'total'),

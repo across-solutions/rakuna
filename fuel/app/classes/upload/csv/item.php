@@ -90,8 +90,8 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 					case 'item_yomigana':
 						$this->validate_item_yomigana($value, $num);
 						break;
-					case 'item_unit_name':
-						$this->validate_item_unit_name($value, $num);
+					case 'item_smile_unit_name':
+						$this->validate_item_smile_unit_name($value, $num);
 						break;
 					case 'item_unit_name_case':
 						$this->validate_item_unit_name_case($value, $num);
@@ -120,8 +120,8 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 					case 'item_size':
 						$this->validate_item_size($value, $num);
 						break;
-					case 'item_unit_name2':
-						$this->validate_item_unit_name2($value, $num);
+					case 'item_unit_name':
+						$this->validate_item_unit_name($value, $num);
 						break;
 					case 'item_hidden_flg':
 						$this->validate_item_hidden_flg($value, $num);
@@ -269,7 +269,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
-	private function validate_item_unit_name($value, $num) {
+	private function validate_item_smile_unit_name($value, $num) {
 		if ($value == '') {
 			return true;
 		}
@@ -475,7 +475,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 * @param string $value 値
 	 * @param int $num 行番号
 	 */
-	private function validate_item_unit_name2($value, $num) {
+	private function validate_item_unit_name($value, $num) {
 		if ($value == '') {
 			return true;
 		}
@@ -520,7 +520,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	 * 商品コードリストを取得する
 	 */
 	private function list_item_code() {
-		$items = DB::select('id', 'item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case',
+		$items = DB::select('id', 'item_category_id', 'code', 'name', 'yomigana', 'unit_name', 'unit_name_case', 'smile_unit_name',
 							'size', 'size_case', 'type', 'comment', 'price', 'price_case', 'cost', 'jan_code', 'hidden_flg')
 				->from('items')
 				->where('del_flg', UNDELETED)
@@ -561,8 +561,11 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		$values['code'] = $data['item_code'];
 		$values['name'] = $data['item_name'];
 		$values['yomigana'] = $data['item_yomigana'];
+		// 最少出荷単位がMOSでの表示表単位
 		$values['unit_name'] = $data['item_unit_name'];
 		$values['unit_name_case'] = $data['item_unit_name_case'];
+		// SMILE連携用単位名(受注連携の時のみ使用)
+		$values['smile_unit_name'] = $data['item_smile_unit_name'];
 		$values['size'] = 1;
 		$values['size_case'] = $data['item_size_case'];
 		$values['type'] = $data['item_type'];
@@ -588,10 +591,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			$values['cost'] = null;
 		}
 
-		// 必ずMOS用最少出荷単位を単位とする
-		$values['unit_name'] = $data['item_unit_name2'];
-
-		// 空と0以外場合はMOS用最少出荷数を設定する
+		// 空と0以外場合はMOS用出荷数を設定する
 		if (!empty($data['item_size'])) {
 			$values['size'] = $data['item_size'];
 		}
@@ -621,11 +621,8 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			$data['item_cost'] = null;
 		}
 
-		// 必ずMOS用最少出荷単位を単位とする
-		$item_unit_name = $data['item_unit_name2'];
-
 		$item_size = $item['size'];
-		// 空と0以外場合はMOS用最少出荷数を設定する
+		// 空と0以外場合はMOS用出荷数を設定する
 		if (!empty($data['item_size'])) {
 			$item_size = $data['item_size'];
 		}
@@ -638,8 +635,9 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 
 		if ($item['name'] == $data['item_name']
 				&& $item['yomigana'] == $data['item_yomigana']
-				&& $item['unit_name'] == $item_unit_name
+				&& $item['unit_name'] == $data['item_unit_name']
 				&& $item['unit_name_case'] == $data['item_unit_name_case']
+				&& $item['smile_unit_name'] == $data['item_smile_unit_name']
 				&& $item['size'] == $item_size
 				&& $item['size_case'] == $item_size_case
 				&& $item['type'] == $data['item_type']
@@ -654,8 +652,9 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		$query = DB::update('items')
 			->value('name', $data['item_name'])
 			->value('yomigana', $data['item_yomigana'])
-			->value('unit_name', $item_unit_name)
+			->value('unit_name', $data['item_unit_name'])
 			->value('unit_name_case', $data['item_unit_name_case'])
+			->value('smile_unit_name', $data['item_smile_unit_name'])
 			->value('size', $item_size)
 			->value('size_case', $item_size_case)
 			->value('type', $data['item_type'])

@@ -12,6 +12,7 @@ class Model_Item extends \Model_Base {
 		'yomigana',
 		'unit_name',
 		'unit_name_case',
+		'smile_unit_name',
 		'size',
 		'size_case',
 		'type',
