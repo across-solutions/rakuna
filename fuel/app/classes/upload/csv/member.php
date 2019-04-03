@@ -104,7 +104,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 						$this->validate_member_code($value, $num);
 						break;
 					case 'member_name':
-						$this->validate_member_name($value, $num);
+						$this->validate_member_name($value, $num, $data['member_name2']);
 						break;
 					case 'group_code':
 						$this->validate_group_code($value, $num);
@@ -296,16 +296,18 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 	 *
 	 * @param string $value 値
 	 * @param int $num 行番号
+	 * @param string $member_name2 発注者名2
 	 */
-	private function validate_member_name($value, $num) {
-		if ($value == '') {
+	private function validate_member_name($value, $num, $member_name2) {
+		$member_name = $value . $member_name2;
+		if ($member_name == '') {
 			parent::set_error($num, '発注者名を入力してください');
 			return false;
 		}
 
-		$max_length = 40;
-		if (Str::length($value) > $max_length ) {
-			parent::set_error($num, '発注者名は'.$max_length.'文字以下で入力してください[' . $value . ']');
+		$max_length = 100;
+		if (Str::length($member_name) > $max_length ) {
+			parent::set_error($num, '発注者名は'.$max_length.'文字以下で入力してください[' . $member_name . ']');
 			return false;
 		}
 		return true;
@@ -730,9 +732,11 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$qr = \Common_Qr::forge();
 		$qr->output(QR_IMAGE_PATH, $qr_key, $this->create_mail_auth_message($qr_key));
 
+		$member_name = $data['member_name'] . $data['member_name2'];
+
 		$values = array();
 		$values['code'] = $data['member_code'];
-		$values['name'] = $data['member_name'];
+		$values['name'] = $member_name;
 		$values['member_group_id'] = $member_group_id;
 		$values['sales_person_code'] = $data['sales_person_code'];
 		//$values['corporation'] = $data['member_corporation'];
@@ -754,7 +758,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$values['qr_key'] = $qr_key;
 		$values['status'] = Config::get('define.member_status.enable');
 
-		$values['search_field'] = Common_Util::mb_converts($data, array('member_code', 'member_name'));
+		$values['search_field'] = Common_Util::mb_converts($data, array('member_code', $member_name));
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
 		$values['created'] = date('Y-m-d H:i:s');
@@ -805,8 +809,10 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		}
 */
 
+		$member_name = $data['member_name'] . $data['member_name2'];
+
 		if ( $member['code'] == $data['member_code']
-				&& $member['name'] == $data['member_name']
+				&& $member['name'] == $member_name
 			 	&& $member['member_group_id'] == $member_group_id
 				&& $member['sales_person_code'] == $data['sales_person_code']
 				//&& $member['corporation'] == $data['member_corporation']
@@ -830,7 +836,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		}
 
 		$query = DB::update('members')
-			->value('name', $data['member_name'])
+			->value('name', $member_name)
 			->value('member_group_id', $member_group_id)
 			->value('sales_person_code', $data['sales_person_code'])
 			//->value('corporation', $data['member_corporation'])
@@ -846,7 +852,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			//->value('sub_email', implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) ) )
 			//->value('username', $data['username'])
 			//->value('password', $data['password'])
-			->value('search_field', Common_Util::mb_converts($data, array('member_code', 'member_name')))
+			->value('search_field', Common_Util::mb_converts($data, array('member_code', $member_name)))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('id', '=', $member['id']);

@@ -577,7 +577,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		$values['jan_code'] = null;
 		$values['pr_flg'] = false;
 		$values['renewal_datetime'] = date('Y-m-d H:i:s');
-		$values['search_field'] =  Common_Util::mb_converts($data, array('item_name', 'item_yomigana'));
+		$values['search_field'] =  Common_Util::mb_converts($data, array('item_code', 'item_name', 'item_yomigana'));
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
 		$values['created'] = date('Y-m-d H:i:s');
@@ -662,7 +662,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			->value('price_case', $data['item_price'])
 			->value('cost', $data['item_cost'])
 			->value('hidden_flg', $data['item_hidden_flg'])
-			->value('search_field', Common_Util::mb_converts($data, array('item_name', 'item_yomigana')))
+			->value('search_field', Common_Util::mb_converts($data, array('item_code', 'item_name', 'item_yomigana')))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('id', '=', $item['id']);
