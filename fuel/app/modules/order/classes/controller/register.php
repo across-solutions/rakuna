@@ -60,6 +60,12 @@ class Controller_Register extends Controller_Base {
 			$cart->set_order_no(Arr::get($member, 'member_sales_person_code'));
 		}
 
+		// カート内に商品タイプが「在庫」以外の商品が含まれる場合は、「出荷予定日」「納期」のデフォルトを空とする
+		if ($this->check_item_type_not_stock($cart)) {
+			$cart->set_shipping_date('');
+			$cart->set_delivery_date('');
+		}
+
 		Session::set(SESSION_KEY_CART, $cart);
 
 		$this->render($cart);
@@ -379,7 +385,7 @@ class Controller_Register extends Controller_Base {
 	}
 
 	/**
-	 * カート内商品タイプチェック
+	 * カート内商品タイプチェック(取寄、取置・別製)
 	 *
 	 * @param Common_Cart $cart カート情報
 	 */
@@ -389,6 +395,23 @@ class Controller_Register extends Controller_Base {
 		foreach ($cart->get_carts() as $detail) {
 			if ($detail['type'] == Config::get('define.item_type.order') ||
 				$detail['type'] == Config::get('define.item_type.special')) {
+					$result = true;
+			}
+		}
+
+		return $result;
+	}
+
+	/**
+	 * カート内商品タイプチェック(ﾛｼﾞｽ在庫以外)
+	 *
+	 * @param Common_Cart $cart カート情報
+	 */
+	private function check_item_type_not_stock($cart) {
+		$result = false;
+
+		foreach ($cart->get_carts() as $detail) {
+			if ($detail['type'] != Config::get('define.item_type.stock')) {
 					$result = true;
 			}
 		}
