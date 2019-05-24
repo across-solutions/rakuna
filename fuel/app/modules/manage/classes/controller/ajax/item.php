@@ -75,8 +75,8 @@ class Controller_Ajax_Item extends Controller_Ajax_Base {
 		$values['item_size'] = $item['size'];
 		$values['category_code'] = $item['category_code'];
 		$values['category_name'] = $item['category_name'];
-		$price = $this->value($item, 'price', 'assign_price', 'group_price');
-		$price_case = $this->value($item, 'price_case', 'assign_price_case', 'group_price_case');
+		$price = $this->value($item, 'price', 'group_price', 'assign_price');
+		$price_case = $this->value($item, 'price_case', 'group_price_case', 'assign_price_case');
 		$values['price'] = $price * $item['size'];
 		$values['price_tax'] = \Common_Util::add_tax($values['price']);
 		$values['amount'] = 0;

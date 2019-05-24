@@ -39,6 +39,14 @@
 
 		<div class="estimateWrap clearfix">
 
+		<?php if ($cancelled($data)) : ?>
+			<div class="estimateTitle">
+				<strong style="color: #e62074;">
+					キャンセル済
+				</strong>
+			</div>
+		<?php endif; ?>
+
 			<div class="estimateTitle">
 				<strong>
 					発注履歴

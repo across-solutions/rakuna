@@ -3316,6 +3316,10 @@ header.log .headerWrapper img{
 	position:relative;
 }
 
+.histNav ul li ul li.delFlg{
+	background:#f09999;
+}
+
 .histNav ul li ul li:first-child{
 	border-top:none;
 }
@@ -3339,6 +3343,14 @@ header.log .headerWrapper img{
 }
 
 .histNav ul li ul li a span.price{
+	color:#e62074;
+	font-weight:bold;
+	text-align:right;
+	right:5%;
+	position:absolute;
+}
+
+.histNav ul li ul li a span.cansel{
 	color:#e62074;
 	font-weight:bold;
 	text-align:right;

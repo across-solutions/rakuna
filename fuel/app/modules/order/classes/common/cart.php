@@ -88,8 +88,8 @@ class Common_Cart {
 		$tax_rounding = $this->get_tax_rounding();
 
 		foreach ($this->carts as $cart) {
-			$price = $this->value($cart, 'price', 'assign_price', 'group_price');
-			$price_case = $this->value($cart, 'price_case', 'assign_price_case', 'group_price_case');
+			$price = $this->value($cart, 'price', 'group_price', 'assign_price');
+			$price_case = $this->value($cart, 'price_case', 'group_price_case', 'assign_price_case');
 			$tax_price = \Common_Util::add_tax($price * $cart['size'], $tax_rate, $tax_rounding);
 			$tax_price_case = \Common_Util::add_tax($price_case * $cart['size_case'], $tax_rate, $tax_rounding);
 

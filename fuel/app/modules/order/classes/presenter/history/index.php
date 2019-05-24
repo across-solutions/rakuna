@@ -1,17 +1,18 @@
 <?php
 namespace Order;
 use Fuel\Core\Input;
+use Fuel\Core\Arr;
 /**
  * 発注履歴一覧プレゼンタクラス
  */
 class Presenter_History_Index extends \Presenter_Base {
-	
+
 	/**
 	 * @see \Fuel\Core\Presenter::view()
 	 */
 	public function view() {
 		parent::view();
-		
+
 		$start_year = $this->get_start_year();
 		$end_year = date('Y') + 1;
 		$this->years = \Common_Util::range_year2(intval($start_year), $end_year, '----');
@@ -29,10 +30,14 @@ class Presenter_History_Index extends \Presenter_Base {
 				$this->month = date('m');
 			}
 		}
-		
+
 		$this->rows = $this->get_orders($this->year, $this->month);
+
+		$this->cancelled = function($data) {
+			return $this->cancelled($data);
+		};
 	}
-	
+
 	/**
 	 * 開始年を取得する
 	 */
@@ -43,10 +48,10 @@ class Presenter_History_Index extends \Presenter_Base {
 		}
 		return date('Y', strtotime($oldest_order->order_datetime));
 	}
-	
+
 	/**
 	 * 受注データを取得する
-	 * 
+	 *
 	 * @param string $date 日付
 	 */
 	private function get_orders($year, $month) {
@@ -63,7 +68,7 @@ class Presenter_History_Index extends \Presenter_Base {
 				'order_datetime' => 'desc'
 			)
 		));
-		
+
 		$results = array();
 		foreach ($orders as $order) {
 			$date = date('Ymd', strtotime($order->order_datetime));
@@ -74,7 +79,7 @@ class Presenter_History_Index extends \Presenter_Base {
 		}
 		return $results;
 	}
-	
+
 	/**
 	 * 最新の受注データを取得する
 	 */
@@ -88,7 +93,7 @@ class Presenter_History_Index extends \Presenter_Base {
 			)
 		));
 	}
-	
+
 	/**
 	 * 最古の受注データを取得する
 	 */
@@ -101,5 +106,15 @@ class Presenter_History_Index extends \Presenter_Base {
 				'order_datetime' => 'asc'
 			)
 		));
+	}
+
+	/**
+	 * キャンセルの有無
+	 *
+	 * @param Model_Order $order 受注
+	 */
+	private function cancelled($order) {
+		$cancel_flg = Arr::get($order, 'cancel_flg');
+		return !empty($cancel_flg);
 	}
 }

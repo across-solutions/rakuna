@@ -28,6 +28,10 @@ class Controller_Item extends Controller_Base {
 	 * 商品一覧画面-初期表示・検索
 	 */
 	public function action_index() {
+		if (!\Common_Member::is_agency()) {
+			Response::redirect('/order/favorite');
+		}
+
 		$this->render();
 	}
 
@@ -102,8 +106,8 @@ class Controller_Item extends Controller_Base {
 		if (!empty($item)) {
 			$tax_rate = \Common_Setting::get('tax_rate');
 			$tax_rounding = \Common_Setting::get('tax_rounding');
-			$price = $this->value($item, 'price', 'assign_price', 'group_price');
-			$price_case = $this->value($item, 'price_case', 'assign_price_case', 'group_price_case');
+			$price = $this->value($item, 'price', 'group_price', 'assign_price');
+			$price_case = $this->value($item, 'price_case', 'group_price_case', 'assign_price_case');
 			$item['price'] = $price * $item['size'];
 			$item['price_case'] = $price_case * $item['size_case'];
 			$item['price_tax'] = \Common_Util::add_tax($item['price']);

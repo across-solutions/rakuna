@@ -406,7 +406,6 @@ class Controller_Member extends Controller_Base {
 		$validation->add('store', '店舗名')
 			->add_rule('max_length', 40);
 		$validation->add('zip', '郵便番号')
-			->add_rule('numhyphen')
 			->add_rule('max_length', 8);
 		$validation->add('address1', '住所1')
 			->add_rule('max_length', 50);
@@ -415,10 +414,8 @@ class Controller_Member extends Controller_Base {
 		$validation->add('address3', '住所3')
 			->add_rule('max_length', 50);
 		$validation->add('tel', '電話番号')
-			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
 		$validation->add('fax', 'FAX')
-			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
 		$validation->add('delivery_week_code', '配達曜日コード')
 			->add_rule('exist', 'delivery_weeks', 'code');
@@ -482,7 +479,6 @@ class Controller_Member extends Controller_Base {
 		$validation->add('store', '店舗名')
 			->add_rule('max_length', 40);
 		$validation->add('zip', '郵便番号')
-			->add_rule('numhyphen')
 			->add_rule('max_length', 8);
 		$validation->add('address1', '住所1')
 			->add_rule('max_length', 50);
@@ -491,10 +487,8 @@ class Controller_Member extends Controller_Base {
 		$validation->add('address3', '住所3')
 			->add_rule('max_length', 50);
 		$validation->add('tel', '電話番号')
-			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
 		$validation->add('fax', 'FAX')
-			->add_rule('numhyphen')
 			->add_rule('max_length', 14);
 		$validation->add('delivery_week_code', '配達曜日コード')
 			->add_rule('exist', 'delivery_weeks', 'code');

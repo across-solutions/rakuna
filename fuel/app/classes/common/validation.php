@@ -255,4 +255,21 @@ class Common_Validation {
 
 		return false;
 	}
+
+	/**
+	 * 文字幅チェック(全角を2文字半角を1文字としてチェック)
+	 *
+	 * @param $value チェック対象文字列
+	 */
+	public static function _validation_max_width($value, $length) {
+		if (is_null($value) || $value == '') {
+			return true;
+		}
+
+		if ((MBSTRING ? mb_strwidth($value) : strlen($value) * 2) <= $length) {
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -72,11 +72,11 @@ class Download_Csv_Order extends Download_Csv_Base {
 			array('order_details.item_size_case', 'item_size_case'),
 			array('order_details.item_type', 'item_type'),
 			array('order_details.item_unit_name_case', 'item_unit_name_case'),
-			array('order_details.price_case_tax', 'price_case'),
+			array('order_details.price_case', 'price_case'),
 			array('order_details.amount_case', 'amount_case'),
 			array('order_details.item_size', 'item_size'),
 			array('order_details.item_smile_unit_name', 'item_smile_unit_name'),
-			array('order_details.price_tax', 'price'),
+			array('order_details.price', 'price'),
 			array('order_details.amount', 'amount'),
 			array('order_details.total', 'total'),
 			array('order_details.cost', 'cost'),
@@ -157,11 +157,11 @@ class Download_Csv_Order extends Download_Csv_Base {
 		}
 
 		if ($key == 'total1') {
-			return $data['total'];
+			return floor($data['total']);
 		}
 
 		if ($key == 'profit') {
-			return $data['total'] - $data['total_cost'];
+			return floor($data['total']) - $data['total_cost'];
 		}
 
 		if ($key == 'order_datetime2') {
@@ -169,7 +169,7 @@ class Download_Csv_Order extends Download_Csv_Base {
 		}
 
 		if ($key == 'total2') {
-			return $data['total'];
+			return floor($data['total']);
 		}
 
 		if ($key == 'shipping_date') {

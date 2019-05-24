@@ -396,10 +396,6 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			parent::set_error($num, '郵便番号は'.$max_length.'文字以下で入力してください[' . $value . ']');
 			return false;
 		}
-		if (!Common_Validation::_validation_numhyphen($value)) {
-			parent::set_error($num, '郵便番号は数字、または、ハイフンで入力してください[' . $value . ']');
-			return false;
-		}
 		return true;
 	}
 
@@ -467,11 +463,6 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			return false;
 		}
 
-		if (!Common_Validation::_validation_numhyphen($value)) {
-			parent::set_error($num, '電話番号は数字、または、ハイフンで入力してください[' . $value . ']');
-			return false;
-		}
-
 		return true;
 	}
 
@@ -490,11 +481,6 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$max_length = 14;
 		if (Str::length($value) > $max_length ) {
 			parent::set_error($num, 'FAXは'.$max_length.'文字以下で入力してください[' . $value . ']');
-			return false;
-		}
-
-		if (!Common_Validation::_validation_numhyphen($value)) {
-			parent::set_error($num, 'FAXは数字、または、ハイフンで入力してください[' . $value . ']');
 			return false;
 		}
 

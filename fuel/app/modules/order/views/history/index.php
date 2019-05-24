@@ -65,14 +65,20 @@
 						</span>
 						<ul>
 							<?php foreach ($orders as $row) : ?>
-							<li>
+							<li <?php if ($cancelled($row)) : ?>class="delFlg"<?php endif; ?>>
 								<a href="/order/history/detail/<?php echo $row->id; ?>" title="<?php echo Common_Util::format_datetime(Arr::get($row, 'order_datetime'), 'Y年m月d日H時i分'); ?>">
 									<span class="icon-angle-right mr"></span>
 									<i class="histItemTime"><?php echo Common_Util::format_datetime(Arr::get($row, 'order_datetime'), 'Y年m月d日H時i分'); ?></i>
-									<?php if (Common_Setting::is_price()) : ?>
-										<span class="price">
-											<?php echo Common_Util::format_number(Arr::get($row, 'payment_tax')); ?>円
+									<?php if ($cancelled($row)) : ?>
+										<span class="cansel">
+											キャンセル済
 										</span>
+									<?php else : ?>
+										<?php if (Common_Setting::is_price()) : ?>
+											<span class="price">
+												<?php echo Common_Util::format_number(Arr::get($row, 'payment_tax')); ?>円
+											</span>
+										<?php endif; ?>
 									<?php endif; ?>
 								</a>
 							</li>

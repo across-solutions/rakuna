@@ -291,7 +291,6 @@ class Controller_Register extends Controller_Base {
 
 			$validation->add('member_zip', '納品先郵便番号')
 				->add_rule('required')
-				->add_rule('numhyphen')
 				->add_rule('max_length', 8);
 
 			$validation->add('member_address1', '納品先住所1')
@@ -305,11 +304,9 @@ class Controller_Register extends Controller_Base {
 				->add_rule('max_length', 50);
 
 			$validation->add('member_tel', '納品先電話番号')
-				->add_rule('numhyphen')
 				->add_rule('max_length', 14);
 
 			$validation->add('member_fax', '納品先FAX')
-				->add_rule('numhyphen')
 				->add_rule('max_length', 14);
 		} else if ($delivery_kind == 2) {
 			$validation->add('delivery_code', '納品先コード')
@@ -330,7 +327,6 @@ class Controller_Register extends Controller_Base {
 
 			$validation->add('delivery_zip', '納品先郵便番号')
 				->add_rule('required')
-				->add_rule('numhyphen')
 				->add_rule('max_length', 8);
 
 			$validation->add('delivery_address1', '納品先住所1')
@@ -344,11 +340,9 @@ class Controller_Register extends Controller_Base {
 				->add_rule('max_length', 50);
 
 			$validation->add('delivery_tel', '納品先電話番号')
-				->add_rule('numhyphen')
 				->add_rule('max_length', 14);
 
 			$validation->add('delivery_fax', '納品先FAX')
-				->add_rule('numhyphen')
 				->add_rule('max_length', 14);
 		}
 
@@ -379,7 +373,7 @@ class Controller_Register extends Controller_Base {
 			->add_rule('match_collection', array_keys($this->get_delivery_dates()));
 
 		$validation->add('comment', '備考')
-			->add_rule('max_length', 18);
+			->add_rule('max_width', 37);
 
 		return $this->validate($validation, $data);
 	}
@@ -746,8 +740,8 @@ class Controller_Register extends Controller_Base {
 		$values['item_size'] = $item['size'];
 		$values['item_type'] = $item['type'];
 		$values['jan_code'] = $item['jan_code'];
-		$price = $this->value($item, 'price', 'assign_price', 'group_price');
-		$price_case = $this->value($item, 'price_case', 'assign_price_case', 'group_price_case');
+		$price = $this->value($item, 'price', 'group_price', 'assign_price');
+		$price_case = $this->value($item, 'price_case', 'group_price_case', 'assign_price_case');
 		$values['price'] = $price;
 		$values['price_tax'] = \Common_Util::add_tax($values['price']);
 		$values['amount'] = $cart['amount'];

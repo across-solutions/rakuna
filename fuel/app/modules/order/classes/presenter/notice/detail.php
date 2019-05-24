@@ -125,8 +125,8 @@ class Presenter_Notice_Detail extends \Presenter_Base {
 		$tax_rate = \Common_Setting::get('tax_rate');
 		$tax_rounding = \Common_Setting::get('tax_rounding');
 		foreach ($rows as &$row) {
-			$price = $this->value($row, 'price', 'assign_price', 'group_price');
-			$price_case = $this->value($row, 'price_case', 'assign_price_case', 'group_price_case');
+			$price = $this->value($row, 'price', 'group_price', 'assign_price');
+			$price_case = $this->value($row, 'price_case', 'group_price_case', 'assign_price_case');
 			$row['price'] = $price * $row['size'];
 			$row['price_case'] = $price_case * $row['size_case'];
 			$row['price_tax'] = \Common_Util::add_tax($row['price']);

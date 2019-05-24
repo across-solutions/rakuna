@@ -20,5 +20,6 @@ return array(
 	'date_reversal'   => ':labelの開始日が終了日より先になっています',
 	'date_interval'   => ':label日を超えています',
 	'match_collection' => ':labelが選択できない値になっています',
-	'exist_in_array' => ':labelが不正です'
+	'exist_in_array' => ':labelが不正です',
+	'max_width' => ':labelは半角:param:1文字、全角18文字以下で入力してください'
 );

@@ -668,8 +668,8 @@ class Controller_Order extends Controller_Base {
 		$values['item_size_case'] = $item['size_case'];
 		$values['item_type'] = $item['type'];
 		$values['jan_code'] = $item['jan_code'];
-		$price = $this->value($item, 'price', 'assign_price', 'group_price');
-		$price_case = $this->value($item, 'price_case', 'assign_price_case', 'group_price_case');
+		$price = $this->value($item, 'price', 'group_price', 'assign_price');
+		$price_case = $this->value($item, 'price_case', 'group_price_case', 'assign_price_case');
 		$values['price'] = $price;
 		$values['price_tax'] =\Common_Util::add_tax($values['price']);
 		$values['amount'] = $amount;

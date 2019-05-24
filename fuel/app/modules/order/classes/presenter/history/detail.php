@@ -30,6 +30,10 @@ class Presenter_History_Detail extends \Presenter_Base {
 		$this->history_url = function($data) {
 			return $this->history_url($data);
 		};
+
+		$this->cancelled = function($data) {
+			return $this->cancelled($data);
+		};
 	}
 
 	/**
@@ -122,5 +126,15 @@ class Presenter_History_Detail extends \Presenter_Base {
 		$url .= '#' . date('Ymd', strtotime($order_datetime));
 
 		return $url;
+	}
+
+	/**
+	 * キャンセルの有無
+	 *
+	 * @param Model_Order $order 受注
+	 */
+	private function cancelled($order) {
+		$cancel_flg = Arr::get($order, 'cancel_flg');
+		return !empty($cancel_flg);
 	}
 }
