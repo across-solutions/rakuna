@@ -40,7 +40,7 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		$member = \Model_Member::find($member_id);
 		$lead_time = Arr::get($member, 'lead_time');
 
-		$limit = 10;
+		$limit = 20;
 		$day = 2;
 
 		if (!is_null($lead_time)) {
@@ -66,7 +66,7 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		$member = \Model_Member::find($member_id);
 		$lead_time = Arr::get($member, 'lead_time');
 
-		$limit = 12;
+		$limit = 22;
 		$day = 2;
 
 		if (!is_null($lead_time)) {
