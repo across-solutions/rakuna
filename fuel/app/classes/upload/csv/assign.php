@@ -341,6 +341,17 @@ class Upload_Csv_Assign extends Upload_Csv_Base {
 	 * 割当商品を削除する
 	 */
 	private function delete_item_assign() {
+		$assigns = DB::select('id', 'item_code', 'member_id', 'price', 'price_case',
+								'hidden_flg_single', 'hidden_flg_case')
+				->from('item_assigns')
+				->where('del_flg', UNDELETED)
+				->execute()
+				->as_array();
+
+		if (empty($assigns)) {
+			return true;
+		}
+
 		return DB::delete('item_assigns')
 			->where('del_flg', '=', UNDELETED)
 			->execute();
