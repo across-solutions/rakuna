@@ -108,9 +108,9 @@ class Download_Csv_History extends Download_Csv_Base {
 			return $data['sales_person_code'];
 		}
 
-		// 発注側で表示する金額は0%の税率にしたいが、出力時は8%で出力したい対応
+		// 発注側で表示する金額は0%の税率にしたいが、出力時は10%で出力したい対応
 		if ($key == 'tax_rate') {
-			return '8';
+			return '10';
 		}
 
 		if ($key == 'delivery_code') {
