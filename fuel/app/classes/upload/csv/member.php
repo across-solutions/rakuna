@@ -744,7 +744,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 		$values['qr_key'] = $qr_key;
 		$values['status'] = Config::get('define.member_status.enable');
 
-		$values['search_field'] = Common_Util::mb_converts($data, array('member_code', $member_name));
+		$values['search_field'] = Common_Util::mb_converts($data, array('member_code', 'member_name', 'member_name2'));
 		$values['del_flg'] = UNDELETED;
 		$values['update_user_id'] = Auth::get_user_id()[1];
 		$values['created'] = date('Y-m-d H:i:s');
@@ -838,7 +838,7 @@ class Upload_Csv_Member extends Upload_Csv_Base {
 			//->value('sub_email', implode(',', array( $data['sub_email1'], $data['sub_email2'], $data['sub_email3'], $data['sub_email4'], $data['sub_email5'] ) ) )
 			//->value('username', $data['username'])
 			//->value('password', $data['password'])
-			->value('search_field', Common_Util::mb_converts($data, array('member_code', $member_name)))
+			->value('search_field', Common_Util::mb_converts($data, array('member_code', 'member_name', 'member_name2')))
 			->value('update_user_id', Auth::get_user_id()[1])
 			->value('updated', date('Y-m-d H:i:s'))
 			->where('id', '=', $member['id']);
