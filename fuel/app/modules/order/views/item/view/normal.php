@@ -36,18 +36,26 @@
 										<p class="label_fav">
 										星ボタンをタップでお気に入りに登録できます。
 										</p>
-										<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
-											<span class="icon-star-empty"></span>
-										</a>
+										<?php if (Common_Member::is_agency()) : ?>
+											<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
+										<?php else : ?>
+											<a class="item_favorite" href="#" title="お気に入り">
+										<?php endif; ?>
+												<span class="icon-star-empty"></span>
+											</a>
 									</div>
 								<?php else : ?>
 									<div class="fav">
 										<p class="label_fav">
 										星ボタンをタップでお気に入りを解除できます。
 										</p>
-										<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
-											<span class="icon-star"></span>
-										</a>
+										<?php if (Common_Member::is_agency()) : ?>
+											<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
+										<?php else : ?>
+											<a class="" href="#" title="お気に入り">
+										<?php endif; ?>
+												<span class="icon-star"></span>
+											</a>
 									</div>
 								<?php endif; ?>
 

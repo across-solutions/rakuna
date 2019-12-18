@@ -99,13 +99,21 @@
 							<td class="center spOnly">
 								<?php if (is_null(Arr::get($row, 'favorite_id'))) : ?>
 									<div class="fav">
-										<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
+										<?php if (Common_Member::is_agency()) : ?>
+											<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
+										<?php else : ?>
+											<a class="" href="#" title="お気に入り">
+										<?php endif; ?>
 											<span class="icon-star-empty"></span>
 										</a>
 									</div>
 								<?php else : ?>
 									<div class="fav">
-										<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
+										<?php if (Common_Member::is_agency()) : ?>
+											<a class="item_favorite" href="/order/ajax/favorite/toggle/<?php echo Arr::get($row, 'code'); ?>.json" title="お気に入り">
+										<?php else : ?>
+											<a class="" href="#" title="お気に入り">
+										<?php endif; ?>
 											<span class="icon-star"></span>
 										</a>
 									</div>
