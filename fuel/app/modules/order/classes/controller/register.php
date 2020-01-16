@@ -115,10 +115,14 @@ class Controller_Register extends Controller_Base {
 
 		if (Arr::get($data, 'delivery_date') != '') {
 			$cart->set_delivery_date(Arr::get($data, 'delivery_date'));
+		} else {
+			$cart->set_delivery_date(null);
 		}
 
 		if (Arr::get($data, 'shipping_date') != '') {
 			$cart->set_shipping_date(Arr::get($data, 'shipping_date'));
+		} else {
+			$cart->set_shipping_date(null);
 		}
 
 		$cart->set_comment(Arr::get($data, 'comment'));
@@ -362,15 +366,21 @@ class Controller_Register extends Controller_Base {
 			->add_rule('numeric')
 			->add_rule('max_length', 10);
 
-		$validation->add('shipping_date', '出荷予定日')
-			->add_rule('required')
-			->add_rule('valid_date', 'Ymd')
-			->add_rule('match_collection', array_keys($this->get_shipping_dates()));
+		// 20200109 17:22 メールで必須を外すご要望
+		if (!empty($data['shipping_date'])) {
+			$validation->add('shipping_date', '出荷予定日')
+				//->add_rule('required')
+				->add_rule('valid_date', 'Ymd')
+				->add_rule('match_collection', array_keys($this->get_shipping_dates()));
+		}
 
-		$validation->add('delivery_date', '納期')
-			->add_rule('required')
-			->add_rule('valid_date', 'Ymd')
-			->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+		// 20200109 17:22 メールで必須を外すご要望
+		if (!empty($data['delivery_date'])) {
+			$validation->add('delivery_date', '納期')
+				//->add_rule('required')
+				->add_rule('valid_date', 'Ymd')
+				->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+		}
 
 		$validation->add('comment', '備考')
 			->add_rule('max_width', 37);
