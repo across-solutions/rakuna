@@ -124,7 +124,11 @@ class Download_Csv_History extends Download_Csv_Base {
 		}
 
 		if ($key == 'delivery_date') {
-			return date('Ymd', strtotime($data[$key]));
+			if (empty($data[$key])) {
+				return '';
+			} else {
+				return date('Ymd', strtotime($data[$key]));
+			}
 		}
 
 		if ($key == 'item_size') {
@@ -157,7 +161,11 @@ class Download_Csv_History extends Download_Csv_Base {
 		}
 
 		if ($key == 'shipping_date') {
-			return date('Ymd', strtotime($data[$key]));
+			if (empty($data[$key])) {
+				return '';
+			} else {
+				return date('Ymd', strtotime($data[$key]));
+			}
 		}
 
 		return parent::modifier($counter, $data, $key);
