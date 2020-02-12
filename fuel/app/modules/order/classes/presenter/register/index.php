@@ -114,7 +114,8 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 					->from('deliveries')
 					->where('deliveries.member_code', '=', $member_code)
 					->where('deliveries.del_flg', '=', DB::escape(UNDELETED))
-					->order_by('deliveries.id', 'asc');
+					->order_by('deliveries.member_code', 'asc')
+					->order_by('deliveries.code', 'asc');
 
 		$deliveries = $query->execute()->as_array();
 
