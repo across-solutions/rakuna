@@ -1,6 +1,7 @@
 <?php
 namespace Order;
 
+use Fuel\Core\Arr;
 use Fuel\Core\Config;
 /**
  * カート情報保持クラス
@@ -75,6 +76,24 @@ class Common_Cart {
 
 	private $setting = array();
 
+	private $order_type_carts = array();
+
+	private $order_type_payment = array();
+
+	private $order_type_payment_tax = array();
+
+	private $order_type_amount = array();
+
+	private $order_type_amount_case = array();
+
+	private $order_type_delivery_date = array();
+
+	private $order_type_order_no = array();
+
+	private $order_type_comment = array();
+
+	private $selectable_delivery_date = true;
+
 	/**
 	 * コンストラクタ
 	 *
@@ -93,10 +112,22 @@ class Common_Cart {
 			$tax_price = \Common_Util::add_tax($price * $cart['size'], $tax_rate, $tax_rounding);
 			$tax_price_case = \Common_Util::add_tax($price_case * $cart['size_case'], $tax_rate, $tax_rounding);
 
-			$this->payment += $price * $cart['size'] * $cart['amount'] + $price_case * $cart['size_case'] * $cart['amount_case'];
-			$this->payment_tax += $tax_price * $cart['amount'] + $tax_price_case * $cart['amount_case'];
+			$payment = $price * $cart['size'] * $cart['amount'] + $price_case * $cart['size_case'] * $cart['amount_case'];
+			$payment_tax = $tax_price * $cart['amount'] + $tax_price_case * $cart['amount_case'];
+			$this->payment += $payment;
+			$this->payment_tax += $payment_tax;
 			$this->amount += $cart['amount'];
 			$this->amount_case += $cart['amount_case'];
+
+			$cart['order_type'] = is_null($cart['order_type']) ? 1 : $cart['order_type'];
+			if (!array_key_exists($cart['order_type'], $this->order_type_carts)) {
+				$this->order_type_carts[$cart['order_type']] = array();
+			}
+			\Common_Util::add_array_numeric_value($this->order_type_payment, $cart['order_type'], $payment);
+			\Common_Util::add_array_numeric_value($this->order_type_payment_tax, $cart['order_type'], $payment_tax);
+			\Common_Util::add_array_numeric_value($this->order_type_amount, $cart['order_type'], $cart['amount']);
+			\Common_Util::add_array_numeric_value($this->order_type_amount_case, $cart['order_type'], $cart['amount_case']);
+			$this->order_type_carts[$cart['order_type']][] = $cart;
 		}
 		$this->member_id = $member_id;
 	}
@@ -153,6 +184,13 @@ class Common_Cart {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * 納品希望日が選択可能か
+	 */
+	public function selectable_delivery_date() {
+		return $this->selectable_delivery_date;
 	}
 
 	/**
@@ -408,6 +446,94 @@ class Common_Cart {
 	}
 
 	/**
+	 * カート内商品の発注タイプリストを取得する
+	 */
+	public function get_order_types() {
+		return array_keys($this->order_type_carts);
+	}
+
+	/**
+	 * 発注タイプ別カートを取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_cart($order_type) {
+		return Arr::get($this->order_type_carts, $order_type);
+	}
+
+	/**
+	 * 発注タイプ別発注金額を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_payment($order_type) {
+		return Arr::get($this->order_type_payment, $order_type, 0);
+	}
+
+	/**
+	 * 発注タイプ別発注金額（税込み）を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_payment_tax($order_type) {
+		return Arr::get($this->order_type_payment_tax, $order_type, 0);
+	}
+
+	/**
+	 * 発注タイプ別税額を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_tax($order_type) {
+		return $this->get_order_type_payment_tax($order_type) - $this->get_order_type_payment($order_type);
+	}
+
+	/**
+	 * 発注タイプ別数量（バラ）を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_amount($order_type) {
+		return Arr::get($this->order_type_amount, $order_type, 0);
+	}
+
+	/**
+	 * 発注タイプ別数量（ケース）を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_amount_case($order_type) {
+		return Arr::get($this->order_type_amount_case, $order_type, 0);
+	}
+
+	/**
+	 * 発注タイプ別納品希望日を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_delivery_date($order_type) {
+		return Arr::get($this->order_type_delivery_date, $order_type, $this->get_delivery_date());
+	}
+
+	/**
+	 * 発注タイプ別オーダーNo.を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_order_no($order_type) {
+		return Arr::get($this->order_type_order_no, $order_type, $this->get_order_no());
+	}
+
+	/**
+	 * 発注タイプ別備考を取得する
+	 *
+	 * @param int $order_type 発注タイプ
+	 */
+	public function get_order_type_comment($order_type) {
+		return Arr::get($this->order_type_comment, $order_type, $this->get_comment());
+	}
+
+	/**
 	 * 納品希望日を設定する
 	 *
 	 * @param string $delivery_date 納品希望日
@@ -639,5 +765,46 @@ class Common_Cart {
 	 */
 	public function set_comment($comment) {
 		$this->comment = $comment;
+	}
+
+
+	/**
+	 * 発注タイプ別納品希望日を設定する
+	 *
+	 * @param int $order_type 発注タイプ
+	 * @param string $delivery_date 納品希望日
+	 */
+	public function set_order_type_delivery_date($order_type, $delivery_date) {
+		$this->order_type_delivery_date[$order_type] = $delivery_date;
+	}
+
+	/**
+	 *
+	 * 発注タイプ別オーダーNo.を設定する
+	 *
+	 * @param int $order_type 発注タイプ
+	 * @param int $order_no オーダーNo.
+	 */
+	public function set_order_type_order_no($order_type, $order_no) {
+		$this->order_type_order_no[$order_type] = $order_no;
+	}
+
+	/**
+	 * 発注タイプ別備考を設定する
+	 *
+	 * @param int $order_type 発注タイプ
+	 * @param string $comment 備考
+	 */
+	public function set_order_type_comment($order_type, $comment) {
+		$this->order_type_comment[$order_type] = $comment;
+	}
+
+	/**
+	 * 納品希望日選択可否を設定する
+	 *
+	 * @param boolean $flg フラグ
+	 */
+	public function set_selectable_delivery_date($flg) {
+		$this->selectable_delivery_date = $flg;
 	}
 }

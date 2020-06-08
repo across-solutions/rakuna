@@ -25,7 +25,8 @@ $(function() {
 		$(this).css("cursor","default");
 
 		if ( is_order_submitted === false ) {
-			$(this).closest('form').submit();
+			// $(this).closest('form').submit();
+			$("#orderRegistForm").submit();
 			is_order_submitted = true;
 		}
 
@@ -88,15 +89,23 @@ $(function() {
 			async: false,
 			success : function(data) {
 				if (!check_error(data)) {
+					$(this).val(oldval);
+					$(this).attr("placeholder", "");
 					return;
 				}
 				data.exist ? $("div.cash").css("visibility","visible") : $("div.cash").css("visibility","hidden");
 				$("#count_item").html(number_format(data.count_item));
-				$("#payment_tax").html(number_format(data.payment_tax));
-				$("#payment").html(number_format(data.payment));
-				$("#tax").html(number_format(data.tax));
-				$("#total_amount_case").html(number_format(data.total_amount_case));
-				$("#total_amount").html(number_format(data.total_amount));
+				// $("#payment_tax").html(number_format(data.payment_tax));
+				// $("#payment").html(number_format(data.payment));
+				// $("#tax").html(number_format(data.tax));
+				// $("#total_amount_case").html(number_format(data.total_amount_case));
+				// $("#total_amount").html(number_format(data.total_amount));
+				var order_type = data.order_type;
+				$("#payment_tax" + order_type).html(number_format(data.order_type_payment_tax));
+				$("#payment" + order_type).html(number_format(data.order_type_payment));
+				$("#tax" + order_type).html(number_format(data.order_type_tax));
+				$("#total_amount_case" + order_type).html(number_format(data.order_type_amount_case));
+				$("#total_amount" + order_type).html(number_format(data.order_type_amount));
 			},
 			error : function(data) {
 				$(location).attr("href", "/order/login/logout");
@@ -182,11 +191,17 @@ $(function() {
 				data.exist ? $("div.cash").css("visibility","visible") : $("div.cash").css("visibility","hidden");
 				$(this).closest("ul").find("input.amount").val(data.amount);
 				$("#count_item").html(number_format(data.count_item));
-				$("#payment_tax").html(number_format(data.payment_tax));
-				$("#payment").html(number_format(data.payment));
-				$("#tax").html(number_format(data.tax));
-				$("#total_amount_case").html(number_format(data.total_amount_case));
-				$("#total_amount").html(number_format(data.total_amount));
+				// $("#payment_tax").html(number_format(data.payment_tax));
+				// $("#payment").html(number_format(data.payment));
+				// $("#tax").html(number_format(data.tax));
+				// $("#total_amount_case").html(number_format(data.total_amount_case));
+				// $("#total_amount").html(number_format(data.total_amount));
+				var order_type = data.order_type;
+				$("#payment_tax" + order_type).html(number_format(data.order_type_payment_tax));
+				$("#payment" + order_type).html(number_format(data.order_type_payment));
+				$("#tax" + order_type).html(number_format(data.order_type_tax));
+				$("#total_amount_case" + order_type).html(number_format(data.order_type_amount_case));
+				$("#total_amount" + order_type).html(number_format(data.order_type_amount));
 			},
 			error : function(data) {
 				$(this).removeClass("waved");
@@ -315,11 +330,12 @@ $(function() {
 
 	$("select#delivery_select").on("change",function() {
 		clear_delivery();
-		$("#order_type_select").val("");
-		$("#shipping_div_select").val("");
-		$("#warehouse_div_select").val("");
-		$("#shipping_date_select").val("");
-		$("#delivery_date_select").val("");
+		// $("#order_type_select").val("");
+		// $("#shipping_div_select").val("");
+		// $("#warehouse_div_select").val("");
+		// $("#shipping_date_select").val("");
+		// $("#delivery_date_select").val("");
+		$(".js-delivery-date").val("");
 
 		if ($(this).val() == "") {
 			return false;
@@ -341,12 +357,13 @@ $(function() {
 				$("#delivery_address3").val(data.address3);
 				$("#delivery_tel").val(data.tel);
 				$("#delivery_fax").val(data.fax);
-
+				$(".js-delivery-date-select").val(data.delivery_date);
 			},
 			error : function(data) {
 				$(location).attr("href", "/order/login/logout");
 			}
 		});
+		return false;
 	});
 
 	$(".scChks").on("change",function(){
@@ -359,53 +376,68 @@ $(function() {
 	$("input[name='delivery_kind']:radio").on("change",function() {
 		clear_delivery();
 		$("#delivery_select").val("");
-		$("#order_type_select").val("");
-		$("#shipping_div_select").val("");
-		$("#warehouse_div_select").val("");
-		$("#shipping_date_select").val("");
-		$("#delivery_date_select").val("");
-	});
-
-	$("select#order_type_select").on("change",function() {
-		if ($(this).val() == "") {
-			$("#shipping_div_select").val("");
-			$("#warehouse_div_select").val("");
-			$("#shipping_date_select").val("");
-			$("#delivery_date_select").val("");
-			return false;
+		// $("#order_type_select").val("");
+		// $("#shipping_div_select").val("");
+		// $("#warehouse_div_select").val("");
+		// $("#shipping_date_select").val("");
+		// $("#delivery_date_select").val("");
+		if ($("input:radio[name='delivery_kind']:checked").val() == 1) {
+			$(".js-delivery-date-select").val($("#form_delivery_kind_1").data("delivery-date"));
+		} else {
+			$(".js-delivery-date-select").val("");
 		}
-
-		shipping_data = get_shipping_data();
-
-		$.ajax({
-			type : "GET",
-			cache : false,
-			url : "/order/ajax/type/data/" + $(this).val() + ".json",
-			data: {
-					'delivery_kind': shipping_data.delivery_kind,
-					'member_code': shipping_data.member_code,
-					'delivery_code': shipping_data.delivery_code
-					},
-			success : function(data) {
-				if (!check_error(data)) {
-					return;
-				}
-				$("#shipping_div_select").val(data.code);
-				$("#warehouse_div_select").val(data.warehouse_code);
-				$("#shipping_date_select").val(data.shipping_date);
-				$("#delivery_date_select").val(data.delivery_date);
-			},
-			error : function(data) {
-				$(location).attr("href", "/order/login/logout");
-			}
-		});
 	});
+
+	// $("select#order_type_select").on("change",function() {
+	// 	if ($(this).val() == "") {
+	// 		$("#shipping_div_select").val("");
+	// 		$("#warehouse_div_select").val("");
+	// 		$("#shipping_date_select").val("");
+	// 		$("#delivery_date_select").val("");
+	// 		return false;
+	// 	}
+
+	// 	shipping_data = get_shipping_data();
+
+	// 	$.ajax({
+	// 		type : "GET",
+	// 		cache : false,
+	// 		url : "/order/ajax/type/data/" + $(this).val() + ".json",
+	// 		data: {
+	// 				'delivery_kind': shipping_data.delivery_kind,
+	// 				'member_code': shipping_data.member_code,
+	// 				'delivery_code': shipping_data.delivery_code
+	// 				},
+	// 		success : function(data) {
+	// 			if (!check_error(data)) {
+	// 				return;
+	// 			}
+	// 			$("#shipping_div_select").val(data.code);
+	// 			$("#warehouse_div_select").val(data.warehouse_code);
+	// 			$("#shipping_date_select").val(data.shipping_date);
+	// 			$("#delivery_date_select").val(data.delivery_date);
+	// 		},
+	// 		error : function(data) {
+	// 			$(location).attr("href", "/order/login/logout");
+	// 		}
+	// 	});
+	// });
 
 	$(".clear_carts").on(canTouch ? "touchend" : "click", function() {
 		if (confirm("カートをクリアします。よろしいですか？")) {
 			$(location).attr("href", "/order/register/clear_carts");
 		}
 		return false;
+	});
+
+	$(".js-delivery-date-select").on("change", function() {
+		var id = $(this).attr("id");
+		$("#hidden_form_" + id).val($(this).val());
+	});
+
+	$(".js-order-form-text").on("focusout", function() {
+		var id = $(this).attr("id");
+		$("#hidden_form_" + id).val($(this).val());
 	});
 
 /*

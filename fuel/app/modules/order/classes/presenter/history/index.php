@@ -65,7 +65,7 @@ class Presenter_History_Index extends \Presenter_Base {
 				array('order_datetime', '<', $end)
 			),
 			'order_by' => array(
-				'order_datetime' => 'desc'
+				'id' => 'desc'
 			)
 		));
 
@@ -89,7 +89,7 @@ class Presenter_History_Index extends \Presenter_Base {
 				'member_id' => $this->get_member_id()
 			),
 			'order_by' => array(
-				'order_datetime' => 'desc'
+				'id' => 'desc'
 			)
 		));
 	}
@@ -103,7 +103,7 @@ class Presenter_History_Index extends \Presenter_Base {
 				'member_id' => $this->get_member_id()
 			),
 			'order_by' => array(
-				'order_datetime' => 'asc'
+				'id' => 'asc'
 			)
 		));
 	}

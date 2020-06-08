@@ -331,18 +331,30 @@
 </div>
 <!--#dig ship dates end -->
 
-<!--#dig comment start -->
-<div class="digComment">
-	<dl>
-		<dt>
+<!--#dig ship dates start -->
+<div class="digShipDates">
+	<div class="title">
+		<strong>
 			納期
-		</dt>
-		<dd>
-			<?php echo $delivery_date($order, 'delivery_date'); ?>
-		</dd>
-	</dl>
+		</strong>
+	</div>
+
+	<ul>
+		<li>
+			<div class="deliveryWrap">
+				<dl>
+					<dd>
+						<span class="shipDatesBox">
+							<?php echo Form::input('delivery_date', Arr::get($order, 'delivery_date'), array('id' => 'catDeliveryDate', 'placeholder' => 'YYYY-MM-DD')); ?>
+						</span>
+						<?php echo $validate_error_message('delivery_date'); ?>
+					</dd>
+				</dl>
+			</div>
+		</li>
+	</ul>
 </div>
-<!--#dig comment end -->
+<!--#dig ship dates end -->
 
 <!--#dig ship dates start -->
 <div class="digShipDates">

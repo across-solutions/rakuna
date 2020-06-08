@@ -239,7 +239,13 @@ return array(
 			'type_whitelist' => array('text'),
 			'extension' => 'csv',
 			'max_size' => 20971520
-		)
+		),
+		'item_order_type_csv' => array(
+			'ext_whitelist' => array('csv'),
+			'type_whitelist' => array('text'),
+			'extension' => 'csv',
+			'max_size' => 20971520
+		),
 	),
 
 	'message_replaces' => array(
@@ -330,8 +336,10 @@ return array(
 		'holiday_csv' => array(
 			'extension' => 'CSV',
 			'max_size' => '20MB'
-		)
+		),
+		'item_order_type_csv' => array(
+			'extension' => 'CSV',
+			'max_size' => '20MB'
+		),
 	)
 );
-
-

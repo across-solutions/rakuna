@@ -43,17 +43,18 @@ class Controller_Register extends Controller_Base {
 		$cart->set_member_tel(Arr::get($member, 'tel'));
 		$cart->set_member_fax(Arr::get($member, 'fax'));
 
-		$order_type = \Model_Order_Type::find('first');
+		// $order_type = \Model_Order_Type::find('first');
 
-		$cart->set_order_type($order_type->id);
-		$cart->set_shipping_div($order_type->code);
-		$cart->set_warehouse_div($order_type->warehouse_code);
+		// $cart->set_order_type($order_type->id);
+		// $cart->set_shipping_div($order_type->code);
+		// $cart->set_warehouse_div($order_type->warehouse_code);
 
-		$nearest_shipping_date = \Common_Util::get_nearest_shipping_date('members', Arr::get($member, 'code'));
-		if (!empty($nearest_shipping_date)) {
-			$cart->set_shipping_date($nearest_shipping_date);
-			$cart->set_delivery_date($nearest_shipping_date);
-		}
+		// $nearest_shipping_date = \Common_Util::get_nearest_shipping_date('members', Arr::get($member, 'code'));
+		// if (!empty($nearest_shipping_date)) {
+		// 	$cart->set_shipping_date($nearest_shipping_date);
+		// 	$cart->set_delivery_date($nearest_shipping_date);
+		// }
+		$cart->set_delivery_date(\Common_Util::get_nearest_delivery_week('members', Arr::get($member, 'code')));
 
 		// カート内に商品タイプが「取寄品」「取置・別製」の商品が含まれる場合は、「order_no」に担当営業者コードを代入
 		if ($this->check_item_type_order($cart)) {
@@ -62,8 +63,9 @@ class Controller_Register extends Controller_Base {
 
 		// カート内に商品タイプが「在庫」以外の商品が含まれる場合は、「出荷予定日」「納期」のデフォルトを空とする
 		if ($this->check_item_type_not_stock($cart)) {
-			$cart->set_shipping_date('');
+			// $cart->set_shipping_date('');
 			$cart->set_delivery_date('');
+			$cart->set_selectable_delivery_date(false);
 		}
 
 		Session::set(SESSION_KEY_CART, $cart);
@@ -108,26 +110,38 @@ class Controller_Register extends Controller_Base {
 		$cart->set_delivery_tel(Arr::get($data, 'delivery_tel'));
 		$cart->set_delivery_fax(Arr::get($data, 'delivery_fax'));
 
-		$cart->set_order_type(Arr::get($data, 'order_type'));
-		$cart->set_shipping_div(Arr::get($data, 'shipping_div'));
-		$cart->set_warehouse_div(Arr::get($data, 'warehouse_div'));
-		$cart->set_order_no(Arr::get($data, 'order_no'));
+		// $cart->set_order_type(Arr::get($data, 'order_type'));
+		// $cart->set_shipping_div(Arr::get($data, 'shipping_div'));
+		// $cart->set_warehouse_div(Arr::get($data, 'warehouse_div'));
+		// $cart->set_order_no(Arr::get($data, 'order_no'));
 
-		if (Arr::get($data, 'delivery_date') != '') {
-			$cart->set_delivery_date(Arr::get($data, 'delivery_date'));
-		} else {
-			$cart->set_delivery_date(null);
+		// if (Arr::get($data, 'delivery_date') != '') {
+		// 	$cart->set_delivery_date(Arr::get($data, 'delivery_date'));
+		// } else {
+		// 	$cart->set_delivery_date(null);
+		// }
+
+		// if (Arr::get($data, 'shipping_date') != '') {
+		// 	$cart->set_shipping_date(Arr::get($data, 'shipping_date'));
+		// } else {
+		// 	$cart->set_shipping_date(null);
+		// }
+
+		// $cart->set_comment(Arr::get($data, 'comment'));
+
+		$order_types = $cart->get_order_types();
+		foreach ($order_types as $order_type) {
+			if (Arr::get($data, 'delivery_date' . $order_type, '') != '') {
+				$cart->set_order_type_delivery_date($order_type, Arr::get($data, 'delivery_date' . $order_type));
+			} else {
+				$cart->set_order_type_delivery_date($order_type, null);
+			}
+			$cart->set_order_type_order_no($order_type, Arr::get($data, 'order_no' . $order_type));
+
+			$cart->set_order_type_comment($order_type, Arr::get($data, 'comment' . $order_type));
 		}
 
-		if (Arr::get($data, 'shipping_date') != '') {
-			$cart->set_shipping_date(Arr::get($data, 'shipping_date'));
-		} else {
-			$cart->set_shipping_date(null);
-		}
-
-		$cart->set_comment(Arr::get($data, 'comment'));
-
-		if (!$this->validate_add($data)) {
+		if (!$this->validate_add($data, $order_types)) {
 			$this->render($cart, 'register/index');
 			return;
 		}
@@ -146,15 +160,17 @@ class Controller_Register extends Controller_Base {
 			return;
 		}
 
-		$order_id = $this->create_order($member, $cart);
-		if (!$order_id) {
+		$order_ids = $this->create_order($member, $cart);
+		if (!$order_ids) {
 			throw new HttpServerErrorException();
 		}
 		Session::delete(SESSION_KEY_CART);
 
 		$sendmail = new \Sendmail_Order();
-		if (!$sendmail->send($order_id)) {
-			// TODO
+		foreach ($order_ids as $order_id) {
+			if (!$sendmail->send($order_id)) {
+				// TODO
+			}
 		}
 
 		Response::redirect('/order/register/complete');
@@ -235,17 +251,18 @@ class Controller_Register extends Controller_Base {
 		$member_id = $this->get_member_id();
 
 		$member = \Model_Member::find($member_id);
-		$lead_time = Arr::get($member, 'lead_time');
+		// $lead_time = Arr::get($member, 'lead_time');
 
 		$limit = 22;
-		$day = 2;
+		// $day = 2;
 
-		if (!is_null($lead_time)) {
-			$day += intval($lead_time);
-		}
+		// if (!is_null($lead_time)) {
+		// 	$day += intval($lead_time);
+		// }
 
-		$start = date('Y-m-d', strtotime('+' . $day . ' day'));
-		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
+		// $start = date('Y-m-d', strtotime('+' . $day . ' day'));
+		// $end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
+		$start = \Common_Util::get_nearest_delivery_date($member->code);
 
 		$dates = \Common_Util::range_date($start, $limit, false);
 
@@ -277,8 +294,9 @@ class Controller_Register extends Controller_Base {
 	 * 追加バリデート
 	 *
 	 * @param array $data フォームデータ
+	 * @param array $order_types 発注タイプリスト
 	 */
-	private function validate_add($data) {
+	private function validate_add($data, $order_types) {
 		$validation = $this->create_validation();
 
 		$delivery_kind = Arr::get($data, 'delivery_kind');
@@ -350,40 +368,55 @@ class Controller_Register extends Controller_Base {
 				->add_rule('max_length', 14);
 		}
 
-		$validation->add('order_type', '発注タイプ')
-			->add_rule('required')
-			->add_rule('exist', 'order_types', 'id');
+		// $validation->add('order_type', '発注タイプ')
+		// 	->add_rule('required')
+		// 	->add_rule('exist', 'order_types', 'id');
 
-		$validation->add('shipping_div', '出荷区分')
-			->add_rule('required')
-			->add_rule('match_collection', Config::get('define.shipping_div'));
+		// $validation->add('shipping_div', '出荷区分')
+		// 	->add_rule('required')
+		// 	->add_rule('match_collection', Config::get('define.shipping_div'));
 
-		$validation->add('warehouse_div', '倉庫')
-			->add_rule('required')
-			->add_rule('match_collection', Config::get('define.warehouse_div'));
+		// $validation->add('warehouse_div', '倉庫')
+		// 	->add_rule('required')
+		// 	->add_rule('match_collection', Config::get('define.warehouse_div'));
 
-		$validation->add('order_no', 'オーダーNo.')
-			->add_rule('numeric')
-			->add_rule('max_length', 10);
+		// $validation->add('order_no', 'オーダーNo.')
+		// 	->add_rule('numeric')
+		// 	->add_rule('max_length', 10);
 
-		// 20200109 17:22 メールで必須を外すご要望
-		if (!empty($data['shipping_date'])) {
-			$validation->add('shipping_date', '出荷予定日')
-				//->add_rule('required')
-				->add_rule('valid_date', 'Ymd')
-				->add_rule('match_collection', array_keys($this->get_shipping_dates()));
+		// // 20200109 17:22 メールで必須を外すご要望
+		// if (!empty($data['shipping_date'])) {
+		// 	$validation->add('shipping_date', '出荷予定日')
+		// 		//->add_rule('required')
+		// 		->add_rule('valid_date', 'Ymd')
+		// 		->add_rule('match_collection', array_keys($this->get_shipping_dates()));
+		// }
+
+		// // 20200109 17:22 メールで必須を外すご要望
+		// if (!empty($data['delivery_date'])) {
+		// 	$validation->add('delivery_date', '納期')
+		// 		//->add_rule('required')
+		// 		->add_rule('valid_date', 'Ymd')
+		// 		->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+		// }
+
+		// $validation->add('comment', '備考')
+		// 	->add_rule('max_width', 37);
+
+		foreach ($order_types as $order_type) {
+			$validation->add('order_no' . $order_type, 'オーダーNo.')
+				->add_rule('numeric')
+				->add_rule('max_length', 10);
+
+			if (isset($data['delivery_date' . $order_type]) && !empty($data['delivery_date' . $order_type])) {
+				$validation->add('delivery_date' . $order_type, '納期')
+					->add_rule('valid_date', 'Ymd')
+					->add_rule('match_collection', array_keys($this->get_delivery_dates()));
+			}
+
+			$validation->add('comment' . $order_type, '備考')
+				->add_rule('max_width', 37);
 		}
-
-		// 20200109 17:22 メールで必須を外すご要望
-		if (!empty($data['delivery_date'])) {
-			$validation->add('delivery_date', '納期')
-				//->add_rule('required')
-				->add_rule('valid_date', 'Ymd')
-				->add_rule('match_collection', array_keys($this->get_delivery_dates()));
-		}
-
-		$validation->add('comment', '備考')
-			->add_rule('max_width', 37);
 
 		return $this->validate($validation, $data);
 	}
@@ -480,25 +513,30 @@ class Controller_Register extends Controller_Base {
 	 * @param Common_Cart $cart カート情報
 	 */
 	private function create_order($member, $cart) {
+		$order_ids = array();
 		$order_id = false;
 		try {
 			DB::start_transaction();
 
-			$order_id = $this->insert_order($member, $cart);
-			if (empty($order_id)) {
-				DB::rollback_transaction();
-				return false;
-			}
+			$order_types = $cart->get_order_types();
+			foreach ($order_types as $order_type) {
+				$order_id = $this->insert_order($member, $cart, $order_type);
+				if (empty($order_id)) {
+					DB::rollback_transaction();
+					return false;
+				}
 
-			foreach ($cart->get_carts() as $detail) {
-				if (!$this->insert_order_detail($order_id, $detail, $member['id'])) {
-					DB::rollback_transaction();
-					return false;
+				foreach ($cart->get_order_type_cart($order_type) as $detail) {
+					if (!$this->insert_order_detail($order_id, $detail, $member['id'])) {
+						DB::rollback_transaction();
+						return false;
+					}
+					if(!$this->update_order_frequency($member['id'], $detail['code'])){
+						DB::rollback_transaction();
+						return false;
+					}
 				}
-				if(!$this->update_order_frequency($member['id'], $detail['code'])){
-					DB::rollback_transaction();
-					return false;
-				}
+				$order_ids[] = $order_id;
 			}
 
 			if (!$this->delete_carts($member['id'])) {
@@ -512,7 +550,7 @@ class Controller_Register extends Controller_Base {
 			throw $e;
 		}
 
-		return $order_id;
+		return $order_ids;
 	}
 
 	/**
@@ -627,7 +665,7 @@ class Controller_Register extends Controller_Base {
 	 * @param int $order_type_id 発注タイプID
 	 */
 	private function get_order_type($order_type_id) {
-		$query = DB::select('order_types.id', 'order_types.name')
+		$query = DB::select('order_types.id', 'order_types.name', 'order_types.code', 'order_types.warehouse_code')
 					->from('order_types')
 					->where('order_types.id', '=', $order_type_id)
 					->where('order_types.del_flg', '=', UNDELETED);
@@ -640,9 +678,10 @@ class Controller_Register extends Controller_Base {
 	 *
 	 * @param Model_Member $member 発注者アカウント情報
 	 * @param Common_Cart $cart カート情報
+	 * @param int $order_type_id 発注タイプ
 	 */
-	private function insert_order($member, $cart) {
-		$order_type_id = $cart->get_order_type();
+	private function insert_order($member, $cart, $order_type_id) {
+		// $order_type_id = $cart->get_order_type();
 		$order_type = $this->get_order_type($order_type_id);
 
 		$values = array();
@@ -651,16 +690,16 @@ class Controller_Register extends Controller_Base {
 		$values['member_name'] = Arr::get($member, 'name');
 		$values['member_email'] = Arr::get($member, 'email');
 		$values['order_datetime'] = date('Y-m-d H:i:s');
-		$values['amount'] = $cart->get_total_amount();
-		$values['amount_case'] = $cart->get_total_amount_case();
-		$values['payment'] = $cart->get_payment();
-		$values['payment_tax'] = $cart->get_payment_tax();
-		$values['tax'] = $cart->get_tax();
+		$values['amount'] = $cart->get_order_type_amount($order_type_id);
+		$values['amount_case'] = $cart->get_order_type_amount_case($order_type_id);
+		$values['payment'] = $cart->get_order_type_payment($order_type_id);
+		$values['payment_tax'] = $cart->get_order_type_payment_tax($order_type_id);
+		$values['tax'] = $cart->get_order_type_tax($order_type_id);
 		$values['tax_rate'] = $cart->get_tax_rate();
-		$values['delivery_date'] = $cart->get_delivery_date();
+		$values['delivery_date'] = $cart->get_order_type_delivery_date($order_type_id);
 		$values['cancel_flg'] = false;
 		$values['order_download_id'] = null;
-		$values['comment'] = $cart->get_comment();
+		$values['comment'] = $cart->get_order_type_comment($order_type_id);
 
 		$delivery_kind = $cart->get_delivery_kind();
 		if ($delivery_kind == 1) {
@@ -700,12 +739,12 @@ class Controller_Register extends Controller_Base {
 
 		$values['order_type_id'] = $order_type_id;
 		$values['order_type_name'] = Arr::get($order_type, 'name');
-		$values['shipping_date'] = $cart->get_shipping_date();
-		$values['shipping_div'] = $cart->get_shipping_div();
-		$values['shipping_div_name'] = Config::get('define.shipping_div_disp.' . $cart->get_shipping_div());
-		$values['warehouse_div'] = $cart->get_warehouse_div();
-		$values['warehouse_div_name'] = Config::get('define.warehouse_div_disp.' . $cart->get_warehouse_div());
-		$values['order_no'] = $cart->get_order_no() === '' ? null : $cart->get_order_no();
+		$values['shipping_date'] = \Common_Util::calc_shipping_date(Arr::get($member, 'code'), $cart->get_order_type_delivery_date($order_type_id));
+		$values['shipping_div'] = Arr::get($order_type, 'code');
+		$values['shipping_div_name'] = Config::get('define.shipping_div_disp.' . Arr::get($order_type, 'code'));
+		$values['warehouse_div'] = Arr::get($order_type, 'warehouse_code');
+		$values['warehouse_div_name'] = Config::get('define.warehouse_div_disp.' . Arr::get($order_type, 'warehouse_code'));
+		$values['order_no'] = $cart->get_order_type_order_no($order_type_id) === '' ? null : $cart->get_order_type_order_no($order_type_id);
 
 		if (\Common_Member::is_agency()) {
 			$values['sales_person_code'] = \Common_Member::get_agency_code();

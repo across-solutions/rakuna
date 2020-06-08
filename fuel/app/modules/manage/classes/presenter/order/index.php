@@ -45,7 +45,7 @@ class Presenter_Order_Index extends \Presenter_Pagination {
 	protected function get_rows($data, $limit, $offset) {
 		$query = \Model_Order::query();
 		$this->add_condition($query, $data);
-		$query->order_by('order_datetime', 'desc');
+		$query->order_by('id', 'desc');
 
 		return $query->limit($limit)->offset($offset)->get();
 	}

@@ -1,5 +1,7 @@
 <?php
 namespace Order;
+
+use Common_Util;
 use Fuel\Core\DB;
 use Fuel\Core\Config;
 use Fuel\Core\Arr;
@@ -27,6 +29,30 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		$this->delivery_dates = $this->get_delivery_dates();
 
 		$this->deliveries = $this->get_delivery_list();
+	}
+
+	/**
+	 * @see Presenter_Item_Index::get_rows()
+	 */
+	protected function get_rows($data, $limit, $offset) {
+		$result = parent::get_rows($data, $limit, $offset);
+		$list = array();
+		foreach ($result as $row) {
+			parent::modifier($row);
+			$order_type = is_null(Arr::get($row, 'order_type')) ? 1 : Arr::get($row, 'order_type');
+			if (!isset($list[$order_type])) {
+				$list[$order_type] = array();
+			}
+			$list[$order_type][] = $row;
+		}
+		ksort($list);
+		return $list;
+	}
+
+	/**
+	 * @see Presenter_Item_Index::modifier()
+	 */
+	protected function modifier(&$row) {
 	}
 
 	/**
@@ -64,17 +90,18 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		$member_id = $this->get_member_id();
 
 		$member = \Model_Member::find($member_id);
-		$lead_time = Arr::get($member, 'lead_time');
+		// $lead_time = Arr::get($member, 'lead_time');
 
 		$limit = 30;
-		$day = 2;
+		// $day = 2;
 
-		if (!is_null($lead_time)) {
-			$day += intval($lead_time);
-		}
+		// if (!is_null($lead_time)) {
+		// 	$day += intval($lead_time);
+		// }
 
-		$start = date('Y-m-d', strtotime('+' . $day . ' day'));
-		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
+		// $start = date('Y-m-d', strtotime('+' . $day . ' day'));
+		// $end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
+		$start = Common_Util::get_nearest_delivery_date($member->code);
 
 		$dates = \Common_Util::range_date($start, $limit, '');
 

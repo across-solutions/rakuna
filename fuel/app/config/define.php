@@ -149,6 +149,9 @@ define('FILE_NAME_DOWNLOAD_RECOMMENDED_ITEM', 'recommended_item.csv');
 // いつものグループ割当CSVダウンロードファイル名
 define('FILE_NAME_DOWNLOAD_RECOMMENDED_GROUP_ASSIGN', 'recommended_group_assign.csv');
 
+// 商品発注タイプCSVダウンロードファイル名
+define('FILE_NAME_DOWNLOAD_ITEM_ORDER_TYPE', 'item_order_type.csv');
+
 // お気に入り一覧ソート順クッキーキー
 define('COOKIE_KEY_SORT_MODE', 'sm');
 
@@ -241,7 +244,8 @@ return array(
 		'delivery' => 9,					// 納品先CSV
 		'sales_representative' => 10,		// 営業担当者CSV
 		'delivery_week' => 11,				// 配達曜日CSV
-		'group_assign' => 12				// グループ割当商品CSV
+		'group_assign' => 12,				// グループ割当商品CSV
+		'item_order_type' => 13,			// グループ割当商品CSV
 	),
 
 	// 管理側ユーザグループ種類

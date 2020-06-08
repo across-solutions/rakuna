@@ -399,6 +399,9 @@ class Controller_Order extends Controller_Base {
 			->add_rule('required')
 			->add_rule('valid_date', 'Y-m-d');
 
+		$validation->add('delivery_date', '納期')
+			->add_rule('valid_date', 'Y-m-d');
+
 		return $this->validate($validation, $data);
 	}
 
@@ -582,7 +585,8 @@ class Controller_Order extends Controller_Base {
 				&& $order->shipping_date == $data['shipping_date']
 				&& $order->shipping_div == $data['shipping_div']
 				&& $order->warehouse_div == $data['warehouse_div']
-				&& $order->order_no == $data['order_no']) {
+				&& $order->order_no == $data['order_no']
+				&& $order->delivery_date == $data['delivery_date']) {
 			return true;
 		}
 
@@ -603,6 +607,7 @@ class Controller_Order extends Controller_Base {
 		$order->warehouse_div = $data['warehouse_div'];
 		$order->warehouse_div_name = Config::get('define.warehouse_div_disp.' . $data['warehouse_div']);
 		$order->order_no = $data['order_no'] === '' ? null : $data['order_no'];
+		$order->delivery_date = empty($data['delivery_date']) ? null : $data['delivery_date'];
 
 		return $order->save() !== false;
 	}

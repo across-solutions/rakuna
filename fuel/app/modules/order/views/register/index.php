@@ -81,88 +81,16 @@
 	</div>
 	<!--#display option end -->
 
-	<!--#estimate start -->
-	<div class="estimate">
-
-		<div class="estimateWrap clearfix">
-
-			<div class="estimateTitle">
-				<strong>
-					発注内容
-				</strong>
-			</div>
-			<?php if (Common_Setting::is_price()) : ?>
-				<div class="amount">
-					<ul>
-						<li>
-							<strong>
-								<span>合計</span><label id="payment_tax"><?php echo number_format($data->get_payment_tax()); ?></label>円
-							</strong>
-						</li>
-						<li>
-							<p>
-								<span>小計</span><label id="payment"><?php echo number_format($data->get_payment()); ?></label>円
-							</p>
-						</li>
-						<li>
-							<p>
-								<span>消費税</span><label id="tax"><?php echo number_format($data->get_tax()); ?></label>円
-							</p>
-						</li>
-					</ul>
-				</div>
-			<?php endif; ?>
-
-			<div class="totalItem">
-				<ul>
-					<li>
-						<strong>
-							商品注文合計数
-						</strong>
-					</li>
-					<?php if (Common_Setting::is_case()) : ?>
-						<li>
-							<p>
-								<span>ケース合計</span><label id="total_amount_case"><?php echo number_format($data->get_total_amount_case()); ?></label>
-							</p>
-						</li>
-					<?php endif; ?>
-					<li>
-						<p>
-							<?php if (Common_Setting::is_case()) : ?>
-								<span>バラ合計</span>
-							<?php endif; ?>
-							<label id="total_amount"><?php echo number_format($data->get_total_amount()); ?></label>
-						</p>
-					</li>
-				</ul>
-			</div>
-
-		</div>
-
-	</div>
-	<!--#estimate end -->
-
-	<?php if ($mode == Config::get('define.search_mode.normal')) : ?>
-		<?php echo View::forge('item/view/normal', array('rows' => $rows)); ?>
-	<?php elseif ($mode == Config::get('define.search_mode.image')) : ?>
-		<?php echo View::forge('item/view/image', array('rows' => $rows)); ?>
-	<?php elseif ($mode == Config::get('define.search_mode.list')) : ?>
-		<?php echo View::forge('item/view/list', array('rows' => $rows, 'sort' => false)); ?>
-	<?php endif; ?>
-
-	<?php echo Form::open('/order/register/save'); ?>
-
+	<?php echo Form::open(array('action' => '/order/register/save', 'id' => 'orderRegistForm')); ?>
 		<!--#ship custom start -->
 		<div class="shipCustom">
 			<div class="shipCustWrap">
-
 				<!--#ship cust item start -->
 				<div class="scItem">
 					<div class="scItemIn">
 						<label class="scChks" for="form_delivery_kind_1">
 							<?php echo Form::radio('delivery_kind', 1,
-								is_null($data->get_delivery_kind()) || $data->get_delivery_kind() == 1, array('id' => 'form_delivery_kind_1')); ?>
+								is_null($data->get_delivery_kind()) || $data->get_delivery_kind() == 1, array('id' => 'form_delivery_kind_1', 'data-delivery-date' => $data->get_delivery_date())); ?>
 							<span class="scChksName">自分へ送付</span>
 						</label>
 
@@ -400,75 +328,157 @@
 			</div>
 		</div>
 		<!--#ship custom end -->
+		<?php foreach ($data->get_order_types() as $order_type) : ?>
+			<?php if ($data->selectable_delivery_date()) : ?>
+				<?php echo Form::hidden('delivery_date' . $order_type, $data->get_order_type_delivery_date($order_type), array('id' => 'hidden_form_delivery_date_select' . $order_type, 'class' => 'js-delivery-date-select')); ?>
+			<?php endif; ?>
+			<?php echo Form::hidden('order_no' . $order_type, $data->get_order_type_order_no($order_type), array('id' => 'hidden_form_order_no' . $order_type)); ?>
+			<?php echo Form::hidden('comment' . $order_type, $data->get_order_type_comment($order_type), array('id' => 'hidden_form_comment' . $order_type)); ?>
+		<?php endforeach; ?>
+	<?php echo Form::close(); ?>
 
-		<!--#ship date start -->
-		<div class="shipDate">
-			<strong>
-				発注タイプ
-			</strong>
+	<?php foreach ($rows as $order_type => $order_type_rows) : ?>
+		<!--#estimate start -->
+		<div class="estimate">
 
-			<ul>
-				<li>
-					<div class="deliveryWrap">
-						<?php echo Form::select('order_type', $data->get_order_type(), $order_types, array('id' => 'order_type_select')); ?>
-						<?php echo $validate_error_message('order_type'); ?>
+			<div class="estimateWrap clearfix">
+
+				<div class="estimateTitle">
+					<strong>
+						発注内容：<?php echo $order_types[$order_type]; ?>
+					</strong>
+				</div>
+				<?php if (Common_Setting::is_price()) : ?>
+					<div class="amount">
+						<ul>
+							<li>
+								<strong>
+									<span>合計</span><label id="payment_tax<?=$order_type ?>"><?php echo number_format($data->get_order_type_payment_tax($order_type)); ?></label>円
+								</strong>
+							</li>
+							<li>
+								<p>
+									<span>小計</span><label id="payment<?=$order_type ?>"><?php echo number_format($data->get_order_type_payment($order_type)); ?></label>円
+								</p>
+							</li>
+							<li>
+								<p>
+									<span>消費税</span><label id="tax<?=$order_type ?>"><?php echo number_format($data->get_order_type_tax($order_type)); ?></label>円
+								</p>
+							</li>
+						</ul>
 					</div>
-				</li>
-			</ul>
+				<?php endif; ?>
+
+				<div class="totalItem">
+					<ul>
+						<li>
+							<strong>
+								商品注文合計数
+							</strong>
+						</li>
+						<?php if (Common_Setting::is_case()) : ?>
+							<li>
+								<p>
+									<span>ケース合計</span><label id="total_amount_case<?=$order_type ?>"><?php echo number_format($data->get_order_type_amount_case($order_type)); ?></label>
+								</p>
+							</li>
+						<?php endif; ?>
+						<li>
+							<p>
+								<?php if (Common_Setting::is_case()) : ?>
+									<span>バラ合計</span>
+								<?php endif; ?>
+								<label id="total_amount<?=$order_type ?>"><?php echo number_format($data->get_order_type_amount($order_type)); ?></label>
+							</p>
+						</li>
+					</ul>
+				</div>
+
+			</div>
+
 		</div>
-		<!--#ship date end -->
+		<!--#estimate end -->
 
-		<!--#ship date start -->
-		<div class="shipDate">
-			<strong>
-				出荷区分
-			</strong>
+		<?php if ($mode == Config::get('define.search_mode.normal')) : ?>
+			<?php echo View::forge('item/view/normal', array('rows' => $order_type_rows)); ?>
+		<?php elseif ($mode == Config::get('define.search_mode.image')) : ?>
+			<?php echo View::forge('item/view/image', array('rows' => $order_type_rows)); ?>
+		<?php elseif ($mode == Config::get('define.search_mode.list')) : ?>
+			<?php echo View::forge('item/view/list', array('rows' => $order_type_rows, 'sort' => false)); ?>
+		<?php endif; ?>
 
-			<ul>
-				<li>
-					<div class="deliveryWrap">
-						<?php echo Form::select('shipping_div', $data->get_shipping_div(), $shipping_div, array('id' => 'shipping_div_select')); ?>
-						<?php echo $validate_error_message('shipping_div'); ?>
-					</div>
-				</li>
-			</ul>
-		</div>
-		<!--#ship date end -->
+		<?php if (false) : ?>
+			<!--#ship date start -->
+			<div class="shipDate">
+				<strong>
+					発注タイプ
+				</strong>
 
-		<!--#ship date start -->
-		<div class="shipDate">
-			<strong>
-				倉庫
-			</strong>
+				<ul>
+					<li>
+						<div class="deliveryWrap">
+							<?php echo Form::select('order_type', $data->get_order_type(), $order_types, array('id' => 'order_type_select')); ?>
+							<?php echo $validate_error_message('order_type'); ?>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!--#ship date end -->
 
-			<ul>
-				<li>
-					<div class="deliveryWrap">
-						<?php echo Form::select('warehouse_div', $data->get_warehouse_div(), $warehouse_div, array('id' => 'warehouse_div_select')); ?>
-						<?php echo $validate_error_message('warehouse_div'); ?>
-					</div>
-				</li>
-			</ul>
-		</div>
-		<!--#ship date end -->
+			<!--#ship date start -->
+			<div class="shipDate">
+				<strong>
+					出荷区分
+				</strong>
 
-		<!--#ship date start -->
-		<div class="shipDate">
-			<strong>
-				出荷予定日
-			</strong>
+				<ul>
+					<li>
+						<div class="deliveryWrap">
+							<?php echo Form::select('shipping_div', $data->get_shipping_div(), $shipping_div, array('id' => 'shipping_div_select')); ?>
+							<?php echo $validate_error_message('shipping_div'); ?>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!--#ship date end -->
 
-			<ul>
-				<li>
-					<div class="deliveryWrap">
-						<?php echo Form::select('shipping_date', $data->get_shipping_date(), $shipping_dates, array('id' => 'shipping_date_select')); ?>
-						<?php echo $validate_error_message('shipping_date'); ?>
-					</div>
-				</li>
-			</ul>
-		</div>
-		<!--#ship date end -->
+			<!--#ship date start -->
+			<div class="shipDate">
+				<strong>
+					倉庫
+				</strong>
 
+				<ul>
+					<li>
+						<div class="deliveryWrap">
+							<?php echo Form::select('warehouse_div', $data->get_warehouse_div(), $warehouse_div, array('id' => 'warehouse_div_select')); ?>
+							<?php echo $validate_error_message('warehouse_div'); ?>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!--#ship date end -->
+
+			<!--#ship date start -->
+			<div class="shipDate">
+				<strong>
+					出荷予定日
+				</strong>
+
+				<ul>
+					<li>
+						<div class="deliveryWrap">
+							<?php echo Form::select('shipping_date', $data->get_shipping_date(), $shipping_dates, array('id' => 'shipping_date_select')); ?>
+							<?php echo $validate_error_message('shipping_date'); ?>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<!--#ship date end -->
+		<?php endif; ?>
+
+		<?php if ($data->selectable_delivery_date()) : ?>
 		<!--#ship date start -->
 		<div class="shipDate">
 			<strong>
@@ -478,7 +488,7 @@
 			<ul>
 				<li>
 					<div class="deliveryWrap">
-						<?php echo Form::select('delivery_date', $data->get_delivery_date(), $delivery_dates, array('id' => 'delivery_date_select')); ?>
+						<?php echo Form::select('delivery_date' . $order_type, $data->get_order_type_delivery_date($order_type), $delivery_dates, array('id' => 'delivery_date_select' . $order_type, 'class' => 'js-delivery-date-select')); ?>
 					</div>
 					<p>
 						納期がある場合はご指定ください。
@@ -486,11 +496,12 @@
 					<em>
 						※ご希望に添えない場合もございます。ご了承ください。
 					</em>
-					<?php echo $validate_error_message('delivery_date'); ?>
+					<?php echo $validate_error_message('delivery_date' . $order_type); ?>
 				</li>
 			</ul>
 		</div>
 		<!--#ship date end -->
+		<?php endif; ?>
 
 		<!--#ship date start -->
 		<div class="shipDate">
@@ -501,8 +512,8 @@
 			<ul>
 				<li>
 					<div class="deliveryWrap">
-						<?php echo Form::input('order_no', $data->get_order_no(), array('id' => 'order_no', 'placeholder' => '')); ?>
-						<?php echo $validate_error_message('order_no'); ?>
+						<?php echo Form::input('order_no' . $order_type, $data->get_order_type_order_no($order_type), array('id' => 'order_no' . $order_type, 'placeholder' => '', 'class' => 'js-order-form-text')); ?>
+						<?php echo $validate_error_message('order_no' . $order_type); ?>
 					</div>
 				</li>
 			</ul>
@@ -524,21 +535,21 @@
 					</p>
 				</li>
 				<li>
-					<?php echo Form::input('comment', $data->get_comment(), array('id' => 'comment', 'placeholder' => '')); ?>
-					<?php echo $validate_error_message('comment'); ?>
+					<?php echo Form::input('comment' . $order_type, $data->get_order_type_comment($order_type), array('id' => 'comment' . $order_type, 'placeholder' => '', 'class' => 'js-order-form-text')); ?>
+					<?php echo $validate_error_message('comment' . $order_type); ?>
 				</li>
 			</ul>
 		</div>
 		<!--#ship date end -->
+	<?php endforeach; ?>
 
-		<!--#order done start -->
-		<div class="orderDone">
+	<!--#order done start -->
+	<div class="orderDone">
 
-			<a id="order_submit" href="#" title="発注する">
-				<span class="icon-ok mr"></span>発注する
-			</a>
+		<a id="order_submit" href="#" title="発注する">
+			<span class="icon-ok mr"></span>発注する
+		</a>
 
-		</div>
-		<!--#order done end -->
-	<?php echo Form::close(); ?>
+	</div>
+	<!--#order done end -->
 <?php endif; ?>

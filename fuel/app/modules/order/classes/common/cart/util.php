@@ -30,7 +30,8 @@ class Common_Cart_Util {
 				array('item_assigns.renewal_datetime', 'assign_renewal_datetime'),
 				array('items.renewal_datetime', 'item_renewal_datetime'), 'carts.amount', 'carts.amount_case',
 				array('carts.item_renewal_datetime', 'cart_item_renewal_datetime'),
-				array('carts.item_assign_renewal_datetime', 'cart_assign_renewal_datetime'), 'carts.updated')
+				array('carts.item_assign_renewal_datetime', 'cart_assign_renewal_datetime'), 'carts.updated',
+				'item_order_types.order_type')
 			->from('carts')
 			->join('items', 'LEFT')
 				->on('carts.item_id', '=', 'items.id')
@@ -48,7 +49,11 @@ class Common_Cart_Util {
 		$query->join('group_assigns', 'LEFT')
 			->on('group_assigns.item_code', '=', 'items.code')
 			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
-			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED))
+			->join('item_order_types', 'LEFT')
+				->on('item_order_types.item_code', '=', 'items.code')
+				->on('item_order_types.member_id', '=', DB::escape($member_id))
+				->on('item_order_types.del_flg', '=', DB::escape(UNDELETED));
 
 		$carts = $query->execute();
 
@@ -244,6 +249,60 @@ class Common_Cart_Util {
 		}
 
 		return self::minus_case($member_id, $item_id, $cart['amount_case']);
+	}
+
+	/**
+	 * 荷姿での発注が可能か
+	 *
+	 * @param int $member_id 発注者ID
+	 * @param int $item_id 商品ID
+	 * @param boolean $is_case ケースはtrue、バラはfalse
+	 */
+	public static function enable_order_item_pack($member_id, $item_id, $is_case) {
+		$cart = self::get_cart($member_id, $item_id);
+		return $is_case ? empty($cart['amount']) : empty($cart['amount_case']);
+	}
+
+	/**
+	 * 商品タイプの発注が可能か
+	 *
+	 * @param int $member_id 発注者ID
+	 * @param int $item_id 商品ID
+	 */
+	public static function enable_order_item_type($member_id, $item_id) {
+		$item = DB::select('type')->from('items')->where('id', $item_id)->execute()->current();
+		$query = DB::select(array(DB::expr('COUNT(1)'), 'count'))
+			->from('carts')
+			->join('items', 'INNER')
+				->on('carts.item_id', '=', 'items.id')
+				->and_on('items.del_flg', '=', DB::escape(UNDELETED))
+			->where('member_id', $member_id);
+		if ($item['type'] == \Config::get('define.item_type.stock')) {
+			$query->where('items.type', '!=', \Config::get('define.item_type.stock'));
+		} else {
+			$query->where('items.type', '=', \Config::get('define.item_type.stock'));
+		}
+		$count = $query->execute()->current();
+		return $count['count'] == 0;
+	}
+
+	/**
+	 * 商品発注タイプを取得する
+	 *
+	 * @param int $member_id 発注者ID
+	 * @param int $item_id 商品ID
+	 */
+	public static function get_item_order_type($member_id, $item_id) {
+		$result = DB::select('item_order_types.order_type')
+			->from('item_order_types')
+			->join('items', 'INNER')
+				->on('items.code', '=', 'item_order_types.item_code')
+				->on('items.id', '=', DB::escape($item_id))
+				->on('items.del_flg', '=', DB::escape(UNDELETED))
+			->where('item_order_types.member_id', $member_id)
+			->where('item_order_types.del_flg', UNDELETED)
+			->execute()->as_array();
+		return empty($result) ? 1 : $result[0]['order_type'];
 	}
 
 	/**

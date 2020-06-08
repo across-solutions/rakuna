@@ -12,8 +12,8 @@ class Presenter_History_Detail extends \Presenter_Base {
 	public function view() {
 		parent::view();
 
-		$this->before_latest = $this->get_before_latest($this->data->order_datetime);
-		$this->after_latest = $this->get_after_latest($this->data->order_datetime);
+		$this->before_latest = $this->get_before_latest($this->data->id);
+		$this->after_latest = $this->get_after_latest($this->data->id);
 
 		$this->shipping_date = function($data, $key) {
 			return $this->shipping_date($data, $key);
@@ -41,11 +41,11 @@ class Presenter_History_Detail extends \Presenter_Base {
 	 *
 	 * @param datetime $order_datetime 受注日時
 	 */
-	private function get_before_latest($order_datetime) {
+	private function get_before_latest($order_id) {
 		return \Model_Order::query()
 			->where('member_id', '=', $this->get_member_id())
-			->where('order_datetime', '<', $order_datetime)
-			->order_by('order_datetime', 'desc')
+			->where('id', '<', $order_id)
+			->order_by('id', 'desc')
 			->get_one();
 	}
 
@@ -54,11 +54,11 @@ class Presenter_History_Detail extends \Presenter_Base {
 	 *
 	 * @param datetime $order_datetime 受注日時
 	 */
-	private function get_after_latest($order_datetime) {
+	private function get_after_latest($order_id) {
 		return \Model_Order::query()
 			->where('member_id', '=', $this->get_member_id())
-			->where('order_datetime', '>', $order_datetime)
-			->order_by('order_datetime', 'asc')
+			->where('id', '>', $order_id)
+			->order_by('id', 'asc')
 			->get_one();
 	}
 

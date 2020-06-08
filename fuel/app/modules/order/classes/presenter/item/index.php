@@ -139,7 +139,8 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 				array('item_assigns.price', 'assign_price'),
 				array('group_assigns.price_case', 'group_price_case'),
 				array('group_assigns.price', 'group_price'),
-				'item_assigns.hidden_flg_single', 'item_assigns.hidden_flg_case')
+				'item_assigns.hidden_flg_single', 'item_assigns.hidden_flg_case',
+				'item_order_types.order_type')
 			->from('items')
 			->join('item_categories', 'LEFT')
 				->on('item_categories.id', '=', 'items.item_category_id')
@@ -168,7 +169,11 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 		$query->join('group_assigns', 'LEFT')
 			->on('group_assigns.item_code', '=', 'items.code')
 			->on('group_assigns.member_group_code', '=', DB::escape($member_group_code))
-			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED));
+			->on('group_assigns.del_flg', '=', DB::escape(UNDELETED))
+			->join('item_order_types', 'LEFT')
+				->on('item_order_types.item_code', '=', 'items.code')
+				->on('item_order_types.member_id', '=', DB::escape($member_id))
+				->on('item_order_types.del_flg', '=', DB::escape(UNDELETED));
 
 		$this->add_condition($query, $data);
 		$this->add_sort($query, Input::get());

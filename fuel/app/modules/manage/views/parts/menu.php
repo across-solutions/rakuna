@@ -71,6 +71,11 @@
 					</a>
 				</li>
 				<li>
+					<a href="/manage/item/order/type" title="商品発注タイプ">
+						<span class="icon-angle-right mr"></span>商品発注タイプ
+					</a>
+				</li>
+				<li>
 					<a href="/manage/recommended/group" title="いつものグループ">
 						<span class="icon-angle-right mr"></span>いつものグループ
 					</a>

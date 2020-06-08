@@ -66,15 +66,23 @@ $(function() {
 			context : this,
 			success : function(data) {
 				if (!check_error(data)) {
+					$(this).val(oldval);
+					$(this).attr("placeholder", "");
 					return;
 				}
 				data.exist ? parent.$("div.cash").css("visibility","visible") : parent.$("div.cash").css("visibility","hidden");
 				parent.$("#count_item").html(number_format(data.count_item));
-				parent.$("#payment_tax").html(number_format(data.payment_tax));
-				parent.$("#payment").html(number_format(data.payment));
-				parent.$("#tax").html(number_format(data.tax));
-				parent.$("#total_amount_case").html(number_format(data.total_amount_case));
-				parent.$("#total_amount").html(number_format(data.total_amount));
+				// parent.$("#payment_tax").html(number_format(data.payment_tax));
+				// parent.$("#payment").html(number_format(data.payment));
+				// parent.$("#tax").html(number_format(data.tax));
+				// parent.$("#total_amount_case").html(number_format(data.total_amount_case));
+				// parent.$("#total_amount").html(number_format(data.total_amount));
+				var order_type = data.order_type;
+				parent.$("#payment_tax" + order_type).html(number_format(data.order_type_payment_tax));
+				parent.$("#payment" + order_type).html(number_format(data.order_type_payment));
+				parent.$("#tax" + order_type).html(number_format(data.tax));
+				parent.$("#total_amount_case" + order_type).html(number_format(data.order_type_amount_case));
+				parent.$("#total_amount" + order_type).html(number_format(data.order_type_amount));
 
 				parent.$("#" + $(this).closest("div").find("input.main_set").val()).val(data.amount);
 			},
@@ -122,11 +130,17 @@ $(function() {
 				data.exist ? parent.$("div.cash").css("visibility","visible") : parent.$("div.cash").css("visibility","hidden");
 				$(this).closest("ul").find("input.amount").val(data.amount);
 				parent.$("#count_item").html(number_format(data.count_item));
-				parent.$("#payment_tax").html(number_format(data.payment_tax));
-				parent.$("#payment").html(number_format(data.payment));
-				parent.$("#tax").html(number_format(data.tax));
-				parent.$("#total_amount_case").html(number_format(data.total_amount_case));
-				parent.$("#total_amount").html(number_format(data.total_amount));
+				// parent.$("#payment_tax").html(number_format(data.payment_tax));
+				// parent.$("#payment").html(number_format(data.payment));
+				// parent.$("#tax").html(number_format(data.tax));
+				// parent.$("#total_amount_case").html(number_format(data.total_amount_case));
+				// parent.$("#total_amount").html(number_format(data.total_amount));
+				var order_type = data.order_type;
+				parent.$("#payment_tax" + order_type).html(number_format(data.order_type_payment_tax));
+				parent.$("#payment" + order_type).html(number_format(data.order_type_payment));
+				parent.$("#tax" + order_type).html(number_format(data.tax));
+				parent.$("#total_amount_case" + order_type).html(number_format(data.order_type_amount_case));
+				parent.$("#total_amount" + order_type).html(number_format(data.order_type_amount));
 
 				parent.$("#" + $(this).closest("div").find("input").val()).val(data.amount);
 			},

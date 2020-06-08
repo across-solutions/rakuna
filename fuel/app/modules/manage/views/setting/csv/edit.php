@@ -36,6 +36,12 @@
 				</a>
 			</li>
 			<li>
+				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.item_order_type'); ?>" title="商品発注タイプCSV設定"
+					<?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.item_order_type') ? 'class="selected"' : ''; ?>>
+					<span class="icon-angle-right mr"></span>商品発注タイプCSV設定
+				</a>
+			</li>
+			<li>
 				<a href="/manage/setting/csv/edit/<?php echo Config::get('define.csv_format_div.recommended_item'); ?>" title="いつもの商品CSV設定"
 				   <?php echo Arr::get($data, 'div') == Config::get('define.csv_format_div.recommended_item') ? 'class="selected"' : ''; ?>>
 					<span class="icon-angle-right mr"></span>いつもの商品CSV設定

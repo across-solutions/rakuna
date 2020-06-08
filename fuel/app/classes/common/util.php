@@ -575,6 +575,78 @@ class Common_Util {
 	}
 
 	/**
+	 * 最短納品日を取得する
+	 *
+	 * @param string $member_code 発注者コード
+	 */
+	public static function get_nearest_delivery_date($member_code) {
+		$member = \Model_Member::query()->where('code', $member_code)->get_one();
+		$lead_time = Arr::get($member, 'lead_time');
+		$limit = 10;
+
+		$start = date('Ymd', strtotime('+1 day'));
+		$end = date('Ymd', strtotime('+' . ($limit + 1) . ' day'));
+		$nearest_ship_date = $start;
+
+		$list_holiday = self::get_list_holiday($start, $end);
+		while (true) {
+			if (!array_key_exists($nearest_ship_date, $list_holiday)) {
+				return date('Ymd', strtotime($nearest_ship_date . ' +' . ($lead_time + 1) . ' day'));
+			}
+			$nearest_ship_date = date('Ymd', strtotime($nearest_ship_date . ' +1 day'));
+		}
+	}
+
+	/**
+	 * 納期初期選択となる日付をリードタイム、配達曜日から算出する
+	 *
+	 * @param string $table テーブル名
+	 * @param string $member_code 発注者コード
+	 * @param string $delivery_code 納品先コード
+	 */
+	public static function get_nearest_delivery_week($table, $member_code, $delivery_code = null) {
+		$list_week = self::get_list_week($table, $member_code, $delivery_code);
+		if (empty($list_week)) {
+			return null;
+		}
+
+		$delivery_date = self::get_nearest_delivery_date($member_code);
+		while (true) {
+			if (array_key_exists(date('w', strtotime($delivery_date)), $list_week)) {
+				return $delivery_date;
+			}
+			$delivery_date = date('Ymd', strtotime($delivery_date . ' +1 day'));
+		}
+	}
+
+	/**
+	 * 選択納期から出荷日を逆算する
+	 *
+	 * @param string $member_code 発注者コード
+	 * @param string $delivery_date 選択納期(YYYYMMDD)
+	 */
+	public static function calc_shipping_date($member_code, $delivery_date) {
+		if (empty($delivery_date)) {
+			return null;
+		}
+		$member = \Model_Member::query()->where('code', $member_code)->get_one();
+		$lead_time = Arr::get($member, 'lead_time');
+
+		$start = date('Ymd', strtotime('+1 day'));
+		$end = date('Ymd', strtotime($delivery_date . ' -' . ($lead_time + 1) . ' day'));
+		$shipping_date = $end;
+
+		$list_holiday = self::get_list_holiday($start, $end);
+		while (true) {
+			if (!array_key_exists($shipping_date, $list_holiday)) {
+				return $shipping_date;
+			}
+			$shipping_date = date('Ymd', strtotime($shipping_date . ' -1 day'));
+		}
+
+	}
+
+	/**
 	 * 非営業日リストを取得する
 	 *
 	 * @param string $start 開始日
@@ -660,5 +732,19 @@ class Common_Util {
 		}
 
 		return $list_week;
+	}
+
+	/**
+	 * 数値配列の要素に加算する
+	 *
+	 * @param array $array 配列
+	 * @param mix $key キー
+	 * @param numeric $value 加算値
+	 */
+	public static function add_array_numeric_value(&$array, $key, $value) {
+		if (!array_key_exists($key, $array)) {
+			$array[$key] = 0;
+		}
+		$array[$key] += $value;
 	}
 }
