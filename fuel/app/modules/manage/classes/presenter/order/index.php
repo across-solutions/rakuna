@@ -24,8 +24,13 @@ class Presenter_Order_Index extends \Presenter_Pagination {
 		$this->has_comment = function($row) {
 			return $this->has_comment($row);
 		};
+
 		$this->cancelled = function($row) {
 			return $this->cancelled($row);
+		};
+
+		$this->is_agency = function($row) {
+			return $this->is_agency($row);
 		};
 	}
 
@@ -181,6 +186,16 @@ class Presenter_Order_Index extends \Presenter_Pagination {
 	private function cancelled($row) {
 		$cancel_flg = Arr::get($row, 'cancel_flg');
 		return !empty($cancel_flg);
+	}
+
+	/**
+	 * 代理発注の有無
+	 *
+	 * @param array $row 行データ
+	 */
+	private function is_agency($row) {
+		$agency_order_flg = Arr::get($row, 'agency_order_flg');
+		return !empty($agency_order_flg);
 	}
 
 	/**

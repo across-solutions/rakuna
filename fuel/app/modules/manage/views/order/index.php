@@ -177,6 +177,7 @@
 						<th class="w8">合計金額</th>
 					<?php endif; ?>
 					<th class="w5">備考</th>
+					<th class="w5">代理</th>
 					<th class="w5">詳細</th>
 					<th class="w5">削除</th>
 				</tr>
@@ -225,6 +226,11 @@
 						<?php endif; ?>
 						<td class="center">
 							<?php if ($has_comment($row)) : ?>
+								<span class="icon-ok remark"></span>
+							<?php endif ?>
+						</td>
+						<td class="center">
+							<?php if ($is_agency($row)) : ?>
 								<span class="icon-ok remark"></span>
 							<?php endif ?>
 						</td>
