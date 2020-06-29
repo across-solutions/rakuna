@@ -740,16 +740,16 @@ class Controller_Register extends Controller_Base {
 		$values['order_type_id'] = $order_type_id;
 		$values['order_type_name'] = Arr::get($order_type, 'name');
 
-		// 発注タイプが「通常受注」の場合は、出荷日 = 納期とする
-		// マジックナンバーですみません
-		if ($values['order_type_id'] == 1) {
+		$values['shipping_div'] = Arr::get($order_type, 'code');
+		$values['shipping_div_name'] = Config::get('define.shipping_div_disp.' . Arr::get($order_type, 'code'));
+
+		// 出荷区分コードが「80:配送」の場合は、出荷日 = 納期とする
+		if ($values['shipping_div'] == Config::get('define.shipping_div.80')) {
 			$values['shipping_date'] = $values['delivery_date'];
 		} else {
 			$values['shipping_date'] = \Common_Util::calc_shipping_date(Arr::get($member, 'code'), $cart->get_order_type_delivery_date($order_type_id));
 		}
 
-		$values['shipping_div'] = Arr::get($order_type, 'code');
-		$values['shipping_div_name'] = Config::get('define.shipping_div_disp.' . Arr::get($order_type, 'code'));
 		$values['warehouse_div'] = Arr::get($order_type, 'warehouse_code');
 		$values['warehouse_div_name'] = Config::get('define.warehouse_div_disp.' . Arr::get($order_type, 'warehouse_code'));
 		$values['order_no'] = $cart->get_order_type_order_no($order_type_id) === '' ? null : $cart->get_order_type_order_no($order_type_id);
