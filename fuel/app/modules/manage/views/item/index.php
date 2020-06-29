@@ -67,11 +67,16 @@
 				</tr>
 				<tr>
 					<td class="searchTitle">
-						<label for="freeword">
-						単位表示
-						</label>
+						商品タイプ
 					</td>
-					<td colspan="3">
+					<td>
+						<?php echo Form::select('type', Input::get('type'), $types); ?>
+						<?php echo $validate_error_message('type'); ?>
+					</td>
+					<td class="searchTitle">
+						単位表示
+					</td>
+					<td>
 						<?php echo Form::checkbox('empty_unit_name', '1', Input::get('empty_unit_name')); ?>
 						<?php echo Form::label('バラ単位が空', 'empty_unit_name'); ?>
 						<?php echo Form::checkbox('empty_unit_name_case', '1', Input::get('empty_unit_name_case')); ?>

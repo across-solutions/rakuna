@@ -4,6 +4,7 @@ namespace Manage;
 use Fuel\Core\Input;
 use Fuel\Core\Arr;
 use Fuel\Core\DB;
+use Fuel\Core\Config;
 
 /**
  * 商品管理一覧プレゼンタクラス
@@ -15,6 +16,9 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 	 */
 	public function view() {
 		$this->categories = \Model_Item_Category::list_select('id', 'name', array('code' => 'asc'));
+
+		$this->types = array('' => '');
+		$this->types += Config::get('define.item_type_disp');
 
 		parent::view();
 	}
@@ -70,6 +74,12 @@ class Presenter_Item_Index extends \Presenter_Pagination {
 			foreach ($values as $value) {
 				$query->where('search_field', 'LIKE', '%' . trim($value) . '%');
 			}
+		}
+
+		// 商品タイプ
+		$type = Arr::get($data, 'type');
+		if (!is_null($type) && trim($type) != '') {
+			$query->where('type', '=', $type);
 		}
 
 		// バラ単位が空
