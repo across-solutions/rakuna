@@ -66,6 +66,14 @@ class Controller_Register extends Controller_Base {
 			// $cart->set_shipping_date('');
 			$cart->set_delivery_date('');
 			$cart->set_selectable_delivery_date(false);
+		} else {
+			$order_types = $cart->get_order_types();
+			foreach ($order_types as $order_type) {
+				// 発注タイプが直送の場合は、デフォルトの納品日を空とする。※発注タイプはID固定
+				if ($order_type == 2) {
+					$cart->set_order_type_delivery_date($order_type, '');
+				}
+			}
 		}
 
 		Session::set(SESSION_KEY_CART, $cart);
@@ -743,8 +751,8 @@ class Controller_Register extends Controller_Base {
 		$values['shipping_div'] = Arr::get($order_type, 'code');
 		$values['shipping_div_name'] = Config::get('define.shipping_div_disp.' . Arr::get($order_type, 'code'));
 
-		// 出荷区分コードが「80:配送」の場合は、出荷日 = 納期とする
-		if ($values['shipping_div'] == Config::get('define.shipping_div.80')) {
+		// 出荷区分コードが「80:配送」「1:直送」の場合は、出荷日 = 納期とする
+		if ($values['shipping_div'] == Config::get('define.shipping_div.80') || $values['shipping_div'] == Config::get('define.shipping_div.1')) {
 			$values['shipping_date'] = $values['delivery_date'];
 		} else {
 			$values['shipping_date'] = \Common_Util::calc_shipping_date(Arr::get($member, 'code'), $cart->get_order_type_delivery_date($order_type_id));
