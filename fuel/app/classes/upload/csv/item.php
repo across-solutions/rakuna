@@ -79,7 +79,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			foreach ($data as $key => $value) {
 				switch ($key) {
 					case 'category_code':
-						//$this->validate_category_code($value, $num);
+						$this->validate_category_code($value, $num);
 						break;
 					case 'item_code':
 						$this->validate_item_code($value, $num);
@@ -556,8 +556,14 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	private function insert_item($data) {
 		parent::set_norequire_columns($data);
 
+		if (isset($data['category_code'])) {
+			$category_id = $data['category_code'] == '' ? null : $this->categories[$data['category_code']];
+		} else {
+			$category_id = null;
+		}
+
 		$values = array();
-		$values['item_category_id'] = null;
+		$values['item_category_id'] = $category_id;
 		$values['code'] = $data['item_code'];
 		$values['name'] = $data['item_name'];
 		$values['yomigana'] = $data['item_yomigana'];
@@ -613,6 +619,12 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 	private function update_item($item, $data) {
 		parent::set_norequire_columns($data, $item);
 
+		if (isset($data['category_code'])) {
+			$category_id = $data['category_code'] == '' ? null : $this->categories[$data['category_code']];
+		} else {
+			$category_id = $item['item_category_id'];
+		}
+
 		if ($data['item_price'] == '') {
 			$data['item_price'] = null;
 			$data['item_price_case'] = null;
@@ -633,7 +645,8 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 			$item_size_case = 1;
 		}
 
-		if ($item['name'] == $data['item_name']
+		if ($item['item_category_id'] == $category_id
+				&& $item['name'] == $data['item_name']
 				&& $item['yomigana'] == $data['item_yomigana']
 				&& $item['unit_name'] == $data['item_unit_name']
 				&& $item['unit_name_case'] == $data['item_unit_name_case']
@@ -650,6 +663,7 @@ class Upload_Csv_Item extends Upload_Csv_Base {
 		}
 
 		$query = DB::update('items')
+			->value('item_category_id', $category_id)
 			->value('name', $data['item_name'])
 			->value('yomigana', $data['item_yomigana'])
 			->value('unit_name', $data['item_unit_name'])
