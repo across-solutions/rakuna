@@ -102,8 +102,19 @@ class Presenter_Register_Index extends Presenter_Item_Index {
 		// $start = date('Y-m-d', strtotime('+' . $day . ' day'));
 		// $end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 		$start = Common_Util::get_nearest_delivery_date($member->code);
+		$end = date('Y-m-d', strtotime($limit . ' day', strtotime($start)));
 
 		$dates = \Common_Util::range_date($start, $limit, '');
+
+		$holidays = \Model_Holiday::query()
+			->where('date', '>=', $start)
+			->where('date', '<=', $end)
+			->get();
+
+		foreach($holidays as $holiday){
+			$key = date('Ymd', strtotime($holiday->date));
+			unset($dates[$key]);
+		}
 
 		return $dates;
 	}
