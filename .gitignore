@@ -1,0 +1,15 @@
+
+# /
+/.project
+
+# /fuel/app/
+/fuel/app/cache
+/fuel/app/logs
+/fuel/app/output
+/fuel/app/tmp
+
+# /public/assets/img/
+/public/assets/img/item_pdf
+/public/assets/img/notice
+/public/assets/img/notice_pdf
+/public/assets/img/qr
